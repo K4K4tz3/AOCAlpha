@@ -4,15 +4,32 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    //target
+    //offset
+    //angle
+
+    //follow & unfollow
+    //maybe zoom
+
+    [SerializeField] private Transform target;
+    [SerializeField] private Vector3 offset;
+    [SerializeField] private float smoothness;
+    private Vector3 cameraPos;
+    [SerializeField] private Quaternion angle;
+
     void Start()
     {
-        
+        offset = transform.position - target.position;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        if(target != null)
+        {
+            
+            cameraPos = target.position + offset;
+            transform.position = Vector3.Lerp(transform.position, cameraPos, smoothness * Time.fixedDeltaTime);
+        }
     }
 }
