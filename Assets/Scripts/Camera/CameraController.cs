@@ -12,11 +12,16 @@ public class CameraController : MonoBehaviour
 
     private WarlordController inputAction;
     private CinemachineBrain cinemachineBrain;
+    [SerializeField] private CinemachineVirtualCamera followCam;
 
 
     private float screenWidth;
     private float boundary = 20f;
-    private float speed = 70f;
+    private float speed = 150f;
+
+    public bool cinemachineUsing;
+
+
 
     private void Awake()
     {
@@ -25,6 +30,7 @@ public class CameraController : MonoBehaviour
         cinemachineBrain = GetComponent<CinemachineBrain>();
 
         screenWidth = Screen.width;
+        
     }
 
     private void OnEnable()
@@ -40,27 +46,36 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+       
+
         if(cinemachineBrain.enabled == false)
         {
-           
             CameraMove();
         }
-      
+
         //if y is pressed, the camera should switch between focused and unfocused (cinemachine brain on or off)
 
-        if(inputAction != null)
+        SwitchCamera();
+        
+
+    }
+
+    private void SwitchCamera()
+    {
+        if (inputAction != null)
         {
-            if(inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == true)
+            if (inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == true)
             {
                 cinemachineBrain.enabled = false;
-                
+                cinemachineUsing = false;
+
             }
-            else if(inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == false)
+            else if (inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == false)
             {
                 cinemachineBrain.enabled = true;
+                cinemachineUsing = true;
             }
         }
-
     }
 
     private void CameraMove()
