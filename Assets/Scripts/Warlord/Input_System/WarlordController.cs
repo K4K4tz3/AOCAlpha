@@ -71,6 +71,15 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraFocus"",
+                    ""type"": ""Button"",
+                    ""id"": ""54918601-a7c2-4128-b6b1-fad6dbe3c4ce"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -128,6 +137,17 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
                     ""action"": ""AutoAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66800a59-004b-4438-9b1f-a5fcf1928b7f"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraFocus"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -141,6 +161,7 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
         m_W_Controller_Ability1 = m_W_Controller.FindAction("Ability1", throwIfNotFound: true);
         m_W_Controller_Ability2 = m_W_Controller.FindAction("Ability2", throwIfNotFound: true);
         m_W_Controller_Ability3 = m_W_Controller.FindAction("Ability3", throwIfNotFound: true);
+        m_W_Controller_CameraFocus = m_W_Controller.FindAction("CameraFocus", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +228,7 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
     private readonly InputAction m_W_Controller_Ability1;
     private readonly InputAction m_W_Controller_Ability2;
     private readonly InputAction m_W_Controller_Ability3;
+    private readonly InputAction m_W_Controller_CameraFocus;
     public struct W_ControllerActions
     {
         private @WarlordController m_Wrapper;
@@ -216,6 +238,7 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
         public InputAction @Ability1 => m_Wrapper.m_W_Controller_Ability1;
         public InputAction @Ability2 => m_Wrapper.m_W_Controller_Ability2;
         public InputAction @Ability3 => m_Wrapper.m_W_Controller_Ability3;
+        public InputAction @CameraFocus => m_Wrapper.m_W_Controller_CameraFocus;
         public InputActionMap Get() { return m_Wrapper.m_W_Controller; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -240,6 +263,9 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
             @Ability3.started += instance.OnAbility3;
             @Ability3.performed += instance.OnAbility3;
             @Ability3.canceled += instance.OnAbility3;
+            @CameraFocus.started += instance.OnCameraFocus;
+            @CameraFocus.performed += instance.OnCameraFocus;
+            @CameraFocus.canceled += instance.OnCameraFocus;
         }
 
         private void UnregisterCallbacks(IW_ControllerActions instance)
@@ -259,6 +285,9 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
             @Ability3.started -= instance.OnAbility3;
             @Ability3.performed -= instance.OnAbility3;
             @Ability3.canceled -= instance.OnAbility3;
+            @CameraFocus.started -= instance.OnCameraFocus;
+            @CameraFocus.performed -= instance.OnCameraFocus;
+            @CameraFocus.canceled -= instance.OnCameraFocus;
         }
 
         public void RemoveCallbacks(IW_ControllerActions instance)
@@ -283,5 +312,6 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
         void OnAbility1(InputAction.CallbackContext context);
         void OnAbility2(InputAction.CallbackContext context);
         void OnAbility3(InputAction.CallbackContext context);
+        void OnCameraFocus(InputAction.CallbackContext context);
     }
 }

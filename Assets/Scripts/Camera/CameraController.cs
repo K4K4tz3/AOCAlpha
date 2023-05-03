@@ -1,35 +1,51 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    //target
-    //offset
-    //angle
+    //cinemachine does the followTarget thing
+    //this script is for unfocused camera, just to look around map
 
-    //follow & unfollow
-    //maybe zoom
+    private WarlordController inputAction;
+    
+    private CinemachineBrain cinemachineBrain;
 
-    [SerializeField] private Transform target;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private float smoothness;
-    private Vector3 cameraPos;
-    [SerializeField] private Quaternion angle;
-
-    void Start()
+    private void Awake()
     {
-        offset = transform.position - target.position;
+        inputAction = new WarlordController();
+       
+        cinemachineBrain = GetComponent<CinemachineBrain>();
+    }
+
+    private void OnEnable()
+    {
+        inputAction.W_Controller.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputAction.W_Controller.Disable();
     }
 
 
-    void Update()
+    private void Update()
     {
-        if(target != null)
+        //if y is pressed, the camera should switch between focused and unfocused (cinemachine brain on or off)
+
+        if(inputAction != null)
         {
-            
-            cameraPos = target.position + offset;
-            transform.position = Vector3.Lerp(transform.position, cameraPos, smoothness * Time.fixedDeltaTime);
+            if(inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == true)
+            {
+                cinemachineBrain.enabled = false;
+            }
+            else if(inputAction.W_Controller.CameraFocus.WasPressedThisFrame() && cinemachineBrain.enabled == false)
+            {
+                cinemachineBrain.enabled = true;
+            }
         }
+
     }
 }
