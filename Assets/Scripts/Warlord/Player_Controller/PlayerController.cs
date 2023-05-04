@@ -17,15 +17,25 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    #region State Machine Bools
+    [HideInInspector] public bool isMoving;
+    [HideInInspector] public bool doingAutoAttack;
+    [HideInInspector] public bool doingAbility1;
+    [HideInInspector] public bool doingAbility2;
+    [HideInInspector] public bool doingAbility3;
+    [HideInInspector] public bool isDead;
+    #endregion
+
     #region Movement Fields
     private WarlordController inputAction;
     private NavMeshAgent navMeshAgent;
     private Camera mainCamera;
-    public bool isMoving;
 
-    public Vector3 lastVelocity;
+    private Vector3 lastVelocity;
     private float maxChange = 0.1f;
     #endregion
+
+
 
     [HideInInspector] public Animator anim;
 
@@ -63,20 +73,9 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleMovement();
-
-        Vector3 velocity = navMeshAgent.velocity;
-        float dif = Mathf.Abs((velocity - lastVelocity).magnitude) / Time.fixedDeltaTime;
-        if (dif> maxChange )
-        {
-            isMoving = true;
-        }
-        else
-        {
-            isMoving = false;
-        }
+        CheckForMovement();
 
         currentState.UpdateState(this);
-
     }
 
     private void HandleMovement()
@@ -102,11 +101,25 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void CheckForMovement()
+    {
+        Vector3 velocity = navMeshAgent.velocity;
+        float dif = Mathf.Abs((velocity - lastVelocity).magnitude) / Time.fixedDeltaTime;
+        if (dif > maxChange)
+        {
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+        }
+    }
+
     public void OnAutoAttack()
     {
         //Can only attack something "Attackable"
 
-        Debug.Log("AutoAttack");
+        doingAutoAttack = true;
 
 
     }
@@ -114,15 +127,18 @@ public class PlayerController : MonoBehaviour
     public void OnAbility1()
     {
         Debug.Log("Ability1");
+        doingAbility1 = true;
     }
 
     public void OnAbility2()
     {
         Debug.Log("Ability2");
+        doingAbility2 = true;
     }
 
     public void OnAbility3()
     {
         Debug.Log("Ability3");
+        doingAbility3 = true;
     }
 }

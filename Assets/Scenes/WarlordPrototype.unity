@@ -991,7 +991,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoving: 0
-  lastVelocity: {x: 0, y: 0, z: 0}
+  doingAutoAttack: 0
+  doingAbility1: 0
+  doingAbility2: 0
+  doingAbility3: 0
+  isDead: 0
   anim: {fileID: 0}
 --- !u!95 &2132729274
 Animator:
