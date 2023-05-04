@@ -131,7 +131,7 @@ public partial class @WarlordController: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""b2ccfee0-5be2-4d6a-ac0f-308013afda28"",
                     ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press(pressPoint=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""AutoAttack"",
