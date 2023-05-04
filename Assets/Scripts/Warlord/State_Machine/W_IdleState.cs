@@ -15,6 +15,11 @@ public class W_IdleState : W_MovementBaseState
         {
             ExitState(controller, controller.WalkState);
         }
+
+
+
+
+
     }
 
     public override void ExitState(PlayerController controller, W_MovementBaseState state)
