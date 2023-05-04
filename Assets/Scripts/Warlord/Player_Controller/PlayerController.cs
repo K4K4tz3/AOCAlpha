@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour
         //Can only attack something "Attackable"
 
         doingAutoAttack = true;
+        Debug.Log("AutoAttack");
 
 
     }
