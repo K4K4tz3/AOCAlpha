@@ -16,8 +16,6 @@ public class PlayerController : MonoBehaviour
     private WarlordController inputAction;
     private NavMeshAgent navMeshAgent;
     private Camera mainCamera;
-    [SerializeField] private CinemachineVirtualCamera followCamera;
-    private CameraController cameraController;
 
 
     private void Awake()
@@ -25,7 +23,7 @@ public class PlayerController : MonoBehaviour
         inputAction = new WarlordController();
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        cameraController = mainCamera.GetComponent<CameraController>();
+     
         
     }
 
