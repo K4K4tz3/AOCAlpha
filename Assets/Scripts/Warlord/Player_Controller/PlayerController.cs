@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -20,6 +21,10 @@ public class PlayerController : MonoBehaviour
     private WarlordController inputAction;
     private NavMeshAgent navMeshAgent;
     private Camera mainCamera;
+    public bool isMoving;
+
+    public Vector3 lastVelocity;
+    private float maxChange = 0.1f;
     #endregion
 
     [HideInInspector] public Animator anim;
@@ -31,6 +36,7 @@ public class PlayerController : MonoBehaviour
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
 
+        lastVelocity = navMeshAgent.velocity;
 
         SwitchState(IdleState);
     }
@@ -57,6 +63,18 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleMovement();
+
+        Vector3 velocity = navMeshAgent.velocity;
+        float dif = Mathf.Abs((velocity - lastVelocity).magnitude) / Time.fixedDeltaTime;
+        if (dif> maxChange )
+        {
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+        }
+
         currentState.UpdateState(this);
 
     }
@@ -65,6 +83,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
+         
             return;
         }
         else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
@@ -76,6 +95,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 navMeshAgent.destination = hit.point;
+                
             }
         }
 

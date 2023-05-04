@@ -990,6 +990,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c96c1dd52649a34f937a8f4061739a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
+  lastVelocity: {x: 0, y: 0, z: 0}
   anim: {fileID: 0}
 --- !u!95 &2132729274
 Animator:
