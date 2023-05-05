@@ -107,6 +107,8 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForMovement()
     {
+        //Method checks if the player moved, based on his velocity change
+
         Vector3 velocity = navMeshAgent.velocity;
         float dif = Mathf.Abs((velocity - lastVelocity).magnitude) / Time.fixedDeltaTime;
         if (dif > maxChange)
