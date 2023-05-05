@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -35,7 +34,9 @@ public class PlayerController : MonoBehaviour
     private float maxChange = 0.1f;
     #endregion
 
-
+    #region Auto Attack Fields
+    [SerializeField] private float autoAttackRange;
+    #endregion
 
     [HideInInspector] public Animator anim;
     private int layerAttackable;
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
-         
+
             return;
         }
         else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 navMeshAgent.destination = hit.point;
-                
+
             }
         }
 
@@ -119,22 +120,27 @@ public class PlayerController : MonoBehaviour
 
     public void OnAutoAttack()
     {
-       
+
         //Can only attack something "Attackable"
         //if player rightklicks on something with the layer "attackable", do aa
         //else do nothing
+
+        //range depends on the warlord
+        //don't know how to handle different warlords right now
 
         RaycastHit hit;
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out hit))
         {
-            if(hit.transform.gameObject.layer == layerAttackable)
+            if (hit.transform.gameObject.layer == layerAttackable)
             {
-                doingAutoAttack = true;
-                Debug.Log("AutoAttack");
+                if (Vector3.Distance(transform.position, hit.point) <= autoAttackRange)
+                {
+                    doingAutoAttack = true;
+                    Debug.Log("AutoAttack");
+                }
             }
-
         }
     }
 
@@ -154,5 +160,11 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Ability3");
         doingAbility3 = true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, autoAttackRange);
     }
 }
