@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -138,7 +139,9 @@ public class PlayerController : MonoBehaviour
                 if (Vector3.Distance(transform.position, hit.point) <= autoAttackRange)
                 {
                     doingAutoAttack = true;
-                    Debug.Log("AutoAttack");
+                    DoAutoAttack();
+                    
+                  
                 }
             }
         }
@@ -160,6 +163,12 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("Ability3");
         doingAbility3 = true;
+    }
+
+    public void DoAutoAttack()
+    {
+        //Do damage based on current stats
+        Debug.Log("AutoAttack");
     }
 
     private void OnDrawGizmos()

@@ -15,6 +15,10 @@ public class W_IdleState : W_MovementBaseState
         {
             ExitState(controller, controller.WalkState);
         }
+        if(controller.doingAutoAttack)
+        {
+            ExitState(controller, controller.AAState);
+        }
 
 
 
