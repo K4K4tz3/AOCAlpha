@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 
 
     [HideInInspector] public Animator anim;
+    private int layerAttackable;
 
     private void Awake()
     {
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        layerAttackable = LayerMask.NameToLayer("Attackable");
 
         lastVelocity = navMeshAgent.velocity;
 
@@ -117,12 +119,23 @@ public class PlayerController : MonoBehaviour
 
     public void OnAutoAttack()
     {
+       
         //Can only attack something "Attackable"
+        //if player rightklicks on something with the layer "attackable", do aa
+        //else do nothing
 
-        doingAutoAttack = true;
-        Debug.Log("AutoAttack");
+        RaycastHit hit;
+        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
+        if (Physics.Raycast(ray, out hit))
+        {
+            if(hit.transform.gameObject.layer == layerAttackable)
+            {
+                doingAutoAttack = true;
+                Debug.Log("AutoAttack");
+            }
 
+        }
     }
 
     public void OnAbility1()
