@@ -1,14 +1,12 @@
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
-public class w_Heragzon : MonoBehaviour
+public class w_Heragzon : MonoBehaviour, IDamagable
 {
     private int layerAttackable;
     private Camera mainCamera;
 
     //Scriptable Object for all necessary information
-    [SerializeField] private WarlordBaseClass warlordBaseSO;
+    [SerializeField] private WarlordBaseClass heragzonSO;
 
 
     private void Awake()
@@ -16,6 +14,9 @@ public class w_Heragzon : MonoBehaviour
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
     }
+
+    //On... Methods are for PlayerInput Component
+    //(methods send unity messages when player triggered button)
 
     public void OnAutoAttack()
     {
@@ -30,17 +31,22 @@ public class w_Heragzon : MonoBehaviour
         {
             if (hit.transform.gameObject.layer == layerAttackable)
             {
-                if (Vector3.Distance(transform.position, hit.point) <= warlordBaseSO.autoAttackRange)
+                if (Vector3.Distance(transform.position, hit.point) <= heragzonSO.autoAttackRange)
                 {
                     //doingAutoAttack = true;
-                    DoAutoAttack();
+                    DoAutoAttack(hit.transform.gameObject);
                 }
             }
         }
     }
-    public void DoAutoAttack()
+    private void DoAutoAttack(GameObject enemy)
     {
-        //Do damage based on current stats
+        //Do damage
+        if (enemy.gameObject.TryGetComponent(out IDamagable d))
+        {
+            d.GetDamaged(heragzonSO.autoAttackDamage);
+        }
+
         Debug.Log("AutoAttack");
     }
 
@@ -62,10 +68,27 @@ public class w_Heragzon : MonoBehaviour
         //doingAbility3 = true;
     }
 
+    public void GetDamaged(float damage)
+    {
+        if (heragzonSO.healthAmount > 0.0f)
+        {
+            heragzonSO.healthAmount -= damage;
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+
+    }
+
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, warlordBaseSO.autoAttackRange);
+        Gizmos.DrawWireSphere(transform.position, heragzonSO.autoAttackRange);
     }
 }

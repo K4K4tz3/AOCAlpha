@@ -12,22 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d4cdc5f680bfd04a8f8f413245c26b1, type: 3}
   m_Name: w_Heragzon
   m_EditorClassIdentifier: 
+  healthAmount: 0
+  chardAmount: 0
+  movementSpeed: 0
   autoAttackRange: 5
-  autoAttackDamage: 0
-  ability1Cooldown: 0
-  ability1Damage: 0
+  autoAttackDamage: 20
+  ability1Cooldown: 5
+  ability1DmgWarlord: 0
+  ability1DmgMinion: 0
+  ability1DmgBuilding: 0
   ability1ChardCost: 0
   ability1Range: 0
+  ability1Duration: 0
   ability2Cooldown: 0
-  ability2Damage: 0
+  ability2DmgWarlord: 0
+  ability2DmgMinion: 0
+  ability2DmgBuilding: 0
   ability2ChardCost: 0
   ability2Range: 0
+  ability2Duration: 0
   ability3Cooldown: 0
-  ability3Damage: 0
+  ability3DmgWarlord: 0
+  ability3DmgMinion: 0
+  ability3DmgBuilding: 0
   ability3ChardCost: 0
   ability3Range: 0
-  chardAmount: 0
-  healthAmount: 0
-  movementSpeed: 0
+  ability3Duration: 0
   windUp: 0
   windDown: 0

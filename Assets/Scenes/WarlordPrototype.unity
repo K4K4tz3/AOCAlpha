@@ -334,9 +334,10 @@ GameObject:
   - component: {fileID: 499385672}
   - component: {fileID: 499385671}
   - component: {fileID: 499385670}
+  - component: {fileID: 499385674}
   m_Layer: 6
   m_Name: Attack Dummy
-  m_TagString: Untagged
+  m_TagString: Turret
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -419,6 +420,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &499385674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 499385669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7fd1e746fc3b94fbdecca767052bb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretSO: {fileID: 11400000, guid: 685fa4c4daa826e40b515be6d218d489, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1128,4 +1142,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fed06f61d3f48ef4d8ac7e71d76e454d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warlordBaseSO: {fileID: 11400000, guid: be38bd129390f4b4b95e681f8c097d71, type: 2}
+  heragzonSO: {fileID: 11400000, guid: be38bd129390f4b4b95e681f8c097d71, type: 2}
