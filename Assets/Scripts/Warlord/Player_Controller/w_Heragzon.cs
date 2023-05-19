@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class w_Heragzon : MonoBehaviour, IDamagable
 {
+    //Scriptable Object for all necessary information
+    [SerializeField] private WarlordBaseClass heragzonSO;
+
     private int layerAttackable;
     private Camera mainCamera;
 
-    //Scriptable Object for all necessary information
-    [SerializeField] private WarlordBaseClass heragzonSO;
     private float standardHealthAmount;
     private float standardChardAmount;
 
@@ -23,6 +24,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
 
+    #region AutoAttacks
     public void OnAutoAttack()
     {
         //Can only attack something "Attackable"
@@ -54,9 +56,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
         Debug.Log("AutoAttack");
     }
+    #endregion
 
-
-
+    #region Abilities
     public void OnAbility1()
     {
         Debug.Log("Ability1");
@@ -75,9 +77,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         Debug.Log("Ability3");
         //doingAbility3 = true;
     }
+    #endregion
 
-
-
+    #region Damage & Death
     public void GetDamaged(float damage)
     {
         if (heragzonSO.healthAmount > 0.0f)
@@ -92,7 +94,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
     public void Die()
     {
-
+        //play death animation
+        //either destroy game object after some time
+        //or make it invisible and after death timer just make it visible in spawn
     }
 
     private void ResetStats()
@@ -106,6 +110,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         ResetStats();
         //position at spawn point
     }
+
+    #endregion
 
 
     private void OnDrawGizmos()
