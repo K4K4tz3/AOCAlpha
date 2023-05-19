@@ -35,12 +35,8 @@ public class PlayerController : MonoBehaviour
     private float maxChange = 0.1f;
     #endregion
 
-    #region Auto Attack Fields
-    [SerializeField] private float autoAttackRange;
-    #endregion
-
     [HideInInspector] public Animator anim;
-    private int layerAttackable;
+
 
     private void Awake()
     {
@@ -48,30 +44,23 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        layerAttackable = LayerMask.NameToLayer("Attackable");
-
         lastVelocity = navMeshAgent.velocity;
 
         SwitchState(IdleState);
     }
-
     private void OnEnable()
     {
         inputAction.W_Controller.Enable();
     }
-
     private void OnDisable()
     {
         inputAction.W_Controller.Disable();
     }
-
     public void SwitchState(W_MovementBaseState state)
     {
         currentState = state;
         currentState.EnterState(this);
     }
-
-
 
 
     private void Update()
@@ -86,28 +75,23 @@ public class PlayerController : MonoBehaviour
     {
         if (!inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
-
             return;
         }
         else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
-
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit))
             {
                 navMeshAgent.destination = hit.point;
-
             }
         }
-
-
     }
-
     private void CheckForMovement()
     {
         //Method checks if the player moved, based on his velocity change
+        //bool for state machine
 
         Vector3 velocity = navMeshAgent.velocity;
         float dif = Mathf.Abs((velocity - lastVelocity).magnitude) / Time.fixedDeltaTime;
@@ -120,62 +104,5 @@ public class PlayerController : MonoBehaviour
             isMoving = false;
         }
     }
-
-    public void OnAutoAttack()
-    {
-
-        //Can only attack something "Attackable"
-        //if player rightklicks on something with the layer "attackable", do aa
-        //else do nothing
-
-        //range depends on the warlord
-        //don't know how to handle different warlords right now
-
-        RaycastHit hit;
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform.gameObject.layer == layerAttackable)
-            {
-                if (Vector3.Distance(transform.position, hit.point) <= autoAttackRange)
-                {
-                    doingAutoAttack = true;
-                    DoAutoAttack();
-                    
-                  
-                }
-            }
-        }
-    }
-
-    public void OnAbility1()
-    {
-        Debug.Log("Ability1");
-        doingAbility1 = true;
-    }
-
-    public void OnAbility2()
-    {
-        Debug.Log("Ability2");
-        doingAbility2 = true;
-    }
-
-    public void OnAbility3()
-    {
-        Debug.Log("Ability3");
-        doingAbility3 = true;
-    }
-
-    public void DoAutoAttack()
-    {
-        //Do damage based on current stats
-        Debug.Log("AutoAttack");
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, autoAttackRange);
-    }
+  
 }

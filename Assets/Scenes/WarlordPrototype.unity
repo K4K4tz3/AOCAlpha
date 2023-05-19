@@ -865,6 +865,7 @@ GameObject:
   - component: {fileID: 2132729272}
   - component: {fileID: 2132729273}
   - component: {fileID: 2132729274}
+  - component: {fileID: 2132729275}
   m_Layer: 0
   m_Name: Player_Placeholder
   m_TagString: Untagged
@@ -1093,7 +1094,6 @@ MonoBehaviour:
   doingAbility2: 0
   doingAbility3: 0
   isDead: 0
-  autoAttackRange: 5
   anim: {fileID: 0}
 --- !u!95 &2132729274
 Animator:
@@ -1116,3 +1116,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2132729275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132729266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fed06f61d3f48ef4d8ac7e71d76e454d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  warlordBaseSO: {fileID: 11400000, guid: be38bd129390f4b4b95e681f8c097d71, type: 2}
