@@ -13,30 +13,30 @@ MonoBehaviour:
   m_Name: w_Lyrien
   m_EditorClassIdentifier: 
   healthAmount: 200
-  chardAmount: 0
-  movementSpeed: 0
-  autoAttackRange: 0
-  autoAttackDamage: 0
-  ability1Cooldown: 0
+  chardAmount: 100
+  movementSpeed: 10
+  autoAttackRange: 4
+  autoAttackDamage: 10
+  ability1Cooldown: 7
   ability1DmgWarlord: 0
   ability1DmgMinion: 0
   ability1DmgBuilding: 0
-  ability1ChardCost: 0
-  ability1Range: 0
-  ability1Duration: 0
-  ability2Cooldown: 0
+  ability1ChardCost: 10
+  ability1Range: 3
+  ability1Duration: 5
+  ability2Cooldown: 12
   ability2DmgWarlord: 0
   ability2DmgMinion: 0
   ability2DmgBuilding: 0
-  ability2ChardCost: 0
-  ability2Range: 0
-  ability2Duration: 0
-  ability3Cooldown: 0
+  ability2ChardCost: 30
+  ability2Range: 4
+  ability2Duration: 2
+  ability3Cooldown: 8
   ability3DmgWarlord: 0
   ability3DmgMinion: 0
   ability3DmgBuilding: 0
-  ability3ChardCost: 0
-  ability3Range: 0
-  ability3Duration: 0
+  ability3ChardCost: 20
+  ability3Range: 4
+  ability3Duration: 1
   windUp: 0
   windDown: 0

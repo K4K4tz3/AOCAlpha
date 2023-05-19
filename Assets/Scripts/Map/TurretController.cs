@@ -16,13 +16,15 @@ public class TurretController : MonoBehaviour, IDamagable
         }
         else if (turretSO.turretHealth <= 0.0f)
         {
-            DestroyTurret();
+            Die();
 
         }
     }
 
-    private void DestroyTurret()
+    public void Die()
     {
         GameObject.Destroy(gameObject);
+        //play animation for destroying
     }
+  
 }

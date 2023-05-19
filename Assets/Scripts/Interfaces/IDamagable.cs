@@ -6,4 +6,6 @@ public interface IDamagable
 {
     public void GetDamaged(float damage);
 
+    public void Die();
+
 }

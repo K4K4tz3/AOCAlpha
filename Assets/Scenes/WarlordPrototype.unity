@@ -877,8 +877,8 @@ GameObject:
   - component: {fileID: 2132729267}
   - component: {fileID: 2132729271}
   - component: {fileID: 2132729272}
-  - component: {fileID: 2132729273}
   - component: {fileID: 2132729274}
+  - component: {fileID: 2132729273}
   - component: {fileID: 2132729275}
   m_Layer: 0
   m_Name: Player_Placeholder

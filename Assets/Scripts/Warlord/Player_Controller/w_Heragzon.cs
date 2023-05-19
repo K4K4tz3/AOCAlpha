@@ -7,12 +7,17 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
+    private float standardHealthAmount;
+    private float standardChardAmount;
 
 
     private void Awake()
     {
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
+
+        standardHealthAmount = heragzonSO.healthAmount;
+        standardChardAmount = heragzonSO.chardAmount;  
     }
 
     //On... Methods are for PlayerInput Component
@@ -41,7 +46,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     }
     private void DoAutoAttack(GameObject enemy)
     {
-        //Do damage
+        //Do damage on the klicked object
         if (enemy.gameObject.TryGetComponent(out IDamagable d))
         {
             d.GetDamaged(heragzonSO.autoAttackDamage);
@@ -50,10 +55,13 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         Debug.Log("AutoAttack");
     }
 
+
+
     public void OnAbility1()
     {
         Debug.Log("Ability1");
-        //doingAbility1 = true;
+       //flächendamage V-Form --> instantiate prefab V (trigger area)
+       //gegner betäuben
     }
 
     public void OnAbility2()
@@ -67,6 +75,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         Debug.Log("Ability3");
         //doingAbility3 = true;
     }
+
+
 
     public void GetDamaged(float damage)
     {
@@ -85,9 +95,22 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
     }
 
+    private void ResetStats()
+    {
+        heragzonSO.healthAmount = standardHealthAmount;
+        heragzonSO.chardAmount = standardChardAmount;
+    }
+
+    public void Respawn()
+    {
+        ResetStats();
+        //position at spawn point
+    }
+
 
     private void OnDrawGizmos()
     {
+        //visual for autoattack range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, heragzonSO.autoAttackRange);
     }
