@@ -15,7 +15,7 @@ MonoBehaviour:
   healthAmount: 250
   chardAmount: 100
   movementSpeed: 10
-  autoAttackRange: 1
+  autoAttackRange: 2
   autoAttackDamage: 10
   ability1Cooldown: 5
   ability1DmgWarlord: 75

@@ -7,7 +7,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     [SerializeField] private WarlordBaseClass heragzonSO;
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
 
-
     public LayerMask layerAttackable;
     private Camera mainCamera;
 
@@ -15,21 +14,13 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private float standardChardAmount;
 
     public bool inRange1;
-    private Vector3 ability1Range;
-
 
     private void Awake()
     {
         mainCamera = Camera.main;
-        //layerAttackable = LayerMask.NameToLayer("Attackable");
-
-        ability1Range = new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range);
-
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
     }
-
-
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
@@ -37,45 +28,34 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private void Update()
     {
         //check if something attackable is in range
-
-        
         _targetsInRange = Physics.OverlapSphere(transform.position, heragzonSO.ability1Range, layerAttackable).Where((n) => n.tag == "Turret").ToList();
 
         foreach(Collider t in _targetsInRange)
+        {
             Debug.Log(t.tag);
+            inRange1 = true;
 
-        // foreach(var target in targetsInRange)
-        // {
-        //     Debug.Log(target.tag);
-        //     if(target.CompareTag("Turret"))
-        //     {
-        //         inRange1 = true;
-        //     }
-        //     else
-        //     {
-        //         inRange1 = false;
-        //     }
-           
-        // }
-       
+        }
+
+
     }
 
     #region AutoAttacks
     public void OnAutoAttack()
     {
         //Can only attack something "Attackable"
-        //if player rightklicks on something with the layer "attackable", do aa
-        //range depends on the warlord
-
+        //if player rightklicks on something with the layer "attackable", do aa  
+    
         RaycastHit hit;
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, layerAttackable))
         {
-            if (hit.transform.gameObject.layer == layerAttackable)
+            if (hit.transform.gameObject.CompareTag("Turret"))
             {
                 if (Vector3.Distance(transform.position, hit.point) <= heragzonSO.autoAttackRange)
                 {
+                    
                     //doingAutoAttack = true;
                     DoAutoAttack(hit.transform.gameObject);
                 }

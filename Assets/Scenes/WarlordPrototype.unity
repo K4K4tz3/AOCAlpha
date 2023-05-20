@@ -1273,4 +1273,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heragzonSO: {fileID: 11400000, guid: be38bd129390f4b4b95e681f8c097d71, type: 2}
+  _targetsInRange: []
+  layerAttackable:
+    serializedVersion: 2
+    m_Bits: 64
   inRange1: 0
