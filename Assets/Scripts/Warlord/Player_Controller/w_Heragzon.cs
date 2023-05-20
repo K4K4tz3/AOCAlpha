@@ -1,11 +1,14 @@
+using System.Linq;
 using UnityEngine;
-
+using System.Collections.Generic;
 public class w_Heragzon : MonoBehaviour, IDamagable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
+    [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
 
-    private int layerAttackable;
+
+    public LayerMask layerAttackable;
     private Camera mainCamera;
 
     private float standardHealthAmount;
@@ -18,7 +21,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private void Awake()
     {
         mainCamera = Camera.main;
-        layerAttackable = LayerMask.NameToLayer("Attackable");
+        //layerAttackable = LayerMask.NameToLayer("Attackable");
 
         ability1Range = new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range);
 
@@ -36,21 +39,24 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         //check if something attackable is in range
 
         
-        Collider[] targetsInRange = Physics.OverlapSphere(transform.position, heragzonSO.ability1Range, layerAttackable);
+        _targetsInRange = Physics.OverlapSphere(transform.position, heragzonSO.ability1Range, layerAttackable).Where((n) => n.tag == "Turret").ToList();
 
-        foreach(var target in targetsInRange)
-        {
-            Debug.Log(target.tag);
-            if(target.CompareTag("Turret"))
-            {
-                inRange1 = true;
-            }
-            else
-            {
-                inRange1 = false;
-            }
+        foreach(Collider t in _targetsInRange)
+            Debug.Log(t.tag);
+
+        // foreach(var target in targetsInRange)
+        // {
+        //     Debug.Log(target.tag);
+        //     if(target.CompareTag("Turret"))
+        //     {
+        //         inRange1 = true;
+        //     }
+        //     else
+        //     {
+        //         inRange1 = false;
+        //     }
            
-        }
+        // }
        
     }
 
@@ -99,7 +105,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
 
         //falls ein ziel in der range ist, set active eine trigger area in richtung des ziels, in der das ziel schaden erleidet
-        //gegner betäuben
+        //gegner betï¿½uben
     }
 
     public void OnAbility2()
