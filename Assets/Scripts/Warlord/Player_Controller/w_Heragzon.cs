@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 public class w_Heragzon : MonoBehaviour, IDamagable
 {
     //Scriptable Object for all necessary information
@@ -27,17 +27,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
     private void Update()
     {
-        //check if something attackable is in range
-        _targetsInRange = Physics.OverlapSphere(transform.position, heragzonSO.ability1Range, layerAttackable).Where((n) => n.tag == "Turret").ToList();
-
-        foreach(Collider t in _targetsInRange)
-        {
-            Debug.Log(t.tag);
-            inRange1 = true;
-
-        }
-
-
+        CheckForAbilityRange(heragzonSO.ability1Range);
     }
 
     #region AutoAttacks
@@ -45,7 +35,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     {
         //Can only attack something "Attackable"
         //if player rightklicks on something with the layer "attackable", do aa  
-    
+
         RaycastHit hit;
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -55,7 +45,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
             {
                 if (Vector3.Distance(transform.position, hit.point) <= heragzonSO.autoAttackRange)
                 {
-                    
+
                     //doingAutoAttack = true;
                     DoAutoAttack(hit.transform.gameObject);
                 }
@@ -98,6 +88,27 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     {
         Debug.Log("Ability3");
         //doingAbility3 = true;
+    }
+
+    private void CheckForAbilityRange(float range)
+    {
+        //check if something attackable is in range
+        _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => n.tag == "Turret").ToList();
+
+        if (_targetsInRange.Count > 0)
+        {
+            foreach (Collider t in _targetsInRange)
+            {
+                Debug.Log(t.tag);
+
+            }
+            inRange1 = true;
+
+        }
+        else
+        {
+            inRange1 = false;
+        }
     }
     #endregion
 
