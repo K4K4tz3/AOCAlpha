@@ -22,7 +22,7 @@ MonoBehaviour:
   ability1DmgMinion: 50
   ability1DmgBuilding: 25
   ability1ChardCost: 10
-  ability1Range: 0
+  ability1Range: 2
   ability1Duration: 0
   ability2Cooldown: 10
   ability2DmgWarlord: 90
@@ -38,5 +38,9 @@ MonoBehaviour:
   ability3ChardCost: 20
   ability3Range: 3
   ability3Duration: 0
-  windUp: 0
-  windDown: 0
+  ability1DelayBefore: 0
+  ability2DelayBefore: 0
+  ability3DelayBefore: 0
+  ability1DelayAfter: 0
+  ability2DelayAfter: 0
+  ability3DelayAfter: 0

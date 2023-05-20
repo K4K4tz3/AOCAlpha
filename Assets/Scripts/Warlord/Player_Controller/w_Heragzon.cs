@@ -11,18 +11,48 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private float standardHealthAmount;
     private float standardChardAmount;
 
+    public bool inRange1;
+    private Vector3 ability1Range;
+
 
     private void Awake()
     {
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
 
+        ability1Range = new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range);
+
         standardHealthAmount = heragzonSO.healthAmount;
-        standardChardAmount = heragzonSO.chardAmount;  
+        standardChardAmount = heragzonSO.chardAmount;
     }
+
+
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
+
+    private void Update()
+    {
+        //check if something attackable is in range
+
+        
+        Collider[] targetsInRange = Physics.OverlapSphere(transform.position, heragzonSO.ability1Range, layerAttackable);
+
+        foreach(var target in targetsInRange)
+        {
+            Debug.Log(target.tag);
+            if(target.CompareTag("Turret"))
+            {
+                inRange1 = true;
+            }
+            else
+            {
+                inRange1 = false;
+            }
+           
+        }
+       
+    }
 
     #region AutoAttacks
     public void OnAutoAttack()
@@ -61,9 +91,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     #region Abilities
     public void OnAbility1()
     {
-        Debug.Log("Ability1");
-       //flächendamage V-Form --> instantiate prefab V (trigger area)
-       //gegner betäuben
+        if (inRange1)
+        {
+
+            Debug.Log("Ability1");
+        }
+
+
+        //falls ein ziel in der range ist, set active eine trigger area in richtung des ziels, in der das ziel schaden erleidet
+        //gegner betäuben
     }
 
     public void OnAbility2()
@@ -117,7 +153,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private void OnDrawGizmos()
     {
         //visual for autoattack range
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, heragzonSO.autoAttackRange);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(transform.position, heragzonSO.autoAttackRange);
+
+        //visual for Ability 1 range
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, heragzonSO.ability1Range);
     }
 }
