@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class w_Lyrien : MonoBehaviour, IDamagable
+public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass lyrienSO;
@@ -92,6 +92,10 @@ public class w_Lyrien : MonoBehaviour, IDamagable
             Die();
         }
     }
+
+    public void GetStunned(float duration)
+    { }
+
     public void Die()
     {
         

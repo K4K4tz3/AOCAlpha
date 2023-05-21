@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class w_Xera : MonoBehaviour, IDamagable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass xeraSO;
@@ -88,6 +88,10 @@ public class w_Xera : MonoBehaviour, IDamagable
         }
     }
     public void Die()
+    {
+
+    }
+    public void GetStunned(float duration)
     {
 
     }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public class w_Heragzon : MonoBehaviour, IDamagable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
@@ -69,6 +69,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     }
     #endregion
 
+    //To Do:
+    //1. Cooldown timer for abilities ! 
+    //2. Reduce Chard amount
+    //3. Stun Interface and implementation
+
     #region Abilities
     public void OnAbility1()
     {
@@ -82,14 +87,18 @@ public class w_Heragzon : MonoBehaviour, IDamagable
             var targets = Physics.OverlapBox(transform.position, ability1Range, Quaternion.identity, layerAttackable);
             if (targets.Length > 0)
             {
+                //reduce chards if there is something attackable in range
+                //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
+
                 foreach (Collider c in targets)
                 {
                     if (c.gameObject.TryGetComponent(out IDamagable d))
                     {
                         //what did the warlord hit? -> different damage amount
+                        //targets are stunned if hit (only warlords and minions)
                         var tag = c.tag;
 
-                        switch(tag)
+                        switch (tag)
                         {
                             case "Building":
                                 d.GetDamaged(heragzonSO.ability1DmgBuilding);
@@ -103,7 +112,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
                                 d.GetDamaged(heragzonSO.ability1DmgMinion);
                                 Debug.Log("Ability1 Minion");
                                 break;
-                        }    
+                        }
                     }
                 }
             }
@@ -159,6 +168,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         {
             Die();
         }
+    }
+
+    public void GetStunned(float duration)
+    {
+
     }
 
     public void Die()
