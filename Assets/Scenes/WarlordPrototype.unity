@@ -337,7 +337,7 @@ GameObject:
   - component: {fileID: 499385674}
   m_Layer: 6
   m_Name: Attack Dummy
-  m_TagString: Turret
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1274,7 +1274,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heragzonSO: {fileID: 11400000, guid: be38bd129390f4b4b95e681f8c097d71, type: 2}
   _targetsInRange: []
+  _targetTags:
+  - Building
+  - Warlord
+  - Minion
   layerAttackable:
     serializedVersion: 2
     m_Bits: 64
+  inRangeAA: 0
   inRange1: 0

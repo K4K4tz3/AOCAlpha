@@ -6,6 +6,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
+    [SerializeField] private List<string> _targetTags = new List<string>();
 
     public LayerMask layerAttackable;
     private Camera mainCamera;
@@ -13,6 +14,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private float standardHealthAmount;
     private float standardChardAmount;
 
+    [SerializeField] private bool inRangeAA;
     public bool inRange1;
 
     private void Awake()
@@ -25,11 +27,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
 
-    private void Update()
-    {
-        CheckForAbilityRange(heragzonSO.ability1Range);
-    }
-
     #region AutoAttacks
     public void OnAutoAttack()
     {
@@ -41,14 +38,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
         if (Physics.Raycast(ray, out hit, layerAttackable))
         {
-            if (hit.transform.gameObject.CompareTag("Turret"))
+            if(CheckForAbilityRange(heragzonSO.autoAttackRange, inRangeAA))
             {
-                if (Vector3.Distance(transform.position, hit.point) <= heragzonSO.autoAttackRange)
-                {
-
-                    //doingAutoAttack = true;
-                    DoAutoAttack(hit.transform.gameObject);
-                }
+                DoAutoAttack(hit.transform.gameObject);
             }
         }
     }
@@ -67,7 +59,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     #region Abilities
     public void OnAbility1()
     {
-        if (inRange1)
+        if (CheckForAbilityRange(heragzonSO.ability1Range, inRange1))
         {
 
             Debug.Log("Ability1");
@@ -90,10 +82,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable
         //doingAbility3 = true;
     }
 
-    private void CheckForAbilityRange(float range)
+    private bool CheckForAbilityRange(float range, bool inRange)
     {
         //check if something attackable is in range
-        _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => n.tag == "Turret").ToList();
+        _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
 
         if (_targetsInRange.Count > 0)
         {
@@ -102,12 +94,12 @@ public class w_Heragzon : MonoBehaviour, IDamagable
                 Debug.Log(t.tag);
 
             }
-            inRange1 = true;
+            return inRange = true;
 
         }
         else
         {
-            inRange1 = false;
+            return inRange = false;
         }
     }
     #endregion
