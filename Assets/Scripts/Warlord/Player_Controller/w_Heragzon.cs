@@ -5,6 +5,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
+
+    //for range check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
 
@@ -14,14 +16,25 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     private float standardHealthAmount;
     private float standardChardAmount;
 
+    #region Bools for Range Check
     [SerializeField] private bool inRangeAA;
-    public bool inRange1;
+    [SerializeField] private bool inRange1;
+    #endregion
+
+    private GameObject damageAreaAbility1;
+    private Vector3 ability1Range;
 
     private void Awake()
     {
         mainCamera = Camera.main;
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
+
+        //Possible Area for the Damage/Sword VFX Ability 1
+        damageAreaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
+
+        //Range for the OverlapBox Check -> Needs to be half of the extends
+        ability1Range = new Vector3(heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2);
     }
 
     //On... Methods are for PlayerInput Component
@@ -38,7 +51,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
         if (Physics.Raycast(ray, out hit, layerAttackable))
         {
-            if(CheckForAbilityRange(heragzonSO.autoAttackRange, inRangeAA))
+            if (CheckForAbilityRange(heragzonSO.autoAttackRange, inRangeAA))
             {
                 DoAutoAttack(hit.transform.gameObject);
             }
@@ -59,10 +72,28 @@ public class w_Heragzon : MonoBehaviour, IDamagable
     #region Abilities
     public void OnAbility1()
     {
+        //if q is pressed and there are targets in range
         if (CheckForAbilityRange(heragzonSO.ability1Range, inRange1))
         {
+            //set VFX active
+            //damageAreaAbility1.SetActive(true);
 
-            Debug.Log("Ability1");
+            //everything that's attackable and inside this area gets damaged
+            var targets = Physics.OverlapBox(transform.position, ability1Range, Quaternion.identity, layerAttackable);
+            if (targets.Length > 0)
+            {
+                foreach (Collider c in targets)
+                {
+                    if (c.gameObject.TryGetComponent(out IDamagable d))
+                    {
+                        //what did the warlord hit? -> different damage amount
+                        //check tags!
+                        d.GetDamaged(heragzonSO.ability1DmgBuilding);
+                        Debug.Log("Ability1");
+                    }
+                }
+            }
+
         }
 
 
@@ -147,6 +178,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable
 
         //visual for Ability 1 range
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, heragzonSO.ability1Range);
+        Gizmos.DrawWireCube(transform.position, new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range));
     }
 }

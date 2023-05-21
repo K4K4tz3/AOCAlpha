@@ -7,6 +7,7 @@ public class TurretController : MonoBehaviour, IDamagable
     [SerializeField] private TurretBaseClass turretSO;
 
 
+
     public void GetDamaged(float damage)
     {
         if (turretSO.turretHealth > 0.0f)
