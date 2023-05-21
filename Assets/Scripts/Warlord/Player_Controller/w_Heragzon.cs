@@ -37,6 +37,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     //3. Check damage amount if it is per second or not 
     //4. Areas set active false setzen
 
+    private bool inRangeforA1;
+
 
     private void Awake()
     {
@@ -46,7 +48,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
         //Range for the OverlapBox Check -> Needs to be half of the extends
         ability1Range = new Vector3(heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2);
-        ability2Range = new Vector3(heragzonSO.ability2Range / 6, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
+        ability2Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
         ability3Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
 
         //Possible Area for the Damage/Sword VFX Ability 1
@@ -122,9 +124,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
         //visual for Ability 1 range
         Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 2), new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range));
-        Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range/2);
+        Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range / 2);
 
-        Gizmos.color = Color.red;
+        //Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 3), new Vector3(heragzonSO.ability2Range/3, heragzonSO.ability2Range, heragzonSO.ability2Range));
+        //Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0,0,3), heragzonSO.ability2Range/2);
+
 
     }
 
@@ -136,7 +140,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
         if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
         {
-
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -150,14 +153,12 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
             //set VFX active
             damageAreaAbility1.SetActive(true);
 
-
-
             //everything that's attackable and inside this area gets damaged
             //OverlapBox = Damage Area
             //var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 2), ability1Range, Quaternion.LookRotation(rot), layerAttackable);
 
             //Changed OverlapBox to Sphere bc Box did not move with the player and so there was no regular dmg, only sometimes
-            var targets = Physics.OverlapSphere(transform.position + new Vector3(0, 0, 2), heragzonSO.ability1Range/2);
+            var targets = Physics.OverlapSphere(transform.position + new Vector3(0, 0, 2), heragzonSO.ability1Range/2,layerAttackable);
 
             if (targets.Length > 0)
             {
@@ -200,7 +201,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
                     }
                 }
             }
-
+            inRangeforA1 = true;
 
         }
     }
@@ -213,8 +214,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
         damageAreaAbility2.SetActive(true);
 
-        //Check for targets in Range
-        var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability2Range, Quaternion.identity, layerAttackable);
+        Debug.Log("Ability2 triggered");
+
+        //Check for targets in Damage Area
+        var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability2Range, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), layerAttackable);
 
         //Damage per second !! 
         if (targets.Length > 0)
@@ -248,7 +251,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
             }
 
         }
-
 
     }
 
