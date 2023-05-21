@@ -87,13 +87,26 @@ public class w_Heragzon : MonoBehaviour, IDamagable
                     if (c.gameObject.TryGetComponent(out IDamagable d))
                     {
                         //what did the warlord hit? -> different damage amount
-                        //check tags!
-                        d.GetDamaged(heragzonSO.ability1DmgBuilding);
-                        Debug.Log("Ability1");
+                        var tag = c.tag;
+
+                        switch(tag)
+                        {
+                            case "Building":
+                                d.GetDamaged(heragzonSO.ability1DmgBuilding);
+                                Debug.Log("Ability1 Building");
+                                break;
+                            case "Warlord":
+                                d.GetDamaged(heragzonSO.ability1DmgWarlord);
+                                Debug.Log("Ability1 Warlord");
+                                break;
+                            case "Minion":
+                                d.GetDamaged(heragzonSO.ability1DmgMinion);
+                                Debug.Log("Ability1 Minion");
+                                break;
+                        }    
                     }
                 }
             }
-
         }
 
 
