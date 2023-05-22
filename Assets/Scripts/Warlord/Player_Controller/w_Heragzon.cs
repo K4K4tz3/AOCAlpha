@@ -15,7 +15,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     [SerializeField] private List<string> _targetTags = new List<string>();
     #endregion
 
-    #region Damage Areas
+    #region Damage Collider
     private GameObject damageAreaAbility1;
     private GameObject damageAreaAbility2;
     private GameObject damageAreaAbility3;
@@ -34,7 +34,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     //1. Cooldown timer for abilities ! 
     //2. Reduce Chard amount -> What Order?
     //3. Check damage amount if it is per second or not 
-
 
 
     private void Awake()

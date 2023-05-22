@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 276670838}
   - component: {fileID: 276670839}
   m_Layer: 0
-  m_Name: Ability 3 VFX Area
+  m_Name: Ability 3 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 649772326}
   - component: {fileID: 649772327}
   m_Layer: 0
-  m_Name: Ability 1 VFX Area
+  m_Name: Ability 1 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -953,7 +953,7 @@ GameObject:
   - component: {fileID: 1308972835}
   - component: {fileID: 1308972836}
   m_Layer: 0
-  m_Name: Ability 2 VFX Area
+  m_Name: Ability 2 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
