@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,8 +27,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     private float standardHealthAmount;
     private float standardChardAmount;
 
-    public Quaternion gameObjectRotation;
-    public Vector3 rot;
+    public bool qPossible;
+    public bool qDamageActive = true;
+
+    private float ability1Duration;
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
@@ -37,8 +40,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     //3. Check damage amount if it is per second or not 
     //4. Areas set active false setzen
 
-    private bool inRangeforA1;
-
 
     private void Awake()
     {
@@ -47,7 +48,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         standardChardAmount = heragzonSO.chardAmount;
 
         //Range for the OverlapBox Check -> Needs to be half of the extends
-        ability1Range = new Vector3(heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 2);
+        ability1Range = new Vector3(heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 4, heragzonSO.ability1Range / 2);
         ability2Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
         ability3Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
 
@@ -56,14 +57,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         damageAreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
         damageAreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
 
-    }
-    private void Update()
-    {
-        gameObjectRotation = transform.rotation;
-        //rotation of game object
-        rot = new Vector3(0, gameObjectRotation.y, 0);
+        ability1Duration = heragzonSO.ability1Duration;
 
     }
+
     private bool CheckForAbilityRange(float range, Vector3 position)
     {
         //check if something attackable is in range
@@ -119,17 +116,39 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     #endregion
     private void OnDrawGizmos()
     {
+
+
         Gizmos.color = Color.blue;
         Gizmos.matrix = this.transform.localToWorldMatrix;
 
-        //visual for Ability 1 range
-        Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 2), new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range, heragzonSO.ability1Range));
-        Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range / 2);
+        ////visual for Ability 1 range
+        Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 0.5f), new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range / 2, heragzonSO.ability1Range));
+        //Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range / 2);
 
         //Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 3), new Vector3(heragzonSO.ability2Range/3, heragzonSO.ability2Range, heragzonSO.ability2Range));
         //Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0,0,3), heragzonSO.ability2Range/2);
 
 
+    }
+
+    private void Update()
+    {
+        if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
+        {
+            qPossible = true;
+        }
+        else
+        {
+            qPossible = false;
+        }
+    }
+
+    IEnumerator Ability1Duration()
+    {
+        damageAreaAbility1.SetActive(true);
+        yield return new WaitForSeconds(heragzonSO.ability1Duration);
+        damageAreaAbility1.SetActive(false);
+        yield return null;
     }
 
     #region Abilities
@@ -138,7 +157,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         //if q is pressed, first check if there is sonething attackable in range
         //because heragzons q can only be used if a target is in range
 
-        if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
+        if (qPossible)
         {
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -148,63 +167,65 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
                 //looking at target 
                 transform.LookAt(hit.point);
             }
-            Debug.Log("Q triggered wohoo");
 
-            //set VFX active
-            damageAreaAbility1.SetActive(true);
+            Debug.Log("Q triggered");
 
+            //set DMG Area active           
+            //nach nem timer wird wieder false gesetzt
+            StartCoroutine(Ability1Duration());
+
+            #region Previous solution
             //everything that's attackable and inside this area gets damaged
             //OverlapBox = Damage Area
-            //var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 2), ability1Range, Quaternion.LookRotation(rot), layerAttackable);
+            //var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 0f), ability1Range, transform.rotation, layerAttackable);
 
-            //Changed OverlapBox to Sphere bc Box did not move with the player and so there was no regular dmg, only sometimes
-            var targets = Physics.OverlapSphere(transform.position + new Vector3(0, 0, 2), heragzonSO.ability1Range/2,layerAttackable);
+            ////var targets = Physics.OverlapSphere(transform.localPosition + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range / 2, layerAttackable);
 
-            if (targets.Length > 0)
-            {
-                //reduce chards if there is something attackable in range
-                //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
-                Debug.Log("doin q damage yeah");
+            //if (targets.Length > 0)
+            //{
+            //    //reduce chards if there is something attackable in range
+            //    //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
+            //    Debug.Log("doin q damage yeah");
 
-                foreach (Collider c in targets)
-                {
-                    //check if the targets have IDamagable implemented
-                    if (c.gameObject.TryGetComponent(out IDamagable d))
-                    {
-                        //what did the warlord hit? -> different damage amount
-                        //targets are stunned if hit (only warlords and minions)
-                        var tag = c.tag;
+            //    foreach (Collider c in targets)
+            //    {
+            //        //check if the targets have IDamagable implemented
+            //        if (c.gameObject.TryGetComponent(out IDamagable d))
+            //        {
+            //            //what did the warlord hit? -> different damage amount
+            //            //targets are stunned if hit (only warlords and minions)
+            //            var tag = c.tag;
 
-                        switch (tag)
-                        {
-                            case "Building":
-                                d.GetDamaged(heragzonSO.ability1DmgBuilding);
-                                Debug.Log("Ability1 Building");
-                                break;
-                            case "Warlord":
-                                d.GetDamaged(heragzonSO.ability1DmgWarlord);
-                                if (c.gameObject.TryGetComponent(out IStunnable w))
-                                {
-                                    w.GetStunned(heragzonSO.ability1Duration);
-                                }
-                                Debug.Log("Ability1 Warlord");
-                                break;
-                            case "Minion":
-                                d.GetDamaged(heragzonSO.ability1DmgMinion);
-                                if (c.gameObject.TryGetComponent(out IStunnable m))
-                                {
-                                    m.GetStunned(heragzonSO.ability1Duration);
-                                }
-                                Debug.Log("Ability1 Minion");
-                                break;
-                        }
-                    }
-                }
-            }
-            inRangeforA1 = true;
-
+            //            switch (tag)
+            //            {
+            //                case "Building":
+            //                    d.GetDamaged(heragzonSO.ability1DmgBuilding);
+            //                    Debug.Log("Ability1 Building");
+            //                    break;
+            //                case "Warlord":
+            //                    d.GetDamaged(heragzonSO.ability1DmgWarlord);
+            //                    if (c.gameObject.TryGetComponent(out IStunnable w))
+            //                    {
+            //                        w.GetStunned(heragzonSO.ability1Duration);
+            //                    }
+            //                    Debug.Log("Ability1 Warlord");
+            //                    break;
+            //                case "Minion":
+            //                    d.GetDamaged(heragzonSO.ability1DmgMinion);
+            //                    if (c.gameObject.TryGetComponent(out IStunnable m))
+            //                    {
+            //                        m.GetStunned(heragzonSO.ability1Duration);
+            //                    }
+            //                    Debug.Log("Ability1 Minion");
+            //                    break;
+            //            }
+            //        }
+            //    }
+            //}
+            #endregion
         }
     }
+
 
 
     public void OnAbility2()
