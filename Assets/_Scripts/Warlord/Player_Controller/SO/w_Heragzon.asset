@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d4cdc5f680bfd04a8f8f413245c26b1, type: 3}
+  m_Name: w_Heragzon
+  m_EditorClassIdentifier: 
+  healthAmount: 210
+  chardAmount: 100
+  movementSpeed: 10
+  autoAttackRange: 2.5
+  autoAttackDamage: 10
+  ability1Cooldown: 5
+  ability1DmgWarlord: 75
+  ability1DmgMinion: 50
+  ability1DmgBuilding: 25
+  ability1ChardCost: 10
+  ability1Range: 3.5
+  ability1Duration: 1
+  ability2Cooldown: 10
+  ability2DmgWarlord: 15
+  ability2DmgMinion: 15
+  ability2DmgBuilding: 2
+  ability2ChardCost: 25
+  ability2Range: 4
+  ability2Duration: 4
+  ability3Cooldown: 8
+  ability3DmgWarlord: 80
+  ability3DmgMinion: 80
+  ability3DmgBuilding: 40
+  ability3ChardCost: 20
+  ability3Range: 3
+  ability3Duration: 0
+  ability1DelayBefore: 0
+  ability2DelayBefore: 0
+  ability3DelayBefore: 0
+  ability1DelayAfter: 0
+  ability2DelayAfter: 0
+  ability3DelayAfter: 0
