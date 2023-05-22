@@ -6,11 +6,6 @@ public class HeragzonAbility1 : MonoBehaviour
 {
     [SerializeField] private WarlordBaseClass heragzonSO;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("hello");
-    }
-
     private void OnTriggerStay(Collider other)
     {
 

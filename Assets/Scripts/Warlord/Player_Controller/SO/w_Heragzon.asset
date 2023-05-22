@@ -37,7 +37,7 @@ MonoBehaviour:
   ability3DmgBuilding: 40
   ability3ChardCost: 20
   ability3Range: 3
-  ability3Duration: 0
+  ability3Duration: 1
   ability1DelayBefore: 0
   ability2DelayBefore: 0
   ability3DelayBefore: 0

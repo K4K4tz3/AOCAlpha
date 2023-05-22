@@ -13,12 +13,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
-    private Vector3 ability1Range;
-    private Vector3 ability2Range;
-    private Vector3 ability3Range;
     #endregion
 
-    #region VFX/Damage Areas
+    #region Damage Areas
     private GameObject damageAreaAbility1;
     private GameObject damageAreaAbility2;
     private GameObject damageAreaAbility3;
@@ -27,18 +24,17 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     private float standardHealthAmount;
     private float standardChardAmount;
 
-    public bool qPossible;
-    public bool qDamageActive = true;
+    private bool qPossible;
 
-    private float ability1Duration;
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
+
     //To Do:
     //1. Cooldown timer for abilities ! 
     //2. Reduce Chard amount -> What Order?
     //3. Check damage amount if it is per second or not 
-    //4. Areas set active false setzen
+
 
 
     private void Awake()
@@ -47,20 +43,23 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
 
-        //Range for the OverlapBox Check -> Needs to be half of the extends
-        ability1Range = new Vector3(heragzonSO.ability1Range / 2, heragzonSO.ability1Range / 4, heragzonSO.ability1Range / 2);
-        ability2Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
-        ability3Range = new Vector3(heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 4, heragzonSO.ability2Range / 2);
-
-        //Possible Area for the Damage/Sword VFX Ability 1
+        // Area for the Damage
         damageAreaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
         damageAreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
         damageAreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
 
-        ability1Duration = heragzonSO.ability1Duration;
-
     }
-
+    private void Update()
+    {
+        if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
+        {
+            qPossible = true;
+        }
+        else
+        {
+            qPossible = false;
+        }
+    }
     private bool CheckForAbilityRange(float range, Vector3 position)
     {
         //check if something attackable is in range
@@ -114,35 +113,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         Debug.Log("AutoAttack");
     }
     #endregion
-    private void OnDrawGizmos()
-    {
 
-
-        Gizmos.color = Color.blue;
-        Gizmos.matrix = this.transform.localToWorldMatrix;
-
-        ////visual for Ability 1 range
-        Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 0.5f), new Vector3(heragzonSO.ability1Range, heragzonSO.ability1Range / 2, heragzonSO.ability1Range));
-        //Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0, 0, 1.5f), heragzonSO.ability1Range / 2);
-
-        //Gizmos.DrawWireCube(Vector3.zero + new Vector3(0, 0, 3), new Vector3(heragzonSO.ability2Range/3, heragzonSO.ability2Range, heragzonSO.ability2Range));
-        //Gizmos.DrawWireSphere(Vector3.zero + new Vector3(0,0,3), heragzonSO.ability2Range/2);
-
-
-    }
-
-    private void Update()
-    {
-        if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
-        {
-            qPossible = true;
-        }
-        else
-        {
-            qPossible = false;
-        }
-    }
-
+    #region Coroutines
     IEnumerator Ability1Duration()
     {
         damageAreaAbility1.SetActive(true);
@@ -150,6 +122,23 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         damageAreaAbility1.SetActive(false);
         yield return null;
     }
+
+    IEnumerator Ability2Duration()
+    {
+        damageAreaAbility2.SetActive(true);
+        yield return new WaitForSeconds(heragzonSO.ability2Duration);
+        damageAreaAbility2.SetActive(false);
+        yield return null;
+    }
+
+    IEnumerator Ability3Duration()
+    {
+        damageAreaAbility3.SetActive(true);
+        yield return new WaitForSeconds(heragzonSO.ability3Duration);
+        damageAreaAbility3.SetActive(false);
+        yield return null;
+    }
+    #endregion
 
     #region Abilities
     public void OnAbility1()
@@ -225,99 +214,97 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
             #endregion
         }
     }
-
-
-
     public void OnAbility2()
     {
         //reduce chards 
         //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
-
-        damageAreaAbility2.SetActive(true);
+        StartCoroutine(Ability2Duration());
 
         Debug.Log("Ability2 triggered");
 
+        #region Previous Solution
         //Check for targets in Damage Area
-        var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability2Range, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), layerAttackable);
+        //var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability2Range, Quaternion.Euler(transform.rotation.x, transform.rotation.y, transform.rotation.z), layerAttackable);
 
-        //Damage per second !! 
-        if (targets.Length > 0)
-        {
-            //if there are targets 
-            foreach (Collider c in targets)
-            {
-                //check if the targets have IDamagable implemented
-                if (c.gameObject.TryGetComponent(out IDamagable d))
-                {
-                    //what did the warlord hit? -> different damage amount
+        ////Damage per second !! 
+        //if (targets.Length > 0)
+        //{
+        //    //if there are targets 
+        //    foreach (Collider c in targets)
+        //    {
+        //        //check if the targets have IDamagable implemented
+        //        if (c.gameObject.TryGetComponent(out IDamagable d))
+        //        {
+        //            //what did the warlord hit? -> different damage amount
 
-                    var tag = c.tag;
+        //            var tag = c.tag;
 
-                    switch (tag)
-                    {
-                        case "Building":
-                            d.GetDamaged(heragzonSO.ability2DmgBuilding);
-                            Debug.Log("Ability2 Building");
-                            break;
-                        case "Warlord":
-                            d.GetDamaged(heragzonSO.ability2DmgWarlord);
-                            Debug.Log("Ability2 Warlord");
-                            break;
-                        case "Minion":
-                            d.GetDamaged(heragzonSO.ability2DmgMinion);
-                            Debug.Log("Ability2 Minion");
-                            break;
-                    }
-                }
-            }
+        //            switch (tag)
+        //            {
+        //                case "Building":
+        //                    d.GetDamaged(heragzonSO.ability2DmgBuilding);
+        //                    Debug.Log("Ability2 Building");
+        //                    break;
+        //                case "Warlord":
+        //                    d.GetDamaged(heragzonSO.ability2DmgWarlord);
+        //                    Debug.Log("Ability2 Warlord");
+        //                    break;
+        //                case "Minion":
+        //                    d.GetDamaged(heragzonSO.ability2DmgMinion);
+        //                    Debug.Log("Ability2 Minion");
+        //                    break;
+        //            }
+        //        }
+        //    }
 
-        }
+        //}
+        #endregion
 
     }
 
     public void OnAbility3()
     {
-
         //reduce chards 
         //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
+        StartCoroutine(Ability3Duration());
 
-        damageAreaAbility3.SetActive(true);
-
+        #region Previous Solution
         //Check for targets in Range
-        var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability3Range, Quaternion.identity, layerAttackable);
+        //var targets = Physics.OverlapBox(transform.position + new Vector3(0, 0, 3), ability3Range, Quaternion.identity, layerAttackable);
 
-        //Damage per second !! 
-        if (targets.Length > 0)
-        {
-            //if there are targets 
-            foreach (Collider c in targets)
-            {
-                //check if the targets have IDamagable implemented
-                if (c.gameObject.TryGetComponent(out IDamagable d))
-                {
-                    //what did the warlord hit? -> different damage amount
+        ////Damage per second !! 
+        //if (targets.Length > 0)
+        //{
+        //    //if there are targets 
+        //    foreach (Collider c in targets)
+        //    {
+        //        //check if the targets have IDamagable implemented
+        //        if (c.gameObject.TryGetComponent(out IDamagable d))
+        //        {
+        //            //what did the warlord hit? -> different damage amount
 
-                    var tag = c.tag;
+        //            var tag = c.tag;
 
-                    switch (tag)
-                    {
-                        case "Building":
-                            d.GetDamaged(heragzonSO.ability3DmgBuilding);
-                            Debug.Log("Ability3 Building");
-                            break;
-                        case "Warlord":
-                            d.GetDamaged(heragzonSO.ability3DmgWarlord);
-                            Debug.Log("Ability3 Warlord");
-                            break;
-                        case "Minion":
-                            d.GetDamaged(heragzonSO.ability3DmgMinion);
-                            Debug.Log("Ability3 Minion");
-                            break;
-                    }
-                }
-            }
+        //            switch (tag)
+        //            {
+        //                case "Building":
+        //                    d.GetDamaged(heragzonSO.ability3DmgBuilding);
+        //                    Debug.Log("Ability3 Building");
+        //                    break;
+        //                case "Warlord":
+        //                    d.GetDamaged(heragzonSO.ability3DmgWarlord);
+        //                    Debug.Log("Ability3 Warlord");
+        //                    break;
+        //                case "Minion":
+        //                    d.GetDamaged(heragzonSO.ability3DmgMinion);
+        //                    Debug.Log("Ability3 Minion");
+        //                    break;
+        //            }
+        //        }
+        //    }
 
-        }
+        //}
+        #endregion
     }
 
     #endregion
