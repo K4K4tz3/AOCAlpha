@@ -5,6 +5,10 @@ using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Object Reference's
+    [SerializeField] private Camera m_PlayerCamera;
+    #endregion
+
     #region State Machine Fields
     private W_MovementBaseState currentState;
     public W_IdleState IdleState = new W_IdleState();
@@ -80,11 +84,12 @@ public class PlayerController : MonoBehaviour
         else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
             RaycastHit hit;
-            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = m_PlayerCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit))
             {
                 navMeshAgent.destination = hit.point;
+                Debug.Log($"Agent Destionation: {hit.point}");
             }
         }
     }

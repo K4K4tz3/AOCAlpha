@@ -490,6 +490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c96c1dd52649a34f937a8f4061739a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_PlayerCamera: {fileID: 4058405367738707751}
   isMoving: 0
   doingAutoAttack: 0
   doingAbility1: 0
