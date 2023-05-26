@@ -491,6 +491,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerCamera: {fileID: 4058405367738707751}
+  m_ColorList:
+  - {fileID: 2100000, guid: 1654f245f2d41234cb9d0d75e018dba0, type: 2}
+  - {fileID: 2100000, guid: 2f6c513912aac3c4cb714798f2d8eba9, type: 2}
+  - {fileID: 2100000, guid: 84e2860c5eee9e8439746b35613d3384, type: 2}
+  - {fileID: 2100000, guid: 166f06b42975028478332a47a34f1b6b, type: 2}
   isMoving: 0
   doingAutoAttack: 0
   doingAbility1: 0
@@ -810,7 +815,7 @@ GameObject:
   - component: {fileID: 4058405367738707745}
   - component: {fileID: 4058405367738707746}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

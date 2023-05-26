@@ -1,12 +1,14 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 
 public class PlayerController : MonoBehaviour
 {
     #region Object Reference's
     [SerializeField] private Camera m_PlayerCamera;
+    [SerializeField] private List<Material> m_ColorList = new List<Material>();
     #endregion
 
     #region State Machine Fields
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        this.gameObject.GetComponent<MeshRenderer>().material = m_ColorList[Random.Range(0, m_ColorList.Count - 1)];
         inputAction = new WarlordController();
         anim = GetComponent<Animator>();
         mainCamera = Camera.main;
