@@ -2,9 +2,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using Unity.Netcode;
 
-
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     #region Object Reference's
     [SerializeField] private Camera m_PlayerCamera;
@@ -72,6 +72,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(!IsOwner) return;
+        
         HandleMovement();
         CheckForMovement();
 
