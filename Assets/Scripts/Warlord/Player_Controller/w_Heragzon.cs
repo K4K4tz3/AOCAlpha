@@ -25,13 +25,16 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     private float standardChardAmount;
 
     private bool qPossible;
+    private bool qAvailable = true;
+    private bool wAvailable = true;
+    private bool eAvailable = true;
+
 
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
 
     //To Do:
-    //1. Cooldown timer for abilities ! 
     //2. Reduce Chard amount -> What Order?
     //3. Check damage amount if it is per second or not 
 
@@ -50,6 +53,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     }
     private void Update()
     {
+
         if (CheckForAbilityRange(heragzonSO.ability1Range, new Vector3(0, 0, 1.5f)))
         {
             qPossible = true;
@@ -119,7 +123,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         damageAreaAbility1.SetActive(true);
         yield return new WaitForSeconds(heragzonSO.ability1Duration);
         damageAreaAbility1.SetActive(false);
+
         yield return null;
+    }
+
+    IEnumerator Ability1Cooldown()
+    {
+        qAvailable = false;
+        yield return new WaitForSeconds(heragzonSO.ability1Cooldown + heragzonSO.ability1Duration);
+        qAvailable = true;
     }
 
     IEnumerator Ability2Duration()
@@ -130,12 +142,26 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         yield return null;
     }
 
+    IEnumerator Ability2Cooldown()
+    {
+        wAvailable = false;
+        yield return new WaitForSeconds(heragzonSO.ability2Cooldown + heragzonSO.ability2Duration);
+        wAvailable = true;
+    }
+
     IEnumerator Ability3Duration()
     {
         damageAreaAbility3.SetActive(true);
         yield return new WaitForSeconds(heragzonSO.ability3Duration);
         damageAreaAbility3.SetActive(false);
         yield return null;
+    }
+
+    IEnumerator Ability3Cooldown()
+    {
+        eAvailable = false;
+        yield return new WaitForSeconds(heragzonSO.ability3Cooldown + heragzonSO.ability3Duration);
+        eAvailable = true;
     }
     #endregion
 
@@ -145,7 +171,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         //if q is pressed, first check if there is sonething attackable in range
         //because heragzons q can only be used if a target is in range
 
-        if (qPossible)
+        if (qPossible && qAvailable)
         {
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -161,6 +187,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
             //set DMG Area active           
             //nach nem timer wird wieder false gesetzt
             StartCoroutine(Ability1Duration());
+            StartCoroutine(Ability1Cooldown());
 
             #region Previous solution
             //everything that's attackable and inside this area gets damaged
@@ -217,9 +244,13 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     {
         //reduce chards 
         //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
-        StartCoroutine(Ability2Duration());
+        if (wAvailable)
+        {
+            StartCoroutine(Ability2Duration());
+            StartCoroutine(Ability2Cooldown());
 
-        Debug.Log("Ability2 triggered");
+            Debug.Log("Ability2 triggered");
+        }
 
         #region Previous Solution
         //Check for targets in Damage Area
@@ -260,12 +291,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         #endregion
 
     }
-
     public void OnAbility3()
     {
         //reduce chards 
         //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
-        StartCoroutine(Ability3Duration());
+        if (eAvailable)
+        {
+            StartCoroutine(Ability3Duration());
+            StartCoroutine(Ability3Cooldown());
+        }
 
         #region Previous Solution
         //Check for targets in Range
