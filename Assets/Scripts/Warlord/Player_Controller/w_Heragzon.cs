@@ -35,7 +35,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     //(methods send unity messages when player triggered button)
 
     //To Do:
-    //2. Reduce Chard amount -> What Order?
+
     //3. Check damage amount if it is per second or not 
 
 

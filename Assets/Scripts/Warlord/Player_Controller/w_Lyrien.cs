@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
@@ -10,8 +11,16 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
     private int layerAttackable;
     private Camera mainCamera;
 
+    [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
+    [SerializeField] private List<string> _targetTags = new List<string>();
+
     private float standardHealthAmount;
     private float standardChardAmount;
+
+    private bool qPossible;
+    private bool qAvailable = true;
+    private bool wAvailable = true;
+    private bool eAvailable = true;
 
     private void Awake()
     {
@@ -20,6 +29,35 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
 
         standardHealthAmount = lyrienSO.healthAmount;
         standardChardAmount = lyrienSO.chardAmount;
+    }
+
+    private void Update()
+    {
+        if (CheckForAbilityRange(lyrienSO.ability1Range, transform.position))
+        {
+            qPossible = true;
+        }
+        else
+        {
+            qPossible = false;
+        }
+    }
+
+
+    private bool CheckForAbilityRange(float range, Vector3 position)
+    {
+        //check if something attackable is in range
+        //transform.position + this vector so that the sphere not inside and behind the warlord
+        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
+
+        if (_targetsInRange.Count > 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     #region AutoAttacks
@@ -32,15 +70,14 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
         RaycastHit hit;
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, layerAttackable))
         {
-            if (hit.transform.gameObject.layer == layerAttackable)
+            //looking at target 
+            transform.LookAt(hit.point);
+
+            if (CheckForAbilityRange(lyrienSO.autoAttackRange, Vector3.zero))
             {
-                if (Vector3.Distance(transform.position, hit.point) <= lyrienSO.autoAttackRange)
-                {
-                    //doingAutoAttack = true;
-                    DoAutoAttack(hit.transform.gameObject);
-                }
+                DoAutoAttack(hit.transform.gameObject);
             }
         }
     }
@@ -57,24 +94,75 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
 
     #endregion
 
+    #region Coroutines
+    IEnumerator Ability1Cooldown()
+    {
+        qAvailable = false;
+        yield return new WaitForSeconds(lyrienSO.ability1Cooldown);
+        qAvailable = true;
+    }
+
+    IEnumerator Ability2Cooldown()
+    {
+        wAvailable = false;
+        yield return new WaitForSeconds(lyrienSO.ability2Cooldown);
+        wAvailable = true;
+    }
+
+    IEnumerator Ability3Cooldown()
+    {
+        eAvailable = false;
+        yield return new WaitForSeconds(lyrienSO.ability3Cooldown);
+        eAvailable = true;
+    }
+
+    #endregion
+
     #region Abilities
 
     public void OnAbility1()
     {
+        //Range check! 
+        if (qAvailable && qPossible)
+        {
+            StartCoroutine(Ability1Cooldown());
+            //stop movement
+            //can move enemy -> "gegner angreifen lassen", also vllt eher: Gegner greifen deren nächsten gegner an (vgl. Renata ult)
+            //if q pressed while in use, stop it
+
+        }
+
         Debug.Log("Ability1");
-        
+
     }
 
     public void OnAbility2()
     {
+        if (wAvailable)
+        {
+            StartCoroutine(Ability2Cooldown());
+        }
+        //Stößt gegner weg oder zieht sie an sich ran
+        //-> Bereich wird markiert, danach wird geprüft wo die maus ist
+        //beim erneuten drücken wird entweder weggestoßen oder rangezogen
+
         Debug.Log("Ability2");
-       
+
     }
 
     public void OnAbility3()
     {
+        if (eAvailable)
+        {
+            StartCoroutine (Ability3Cooldown());
+        }
+        //Big jump to target (target = mouse position)
+        //cancelling all enemy attacks
+        //unverwundbar
+
+
         Debug.Log("Ability3");
-        
+
     }
 
     #endregion
@@ -98,7 +186,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
 
     public void Die()
     {
-        
+
     }
 
     private void ResetStats()
