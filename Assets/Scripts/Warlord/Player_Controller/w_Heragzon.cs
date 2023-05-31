@@ -130,7 +130,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     IEnumerator Ability1Cooldown()
     {
         qAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability1Cooldown + heragzonSO.ability1Duration);
+        yield return new WaitForSeconds(heragzonSO.ability1Cooldown);
         qAvailable = true;
     }
 
@@ -145,7 +145,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     IEnumerator Ability2Cooldown()
     {
         wAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability2Cooldown + heragzonSO.ability2Duration);
+        yield return new WaitForSeconds(heragzonSO.ability2Cooldown);
         wAvailable = true;
     }
 
@@ -160,7 +160,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     IEnumerator Ability3Cooldown()
     {
         eAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability3Cooldown + heragzonSO.ability3Duration);
+        yield return new WaitForSeconds(heragzonSO.ability3Cooldown);
         eAvailable = true;
     }
     #endregion
@@ -173,6 +173,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
         if (qPossible && qAvailable)
         {
+            #region look at target
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -181,6 +182,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
                 //looking at target 
                 transform.LookAt(hit.point);
             }
+            #endregion
+
+            //reduce Chards
+            heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
 
             Debug.Log("Q triggered");
 
@@ -246,6 +251,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
         //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
         if (wAvailable)
         {
+            //reduce Chards
+            heragzonSO.chardAmount -= heragzonSO.ability2ChardCost;
+
             StartCoroutine(Ability2Duration());
             StartCoroutine(Ability2Cooldown());
 
@@ -292,11 +300,12 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
 
     }
     public void OnAbility3()
-    {
-        //reduce chards 
-        //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
+    {     
         if (eAvailable)
         {
+            //reduce Chards
+            heragzonSO.chardAmount -= heragzonSO.ability3ChardCost;
+
             StartCoroutine(Ability3Duration());
             StartCoroutine(Ability3Cooldown());
         }
