@@ -1,0 +1,22 @@
+1. Manager:
+ - scene specific orchestrated classes, they control the scene
+	- e.g. the flow of the game, units, ...
+
+2. Setup:
+- lights, camera, sounds, ...
+
+3. Environment
+- tiles of a grid
+- units
+- general objects
+- player
+
+4. Canvases
+- Menus
+- Overlays
+
+5. Testing
+
+6. Systems
+- only objects that have "dont destroy on load"
+	- e.g. ResourceSystem, DebugSystem, SaveSystem, ...

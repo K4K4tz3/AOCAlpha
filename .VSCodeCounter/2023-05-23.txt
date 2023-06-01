@@ -1,0 +1,133 @@
+Date : 2023-05-23 16:23:08
+Directory : d:\Programming\Projects\AOCAlpha
+Total : 83 files,  7239 codes, 1053 comments, 2150 blanks, all 10442 lines
+
+Languages
++-----------+------------+------------+------------+------------+------------+
+| language  | files      | code       | comment    | blank      | total      |
++-----------+------------+------------+------------+------------+------------+
+| C#        |         63 |      4,205 |        971 |      1,502 |      6,678 |
+| ShaderLab |         13 |      2,015 |         61 |        557 |      2,633 |
+| JSON      |          3 |        696 |          0 |          4 |        700 |
+| HLSL      |          4 |        323 |         21 |         87 |        431 |
++-----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |         83 |      7,239 |      1,053 |      2,150 |     10,442 |
+| Assets                                                                                                     |         81 |      6,698 |      1,053 |      2,148 |      9,899 |
+| Assets\TextMesh Pro                                                                                        |         52 |      5,502 |        844 |      1,839 |      8,185 |
+| Assets\TextMesh Pro\Examples & Extras                                                                      |         34 |      3,009 |        762 |      1,193 |      4,964 |
+| Assets\TextMesh Pro\Examples & Extras\Scripts                                                              |         34 |      3,009 |        762 |      1,193 |      4,964 |
+| Assets\TextMesh Pro\Shaders                                                                                |         17 |      2,338 |         82 |        644 |      3,064 |
+| Assets\TextMesh Pro\Sprites                                                                                |          1 |        155 |          0 |          2 |        157 |
+| Assets\_Scripts                                                                                            |         29 |      1,196 |        209 |        309 |      1,714 |
+| Assets\_Scripts\Camera                                                                                     |          2 |         87 |          5 |         36 |        128 |
+| Assets\_Scripts\Interfaces                                                                                 |          2 |         15 |          0 |          7 |         22 |
+| Assets\_Scripts\Manager                                                                                    |          1 |         17 |          0 |          4 |         21 |
+| Assets\_Scripts\Map                                                                                        |          2 |         29 |          1 |         13 |         43 |
+| Assets\_Scripts\Systems                                                                                    |          4 |         52 |          8 |         11 |         71 |
+| Assets\_Scripts\Systems (Files)                                                                            |          2 |         20 |          8 |          5 |         33 |
+| Assets\_Scripts\Systems\Events                                                                             |          2 |         32 |          0 |          6 |         38 |
+| Assets\_Scripts\Utils                                                                                      |          1 |         30 |         16 |          6 |         52 |
+| Assets\_Scripts\Warlord                                                                                    |         17 |        966 |        179 |        232 |      1,377 |
+| Assets\_Scripts\Warlord\Input_System                                                                       |          1 |        287 |         12 |         19 |        318 |
+| Assets\_Scripts\Warlord\Player_Controller                                                                  |          8 |        555 |        167 |        155 |        877 |
+| Assets\_Scripts\Warlord\Player_Controller (Files)                                                          |          4 |        415 |        162 |        131 |        708 |
+| Assets\_Scripts\Warlord\Player_Controller\Heragzon                                                         |          3 |         95 |          4 |         13 |        112 |
+| Assets\_Scripts\Warlord\Player_Controller\SO                                                               |          1 |         45 |          1 |         11 |         57 |
+| Assets\_Scripts\Warlord\State_Machine                                                                      |          8 |        124 |          0 |         58 |        182 |
+| Packages                                                                                                   |          2 |        541 |          0 |          2 |        543 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+-----------+------------+------------+------------+------------+
+| filename                                                                                                   | language  | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+-----------+------------+------------+------------+------------+
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\Benchmark01.cs              | C#        |         63 |         29 |         37 |        129 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\Benchmark01_UGUI.cs         | C#        |         59 |         37 |         40 |        136 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\Benchmark02.cs              | C#        |         65 |          6 |         27 |         98 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\Benchmark03.cs              | C#        |         73 |          1 |         19 |         93 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\Benchmark04.cs              | C#        |         41 |         26 |         19 |         86 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\CameraController.cs         | C#        |        198 |         25 |         69 |        292 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\ChatController.cs           | C#        |         31 |          5 |         16 |         52 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\DropdownSample.cs           | C#        |         15 |          0 |          5 |         20 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\EnvMapAnimator.cs           | C#        |         23 |          4 |          9 |         36 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\ObjectSpin.cs               | C#        |         50 |          4 |         15 |         69 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\ShaderPropAnimator.cs       | C#        |         33 |          5 |         14 |         52 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\SimpleScript.cs             | C#        |         24 |         15 |         20 |         59 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\SkewTextExample.cs          | C#        |         95 |         18 |         46 |        159 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_DigitValidator.cs       | C#        |         19 |          5 |          4 |         28 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_ExampleScript_01.cs     | C#        |         37 |          9 |         19 |         65 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_FrameRateCounter.cs     | C#        |         91 |         11 |         33 |        135 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_PhoneNumberValidator.cs | C#        |         93 |          7 |          6 |        106 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_TextEventCheck.cs       | C#        |         56 |          1 |         17 |         74 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_TextEventHandler.cs     | C#        |        170 |         31 |         54 |        255 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_TextInfoDebugTool.cs    | C#        |        409 |         97 |        147 |        653 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_TextSelector_A.cs       | C#        |        100 |         17 |         41 |        158 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_TextSelector_B.cs       | C#        |        250 |        191 |        107 |        548 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMP_UiFrameRateCounter.cs   | C#        |         96 |          1 |         28 |        125 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TMPro_InstructionOverlay.cs | C#        |         55 |          6 |         24 |         85 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TeleType.cs                 | C#        |         40 |         15 |         28 |         83 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TextConsoleSimulator.cs     | C#        |         79 |         13 |         29 |        121 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TextMeshProFloatingText.cs  | C#        |        135 |         32 |         57 |        224 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\TextMeshSpawner.cs          | C#        |         46 |         13 |         21 |         80 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\VertexColorCycler.cs        | C#        |         48 |         13 |         24 |         85 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\VertexJitter.cs             | C#        |        105 |         26 |         44 |        175 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\VertexShakeA.cs             | C#        |         99 |         23 |         39 |        161 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\VertexShakeB.cs             | C#        |        112 |         29 |         44 |        185 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\VertexZoom.cs               | C#        |        112 |         32 |         48 |        192 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Examples & Extras\Scripts\WarpTextExample.cs          | C#        |         87 |         15 |         43 |        145 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader                | ShaderLab |        109 |          2 |         33 |        144 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader                      | ShaderLab |        112 |          3 |         31 |        146 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader                             | ShaderLab |        109 |          2 |         33 |        144 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader                        | ShaderLab |        243 |          4 |         71 |        318 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader                            | ShaderLab |        241 |          4 |         66 |        311 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader                 | ShaderLab |        188 |         10 |         50 |        248 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader                 | ShaderLab |        183 |          8 |         50 |        241 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader                     | ShaderLab |         82 |          4 |         21 |        107 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader                         | ShaderLab |        183 |          8 |         50 |        241 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader                 | ShaderLab |        103 |          8 |         28 |        139 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader                        | ShaderLab |        122 |          4 |         33 |        159 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_SDF.shader                                | ShaderLab |        243 |          4 |         71 |        318 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMP_Sprite.shader                             | ShaderLab |         97 |          0 |         20 |        117 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMPro.cginc                                   | HLSL      |         63 |          2 |         20 |         85 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc                            | HLSL      |        122 |          2 |         34 |        158 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc                        | HLSL      |         62 |         10 |         14 |         86 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc                           | HLSL      |         76 |          7 |         19 |        102 |
+| d:\Programming\Projects\AOCAlpha\Assets\TextMesh Pro\Sprites\EmojiOne.json                                 | JSON      |        155 |          0 |          2 |        157 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Camera\CMAngleClampExt.cs                                 | C#        |         22 |          0 |          5 |         27 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Camera\CameraController.cs                                | C#        |         65 |          5 |         31 |        101 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Interfaces\IDamagable.cs                                  | C#        |          8 |          0 |          5 |         13 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Interfaces\IStunnable.cs                                  | C#        |          7 |          0 |          2 |          9 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Manager\UIManager.cs                                      | C#        |         17 |          0 |          4 |         21 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Map\TurretBaseClass.cs                                    | C#        |          8 |          0 |          3 |         11 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Map\TurretController.cs                                   | C#        |         21 |          1 |         10 |         32 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Systems\Events\BaseEvent.cs                               | C#        |         17 |          0 |          3 |         20 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Systems\Events\BaseEventListener.cs                       | C#        |         15 |          0 |          3 |         18 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Systems\ResourceSystem.cs                                 | C#        |         16 |          8 |          5 |         29 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Systems\Systems.cs                                        | C#        |          4 |          0 |          0 |          4 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Utils\Singleton.cs                                        | C#        |         30 |         16 |          6 |         52 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Input_System\WarlordController.cs                 | C#        |        287 |         12 |         19 |        318 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\Heragzon\HeragzonAbility1.cs    | C#        |         37 |          1 |          5 |         43 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\Heragzon\HeragzonAbility2.cs    | C#        |         29 |          2 |          4 |         35 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\Heragzon\HeragzonAbility3.cs    | C#        |         29 |          1 |          4 |         34 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\PlayerController.cs             | C#        |         89 |          2 |         18 |        109 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\SO\WarlordBaseClass.cs          | C#        |         45 |          1 |         11 |         57 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\w_Heragzon.cs                   | C#        |        159 |        136 |         58 |        353 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\w_Lyrien.cs                     | C#        |         84 |         10 |         28 |        122 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\Player_Controller\w_Xera.cs                       | C#        |         83 |         14 |         27 |        124 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_AbilityOne.cs                     | C#        |         14 |          0 |          7 |         21 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_AbilityThree.cs                   | C#        |         14 |          0 |          7 |         21 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_AbilityTwo.cs                     | C#        |         14 |          0 |          8 |         22 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_AutoAttackState.cs                | C#        |         22 |          0 |          7 |         29 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_DeathState.cs                     | C#        |         14 |          0 |          8 |         22 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_IdleState.cs                      | C#        |         22 |          0 |         12 |         34 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_MovementBaseState.cs              | C#        |          6 |          0 |          3 |          9 |
+| d:\Programming\Projects\AOCAlpha\Assets\_Scripts\Warlord\State_Machine\W_WalkState.cs                      | C#        |         18 |          0 |          6 |         24 |
+| d:\Programming\Projects\AOCAlpha\Packages\manifest.json                                                    | JSON      |         49 |          0 |          1 |         50 |
+| d:\Programming\Projects\AOCAlpha\Packages\packages-lock.json                                               | JSON      |        492 |          0 |          1 |        493 |
+| Total                                                                                                      |           |      7,239 |      1,053 |      2,150 |     10,442 |
++------------------------------------------------------------------------------------------------------------+-----------+------------+------------+------------+------------+

@@ -1,10 +1,16 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
+using Unity.Netcode;
 
-
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
+    #region Object Reference's
+    [SerializeField] private Camera m_PlayerCamera;
+    [SerializeField] private List<Material> m_ColorList = new List<Material>();
+    #endregion
+
     #region State Machine Fields
     private W_MovementBaseState currentState;
     public W_IdleState IdleState = new W_IdleState();
@@ -40,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        this.gameObject.GetComponent<MeshRenderer>().material = m_ColorList[Random.Range(0, m_ColorList.Count - 1)];
         inputAction = new WarlordController();
         anim = GetComponent<Animator>();
         mainCamera = Camera.main;
@@ -65,6 +72,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(!IsOwner) return;
+        
         HandleMovement();
         CheckForMovement();
 
@@ -80,11 +89,12 @@ public class PlayerController : MonoBehaviour
         else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
         {
             RaycastHit hit;
-            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = m_PlayerCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hit))
             {
                 navMeshAgent.destination = hit.point;
+                Debug.Log($"Agent Destionation: {hit.point}");
             }
         }
     }
