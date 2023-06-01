@@ -9,10 +9,12 @@ namespace EventSpace
 
         [SerializeField] private UnityEvent m_response;
         [SerializeField] private UnityEvent<GameObject> m_responseGameObject;
-        [SerializeField] private UnityEvent<Transform> m_responseTransform;
+        //
+        // [SerializeField] private UnityEvent<DataWhichYouWantToSend> m_responseDataWhichYouWantToSend;
 
         internal void OnEnable() => m_event?.RegisterListener(this);
         internal void OnDisable() => m_event?.RemoveListener(this);
         internal void Respond() => m_response.Invoke();
+        // internal void Respond(DataWhichYouWantToSend) => m_responseDataWhichYouWantToSend.Invoke(DataWhichYouWantToSend);
     }
 }
