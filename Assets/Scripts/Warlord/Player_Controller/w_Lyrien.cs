@@ -179,9 +179,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
             //stop movement
             StartCoroutine(StopMovementAbility1());
 
-
             //choose enemy that is going to be controlled
-
             //vorsicht: wenn null ist, kann fehler geben -> checken mit mehreren warlords in der szene 
             if (CheckForValidTarget(lyrienSO.ability1Range, transform.position).gameObject.TryGetComponent(out IControllable c))
             {
