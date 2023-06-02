@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
@@ -386,6 +386,12 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable
     {
         ResetStats();
         //position at spawn point
+    }
+
+    public void GetControlled()
+    {
+        //stop gettin input
+        //start attacking target near 
     }
 
     #endregion

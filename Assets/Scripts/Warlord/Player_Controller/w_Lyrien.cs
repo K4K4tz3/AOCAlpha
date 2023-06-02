@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
+public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass lyrienSO;
@@ -14,10 +14,13 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
 
+    private Collider warlordTarget;
+
     private float standardHealthAmount;
     private float standardChardAmount;
 
     private bool qPossible;
+    private bool qControllingPossible = true;
     private bool qAvailable = true;
     private bool wAvailable = true;
     private bool eAvailable = true;
@@ -35,6 +38,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
     {
         if (CheckForAbilityRange(lyrienSO.ability1Range, transform.position))
         {
+            //check if target is warlord 
             qPossible = true;
         }
         else
@@ -57,6 +61,36 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
         else
         {
             return false;
+        }
+    }
+
+    private GameObject CheckForValidTarget(float range, Vector3 position)
+    {
+        //check if something attackable is in range
+        //transform.position + this vector so that the sphere is not inside or behind the warlord
+        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
+
+        if (_targetsInRange.Count > 0)
+        {
+            foreach (var targetTag in _targetsInRange)
+            {
+                if (targetTag.tag == "Warlord")
+                {
+                    return targetTag.gameObject;
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return null;
+
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -102,6 +136,20 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
         qAvailable = true;
     }
 
+    IEnumerator StopMovementAbility1()
+    {
+        this.GetComponent<PlayerController>().canGetInput = false;
+        yield return new WaitForSeconds(lyrienSO.ability1Duration);
+        this.GetComponent<PlayerController>().canGetInput = true;
+    }
+
+    IEnumerator GetControlledByAbility1()
+    {
+        qControllingPossible = true;
+        yield return new WaitForSeconds(lyrienSO.ability1Duration);
+        qControllingPossible = false;
+    }
+
     IEnumerator Ability2Cooldown()
     {
         wAvailable = false;
@@ -125,9 +173,28 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
         //Range check! 
         if (qAvailable && qPossible)
         {
+            //start cd
             StartCoroutine(Ability1Cooldown());
+
             //stop movement
-            //can move enemy -> "gegner angreifen lassen", also vllt eher: Gegner greifen deren nächsten gegner an (vgl. Renata ult)
+            StartCoroutine(StopMovementAbility1());
+
+
+            //choose enemy that is going to be controlled
+
+            //vorsicht: wenn null ist, kann fehler geben -> checken mit mehreren warlords in der szene 
+            if (CheckForValidTarget(lyrienSO.ability1Range, transform.position).gameObject.TryGetComponent(out IControllable c))
+            {
+                StartCoroutine(GetControlledByAbility1());
+
+                if (qControllingPossible)
+                {
+                    c.GetControlled();
+
+                }
+
+            }
+
             //if q pressed while in use, stop it
 
         }
@@ -154,7 +221,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
     {
         if (eAvailable)
         {
-            StartCoroutine (Ability3Cooldown());
+            StartCoroutine(Ability3Cooldown());
         }
         //Big jump to target (target = mouse position)
         //cancelling all enemy attacks
@@ -199,6 +266,12 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable
     {
         ResetStats();
         //position at spawn point
+    }
+
+    public void GetControlled()
+    {
+        //stop gettin input
+        //start attacking target near 
     }
 
     #endregion

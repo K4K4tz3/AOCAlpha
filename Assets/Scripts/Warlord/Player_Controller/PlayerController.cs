@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public Animator anim;
 
+    [HideInInspector] public bool canGetInput = true;
+
 
     private void Awake()
     {
@@ -77,7 +79,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        else if (inputAction.W_Controller.Movement.WasPressedThisFrame())
+        else if (inputAction.W_Controller.Movement.WasPressedThisFrame() && canGetInput)
         {
             RaycastHit hit;
             var ray = mainCamera.ScreenPointToRay(Input.mousePosition);

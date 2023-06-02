@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class w_Xera : MonoBehaviour, IDamagable, IStunnable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass xeraSO;
@@ -106,6 +106,12 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable
     {
         ResetStats();
         //position at spawn point
+    }
+
+    public void GetControlled()
+    {
+        //stop gettin input
+        //start attacking target near 
     }
 
     #endregion
