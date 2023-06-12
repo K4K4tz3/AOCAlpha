@@ -23,7 +23,14 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     private bool qControllingPossible = true;
     private bool qAvailable = true;
     private bool wAvailable = true;
+
     private bool eAvailable = true;
+
+    #region Damage Collider
+    private GameObject AreaAbility1;
+    private GameObject AreaAbility2;
+    private GameObject AreaAbility3;
+    #endregion
 
     private void Awake()
     {
@@ -32,6 +39,11 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 
         standardHealthAmount = lyrienSO.healthAmount;
         standardChardAmount = lyrienSO.chardAmount;
+
+        // Area for the Damage
+        AreaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
+        AreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
+        AreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
     }
 
     private void Update()
@@ -157,6 +169,15 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         wAvailable = true;
     }
 
+    IEnumerator Ability2Duration()
+    {
+        AreaAbility2.SetActive(true);
+        yield return new WaitForSeconds(lyrienSO.ability2Duration);
+        AreaAbility2.SetActive(false);
+
+        yield return null;
+    }
+
     IEnumerator Ability3Cooldown()
     {
         eAvailable = false;
@@ -194,6 +215,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
             }
 
             //if q pressed while in use, stop it
+            //TO DO 
 
         }
 
@@ -205,10 +227,30 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     {
         if (wAvailable)
         {
+           
+
             StartCoroutine(Ability2Cooldown());
+
+            //Area aktivieren
+            StartCoroutine(Ability2Duration());
+
+            //Check ob warlord oder minion
+            //check ob w ein oder zweimal gedrückt wurde 
+
+
         }
+
+
+
+
+
+        //Lässt ziele weglaufen
+
+        //bei nochmal drücken während der duration -> Ziele laufen zu lyrien hin
+
+
         //Stößt gegner weg oder zieht sie an sich ran
-        //-> Bereich wird markiert, danach wird geprüft wo die maus ist
+        //-> Bereich wird markiert, danach wird geprüft wo die maus ist 
         //beim erneuten drücken wird entweder weggestoßen oder rangezogen
 
         Debug.Log("Ability2");
