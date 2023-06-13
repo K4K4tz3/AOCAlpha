@@ -9,6 +9,8 @@ public class WarlordBaseClass : ScriptableObject
     public float healthAmount;
     public float chardAmount;
     public float movementSpeed;
+    public Vector2 spawnPosition;
+    public float respawnTimer;
 
     [Header("Auto Attack")]
     public float autoAttackRange;

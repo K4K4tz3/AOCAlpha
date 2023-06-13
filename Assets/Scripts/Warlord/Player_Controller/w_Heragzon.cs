@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -12,6 +12,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     public LayerMask layerAttackable;
     private Camera mainCamera;
     private NavMeshAgent navMeshAgent;
+    private Renderer warlordRenderer;
     #endregion
 
     #region Range Check
@@ -36,6 +37,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     private bool qAvailable = true;
     private bool wAvailable = true;
     private bool eAvailable = true;
+    private bool controlled = false;
     #endregion
 
     //On... Methods are for PlayerInput Component
@@ -45,6 +47,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     {
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        warlordRenderer= GetComponent<Renderer>();
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
 
@@ -177,6 +180,21 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
         yield return new WaitForSeconds(duration);
         inputPossible = true;
     }
+
+    IEnumerator AttackAllies(float duration)
+    {
+        controlled = true;
+        yield return new WaitForSeconds(duration);
+        controlled = false;
+    }
+
+    IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(heragzonSO.respawnTimer);
+        warlordRenderer.enabled = true;
+        inputPossible = true;
+        navMeshAgent.speed = heragzonSO.movementSpeed;
+    }
     #endregion
 
     #region Abilities
@@ -261,7 +279,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     }
     public void OnAbility2()
     {
-        
+
         if (wAvailable && inputPossible)
         {
             //reduce Chards
@@ -313,7 +331,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
 
     }
     public void OnAbility3()
-    {     
+    {
         if (eAvailable && inputPossible)
         {
             //reduce Chards
@@ -392,7 +410,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
 
         //find target with OverlapSphere
         var targets = Physics.OverlapSphere(transform.localPosition, heragzonSO.autoAttackRange / 2, layerAttackable);
-        if(targets.Length > 0)
+        if (targets.Length > 0)
         {
             //look at target
             transform.LookAt(targets[0].transform);
@@ -400,8 +418,14 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
             //move to target
             navMeshAgent.destination = targets[0].transform.position;
 
+            StartCoroutine(AttackAllies(duration));
+
             //attack target
-            DoAutoAttack(targets[0].gameObject);
+            while (controlled)
+            {
+                DoAutoAttack(targets[0].gameObject);
+
+            }
 
         }
 
@@ -412,18 +436,40 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     public void Die()
     {
         //play death animation
-        //either destroy game object after some time
-        //or make it invisible and after death timer just make it visible in spawn
+
+        //make warlord invisible and after death timer just make it visible in spawn
+        inputPossible = false;
+        navMeshAgent.speed = 0;
+
+        warlordRenderer.enabled = false;
+        transform.position = heragzonSO.spawnPosition;
+
+        RespawnWarlord();
+
+        
     }
     private void ResetStats()
     {
         heragzonSO.healthAmount = standardHealthAmount;
         heragzonSO.chardAmount = standardChardAmount;
     }
-    public void Respawn()
+    public void RespawnWarlord()
     {
         ResetStats();
-        //position at spawn point
+        StartCoroutine(Respawn());
+        
+    }
+
+    public void GetPushedAway(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
+    }
+
+    public void GetPulledOver(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
     }
 
     #endregion

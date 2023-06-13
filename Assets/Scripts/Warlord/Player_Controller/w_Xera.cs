@@ -8,6 +8,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass xeraSO;
+    private Renderer warlordRenderer;
 
     private int layerAttackable;
     private Camera mainCamera;
@@ -38,6 +39,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
     {
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
+        warlordRenderer = GetComponent<Renderer>();
 
         standardHealthAmount = xeraSO.healthAmount;
         standardChardAmount = xeraSO.chardAmount;
@@ -157,7 +159,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
         areaAbility3.SetActive(true);
         eSmokeActive = true;
         //Make Xera invisible
-        gameObject.GetComponent<Renderer>().enabled = false;
+        warlordRenderer.enabled = false;
 
         yield return new WaitForSeconds(xeraSO.ability3Duration);
         areaAbility3.SetActive(false);
@@ -227,7 +229,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
             //if e pressed again while smoke still active -> Deal damage
             if (Keyboard.current.eKey.wasPressedThisFrame && eSmokeActive)
             {
-                gameObject.GetComponent<Renderer>().enabled = true;
+                warlordRenderer.enabled = true;
                 eSmokeActive = false;
                 eExplosion = true;
             }
