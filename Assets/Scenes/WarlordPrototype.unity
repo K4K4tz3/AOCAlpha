@@ -966,6 +966,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lyrien
       objectReference: {fileID: 0}
+    - target: {fileID: 1966227469228399377, guid: 157ec29ba64a8df4a8f935eee1203c24, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5704663036517687276, guid: 157ec29ba64a8df4a8f935eee1203c24, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -1086,7 +1090,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Xera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7596722359218255003, guid: d56ae1f81f161bb4ca2c8e4a162f1f25, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 6202558542023825564, guid: d56ae1f81f161bb4ca2c8e4a162f1f25, type: 3}
+    - {fileID: 4050014474032754791, guid: d56ae1f81f161bb4ca2c8e4a162f1f25, type: 3}
+    - {fileID: 3246955027107015163, guid: d56ae1f81f161bb4ca2c8e4a162f1f25, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
