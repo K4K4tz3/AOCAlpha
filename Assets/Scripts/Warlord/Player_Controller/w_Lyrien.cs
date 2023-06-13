@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
@@ -11,8 +12,15 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     private int layerAttackable;
     private Camera mainCamera;
 
+
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
+
+    #region Damage Collider
+    private GameObject AreaAbility1;
+    private GameObject AreaAbility2;
+    private GameObject AreaAbility3;
+    #endregion
 
     private Collider warlordTarget;
 
@@ -23,14 +31,10 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     private bool qControllingPossible = true;
     private bool qAvailable = true;
     private bool wAvailable = true;
-
+    private bool wPressedOnce;
+    public bool wPressedTwice;
     private bool eAvailable = true;
 
-    #region Damage Collider
-    private GameObject AreaAbility1;
-    private GameObject AreaAbility2;
-    private GameObject AreaAbility3;
-    #endregion
 
     private void Awake()
     {
@@ -56,6 +60,11 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         else
         {
             qPossible = false;
+        }
+
+        if (Keyboard.current.wKey.wasPressedThisFrame && wPressedOnce)
+        {
+            wPressedTwice = true;
         }
     }
 
@@ -167,6 +176,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         wAvailable = false;
         yield return new WaitForSeconds(lyrienSO.ability2Cooldown);
         wAvailable = true;
+        wPressedOnce = false;
     }
 
     IEnumerator Ability2Duration()
@@ -227,15 +237,26 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     {
         if (wAvailable)
         {
-           
+
+            wPressedOnce = true;
+
 
             StartCoroutine(Ability2Cooldown());
 
             //Area aktivieren
             StartCoroutine(Ability2Duration());
 
-            //Check ob warlord oder minion
-            //check ob w ein oder zweimal gedrückt wurde 
+           
+            //Check ob warlord oder minion -> Wird im collider gecheckt 
+
+
+            //check ob w ein oder zweimal gedrückt wurde -> In Update 
+            //w einmal = push
+            //w zweimal = attract
+            if(wPressedTwice)
+            {
+
+            }
 
 
         }
