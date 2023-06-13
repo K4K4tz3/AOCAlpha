@@ -17,12 +17,9 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     [SerializeField] private List<string> _targetTags = new List<string>();
 
     #region Damage Collider
-    private GameObject AreaAbility1;
     private GameObject AreaAbility2;
-    private GameObject AreaAbility3;
     #endregion
 
-    private Collider warlordTarget;
 
     private float standardHealthAmount;
     private float standardChardAmount;
@@ -45,9 +42,8 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         standardChardAmount = lyrienSO.chardAmount;
 
         // Area for the Damage
-        AreaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
         AreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
-        AreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
+
     }
 
     private void Update()
@@ -246,17 +242,13 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
             //Area aktivieren
             StartCoroutine(Ability2Duration());
 
-           
-            //Check ob warlord oder minion -> Wird im collider gecheckt 
 
+            //Check ob warlord oder minion -> Wird im collider gecheckt 
 
             //check ob w ein oder zweimal gedrückt wurde -> In Update 
             //w einmal = push
             //w zweimal = attract
-            if(wPressedTwice)
-            {
-
-            }
+            //Wird im Ability2 Script gehandled
 
 
         }
@@ -284,9 +276,24 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         {
             StartCoroutine(Ability3Cooldown());
         }
+
+
         //Big jump to target (target = mouse position)
+        //Get mouse position
+        
+        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        //"jump" to mouse Position if it's in range
+        if (Physics.Raycast(ray, lyrienSO.ability3Range))
+        {
+            Vector3 jumpTarget = new Vector3(ray.origin.x, 0, ray.origin.z);
+            //move gameobject 
+            transform.Translate(jumpTarget);
+        }
+
         //cancelling all enemy attacks
         //unverwundbar
+        StopEnemyAbilities();
 
 
         Debug.Log("Ability3");
@@ -333,6 +340,11 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     {
         //stop gettin input
         //start attacking target near 
+    }
+
+    private void StopEnemyAbilities()
+    {
+        //be invincible 
     }
 
     #endregion

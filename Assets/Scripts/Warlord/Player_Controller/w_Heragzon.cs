@@ -71,11 +71,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
 
         if (_targetsInRange.Count > 0)
         {
-            //foreach (Collider t in _targetsInRange)
-            //{
-            //    Debug.Log(t.tag);
-
-            //}
             return true;
 
         }
