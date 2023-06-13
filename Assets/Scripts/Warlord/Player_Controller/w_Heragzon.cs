@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
 {
+    #region General
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
     public LayerMask layerAttackable;
     private Camera mainCamera;
+    private NavMeshAgent navMeshAgent;
+    #endregion
 
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
@@ -21,27 +25,26 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     private GameObject damageAreaAbility3;
     #endregion
 
+    #region Floats for Respawn
     private float standardHealthAmount;
     private float standardChardAmount;
+    #endregion
 
+    #region Bools for Abilities
+    private bool inputPossible = true;
     private bool qPossible;
     private bool qAvailable = true;
     private bool wAvailable = true;
     private bool eAvailable = true;
-
-
+    #endregion
 
     //On... Methods are for PlayerInput Component
     //(methods send unity messages when player triggered button)
 
-    //To Do:
-
-    //3. Check damage amount if it is per second or not 
-
-
     private void Awake()
     {
         mainCamera = Camera.main;
+        navMeshAgent = GetComponent<NavMeshAgent>();
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
 
@@ -80,7 +83,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
         }
     }
 
-    #region AutoAttacks
+    #region AutoAttack
     public void OnAutoAttack()
     {
         //Can only attack something "Attackable"
@@ -158,6 +161,22 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
         yield return new WaitForSeconds(heragzonSO.ability3Cooldown);
         eAvailable = true;
     }
+
+    IEnumerator Stunned(float duration)
+    {
+        inputPossible = false;
+        navMeshAgent.speed = 0;
+        yield return new WaitForSeconds(duration);
+        inputPossible = true;
+        navMeshAgent.speed = heragzonSO.movementSpeed;
+    }
+
+    IEnumerator Controlled(float duration)
+    {
+        inputPossible = false;
+        yield return new WaitForSeconds(duration);
+        inputPossible = true;
+    }
     #endregion
 
     #region Abilities
@@ -166,7 +185,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
         //if q is pressed, first check if there is sonething attackable in range
         //because heragzons q can only be used if a target is in range
 
-        if (qPossible && qAvailable)
+        if (qPossible && qAvailable && inputPossible)
         {
             #region look at target
             RaycastHit hit;
@@ -242,9 +261,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     }
     public void OnAbility2()
     {
-        //reduce chards 
-        //heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
-        if (wAvailable)
+        
+        if (wAvailable && inputPossible)
         {
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability2ChardCost;
@@ -296,7 +314,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
     }
     public void OnAbility3()
     {     
-        if (eAvailable)
+        if (eAvailable && inputPossible)
         {
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability3ChardCost;
@@ -358,9 +376,36 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
             Die();
         }
     }
-
     public void GetStunned(float duration)
     {
+        //Warlord can not do anything
+        //-> No Input possible: handle abilities with bools
+        //-> for movement: just set navMeshAgent speed to 0
+        StartCoroutine(Stunned(duration));
+    }
+    public void GetControlled(float duration)
+    {
+        //stop gettin input
+        StartCoroutine(Controlled(duration));
+
+        //start attacking nearest target
+
+        //find target with OverlapSphere
+        var targets = Physics.OverlapSphere(transform.localPosition, heragzonSO.autoAttackRange / 2, layerAttackable);
+        if(targets.Length > 0)
+        {
+            //look at target
+            transform.LookAt(targets[0].transform);
+
+            //move to target
+            navMeshAgent.destination = targets[0].transform.position;
+
+            //attack target
+            DoAutoAttack(targets[0].gameObject);
+
+        }
+
+
 
     }
 
@@ -370,23 +415,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable
         //either destroy game object after some time
         //or make it invisible and after death timer just make it visible in spawn
     }
-
     private void ResetStats()
     {
         heragzonSO.healthAmount = standardHealthAmount;
         heragzonSO.chardAmount = standardChardAmount;
     }
-
     public void Respawn()
     {
         ResetStats();
         //position at spawn point
-    }
-
-    public void GetControlled()
-    {
-        //stop gettin input
-        //start attacking target near 
     }
 
     #endregion

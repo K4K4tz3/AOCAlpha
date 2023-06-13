@@ -272,7 +272,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
         //position at spawn point
     }
 
-    public void GetControlled()
+    public void GetControlled(float duration)
     {
         //stop gettin input
         //start attacking target near 

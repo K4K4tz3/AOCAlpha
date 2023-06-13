@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IControllable 
 {
 
-    public void GetControlled();
+    public void GetControlled(float duration);
 
 }
