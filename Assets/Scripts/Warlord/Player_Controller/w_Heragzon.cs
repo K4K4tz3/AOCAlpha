@@ -409,7 +409,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         //start attacking nearest target
 
         //find target with OverlapSphere
-        var targets = Physics.OverlapSphere(transform.localPosition, heragzonSO.autoAttackRange / 2, layerAttackable);
+        var targets = Physics.OverlapSphere(transform.localPosition, heragzonSO.autoAttackRange, layerAttackable);
         if (targets.Length > 0)
         {
             //look at target
@@ -424,13 +424,18 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             while (controlled)
             {
                 DoAutoAttack(targets[0].gameObject);
-
             }
-
         }
-
-
-
+    }
+    public void GetPushedAway(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
+    }
+    public void GetPulledOver(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
     }
 
     public void Die()
@@ -460,17 +465,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         
     }
 
-    public void GetPushedAway(float duration, Vector2 direction)
-    {
-        //move warlord in the given direction
-        transform.Translate(direction.x, 0, direction.y);
-    }
-
-    public void GetPulledOver(float duration, Vector2 direction)
-    {
-        //move warlord in the given direction
-        transform.Translate(direction.x, 0, direction.y);
-    }
 
     #endregion
 

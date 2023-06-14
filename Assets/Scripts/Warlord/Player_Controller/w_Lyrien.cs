@@ -2,28 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
+public class w_Lyrien : MonoBehaviour, IDamagable
 {
+    #region General
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass lyrienSO;
-
+    private NavMeshAgent navMeshAgent;
+    private Renderer warlordRenderer;
     private int layerAttackable;
     private Camera mainCamera;
+    #endregion
 
-
+    #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
+    #endregion
 
-    #region Damage Collider
+    #region Damage Area
     private GameObject AreaAbility2;
     #endregion
 
-
+    #region Floats for Respawn
     private float standardHealthAmount;
     private float standardChardAmount;
+    #endregion
 
+    #region Bools for Abilities
+    private bool inputPossible = true;
     private bool qPossible;
     private bool qControllingPossible = true;
     private bool qAvailable = true;
@@ -31,12 +39,15 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     private bool wPressedOnce;
     public bool wPressedTwice;
     private bool eAvailable = true;
+    #endregion
 
 
     private void Awake()
     {
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        warlordRenderer = GetComponent<Renderer>();
 
         standardHealthAmount = lyrienSO.healthAmount;
         standardChardAmount = lyrienSO.chardAmount;
@@ -63,7 +74,6 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
             wPressedTwice = true;
         }
     }
-
 
     private bool CheckForAbilityRange(float range, Vector3 position)
     {
@@ -191,6 +201,14 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         eAvailable = true;
     }
 
+    IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(lyrienSO.respawnTimer);
+        warlordRenderer.enabled = true;
+        inputPossible = true;
+        navMeshAgent.speed = lyrienSO.movementSpeed;
+    }
+
     #endregion
 
     #region Abilities
@@ -198,7 +216,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
     public void OnAbility1()
     {
         //Range check! 
-        if (qAvailable && qPossible)
+        if (qAvailable && qPossible && inputPossible)
         {
             //start cd
             StartCoroutine(Ability1Cooldown());
@@ -231,7 +249,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 
     public void OnAbility2()
     {
-        if (wAvailable)
+        if (wAvailable && inputPossible)
         {
 
             wPressedOnce = true;
@@ -272,7 +290,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 
     public void OnAbility3()
     {
-        if (eAvailable)
+        if (eAvailable && inputPossible)
         {
             StartCoroutine(Ability3Cooldown());
         }
@@ -280,7 +298,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
 
         //Big jump to target (target = mouse position)
         //Get mouse position
-        
+
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         //"jump" to mouse Position if it's in range
@@ -316,40 +334,40 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IStunnable, IControllable
         }
     }
 
-    public void GetStunned(float duration)
-    { }
-
-    public void Die()
+    //NOT FINISHED
+    private void StopEnemyAbilities()
     {
+        //be invincible 
+
+        //do not get damaged 
+        // ??????????? macht das sinn???
+        float currentHealthAmount = lyrienSO.healthAmount;
+        if( lyrienSO.healthAmount < currentHealthAmount)
+        {
+            lyrienSO.healthAmount = currentHealthAmount;
+        }
 
     }
 
+    public void Die()
+    {
+        navMeshAgent.speed = 0;
+        warlordRenderer.enabled = false;
+        inputPossible = false;
+        transform.position = lyrienSO.spawnPosition;
+        RespawnWarlord();
+    }
     private void ResetStats()
     {
         lyrienSO.healthAmount = standardHealthAmount;
         lyrienSO.chardAmount = standardChardAmount;
     }
-
-    public void Respawn()
+    public void RespawnWarlord()
     {
         ResetStats();
-        //position at spawn point
-    }
+        StartCoroutine(Respawn());
 
-    public void GetControlled(float duration)
-    {
-        //stop gettin input
-        //start attacking target near 
-    }
-
-    private void StopEnemyAbilities()
-    {
-        //be invincible 
     }
 
     #endregion
-
-    //ability 1: kein damage- kann gegner steuern für 5sec (soldat)
-    //ability 2: rnge bei wwarlords x0.5, gegner fliehen
-    //ability 3: jump 4m reichweite
 }

@@ -2,32 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
 {
+    #region General
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass xeraSO;
     private Renderer warlordRenderer;
+    private NavMeshAgent navMeshAgent;
 
     private int layerAttackable;
     private Camera mainCamera;
+    #endregion
 
+    #region Floats for Respawn
     private float standardHealthAmount;
     private float standardChardAmount;
     private float standardAutoAttackDamage;
+    #endregion
 
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
     #endregion
 
-
+    #region Bools for Abilities
+    private bool inputPossible = true;
     private bool qAvailable = true;
     private bool wAvailable = true;
     private bool eAvailable = true;
     private bool eSmokeActive;
     public bool eExplosion = false;
+    private bool controlled = false;
+    #endregion
 
     #region Damage Collider
     private GameObject areaAbility1;
@@ -40,6 +49,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
         mainCamera = Camera.main;
         layerAttackable = LayerMask.NameToLayer("Attackable");
         warlordRenderer = GetComponent<Renderer>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
 
         standardHealthAmount = xeraSO.healthAmount;
         standardChardAmount = xeraSO.chardAmount;
@@ -49,7 +59,6 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
         areaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
         areaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
     }
-
     private GameObject CheckForValidTarget(float range, Vector3 position)
     {
         //check if something attackable is in range
@@ -114,7 +123,6 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
     }
     #endregion
 
-
     #region Coroutines
     IEnumerator Ability1Cooldown()
     {
@@ -167,14 +175,44 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
 
         yield return null;
     }
-    #endregion
 
+    IEnumerator Controlled(float duration)
+    {
+        inputPossible = false;
+        yield return new WaitForSeconds(duration);
+        inputPossible = true;
+    }
+
+    IEnumerator AttackAllies(float duration)
+    {
+        controlled = true;
+        yield return new WaitForSeconds(duration);
+        controlled = false;
+    }
+
+    IEnumerator Stunned(float duration)
+    {
+        inputPossible = false;
+        navMeshAgent.speed = 0;
+        yield return new WaitForSeconds(duration);
+        inputPossible = true;
+        navMeshAgent.speed = xeraSO.movementSpeed;
+    }
+
+    IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(xeraSO.respawnTimer);
+        warlordRenderer.enabled = true;
+        inputPossible = true;
+        navMeshAgent.speed = xeraSO.movementSpeed;
+    }
+    #endregion
 
     #region Abilities
     public void OnAbility1()
     {
         //start Cooldown
-        if (qAvailable)
+        if (qAvailable && inputPossible)
         {
             StartCoroutine(Ability1Cooldown());
             StartCoroutine(Ability1Duration());
@@ -185,7 +223,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
 
     public void OnAbility2()
     {
-        if (wAvailable)
+        if (wAvailable && inputPossible)
         {
             StartCoroutine(Ability2Cooldown());
 
@@ -218,7 +256,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
 
     public void OnAbility3()
     {
-        if (eAvailable)
+        if (eAvailable && inputPossible)
         {
             StartCoroutine(Ability3Cooldown());
 
@@ -242,6 +280,14 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
     #endregion
 
     #region Damage & Death
+    private void SacrificeMinion(GameObject minion)
+    {
+        //destroy minion
+        if (minion.gameObject.TryGetComponent(out IDamagable d))
+        {
+            d.Die();
+        }
+    }
     public void GetDamaged(float damage)
     {
         if (xeraSO.healthAmount > 0.0f)
@@ -253,37 +299,65 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable
             Die();
         }
     }
-    public void Die()
-    {
-
-    }
     public void GetStunned(float duration)
     {
-
+        StartCoroutine(Stunned(duration));
     }
+    public void GetControlled(float duration)
+    {
+        //stop gettin input
+        StartCoroutine(Controlled(duration));
 
+        //start attacking nearest target
+
+        //find target with OverlapSphere
+        var targets = Physics.OverlapSphere(transform.localPosition, xeraSO.autoAttackRange, layerAttackable);
+        if (targets.Length > 0)
+        {
+            //look at target
+            transform.LookAt(targets[0].transform);
+
+            //move to target
+            navMeshAgent.destination = targets[0].transform.position;
+
+            StartCoroutine(AttackAllies(duration));
+
+            //attack target
+            while (controlled)
+            {
+                DoAutoAttack(targets[0].gameObject);
+            }
+        }
+    }
+    public void GetPushedAway(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
+    }
+    public void GetPulledOver(float duration, Vector2 direction)
+    {
+        //move warlord in the given direction
+        transform.Translate(direction.x, 0, direction.y);
+    }
+    public void Die()
+    {
+        navMeshAgent.speed = 0;
+        warlordRenderer.enabled = false;
+        inputPossible = false;
+        transform.position = xeraSO.spawnPosition;
+        RespawnWarlord();
+    }
     private void ResetStats()
     {
         xeraSO.healthAmount = standardHealthAmount;
         xeraSO.chardAmount = standardChardAmount;
     }
-
-    public void Respawn()
+    public void RespawnWarlord()
     {
         ResetStats();
-        //position at spawn point
+        StartCoroutine(Respawn());
     }
 
-    public void GetControlled(float duration)
-    {
-        //stop gettin input
-        //start attacking target near 
-    }
-
-    private void SacrificeMinion(GameObject minion)
-    {
-        //destroy minion
-    }
     #endregion
 
 
