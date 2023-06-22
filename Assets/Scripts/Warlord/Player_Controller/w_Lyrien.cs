@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Lyrien : MonoBehaviour, IDamagable
+public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -271,19 +271,6 @@ public class w_Lyrien : MonoBehaviour, IDamagable
 
         }
 
-
-
-
-
-        //Lässt ziele weglaufen
-
-        //bei nochmal drücken während der duration -> Ziele laufen zu lyrien hin
-
-
-        //Stößt gegner weg oder zieht sie an sich ran
-        //-> Bereich wird markiert, danach wird geprüft wo die maus ist 
-        //beim erneuten drücken wird entweder weggestoßen oder rangezogen
-
         Debug.Log("Ability2");
 
     }
@@ -333,6 +320,10 @@ public class w_Lyrien : MonoBehaviour, IDamagable
             Die();
         }
     }
+    public void GettingFocused()
+    {
+        //If u get tower focus 
+    }
 
     //NOT FINISHED
     private void StopEnemyAbilities()
@@ -368,6 +359,12 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         StartCoroutine(Respawn());
 
     }
+
+    public void GetDamagedByTurret(float damage, float speed)
+    {
+        
+    }
+
 
     #endregion
 }

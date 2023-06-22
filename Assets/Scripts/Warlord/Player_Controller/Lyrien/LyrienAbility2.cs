@@ -33,7 +33,7 @@ public class LyrienAbility2 : MonoBehaviour
                         Debug.Log("ability 3 trigger stay pull");
                     }
                     break;
-                case "Minion":
+                case "HostileMinion":
                     //get view direction and take the opposite for pushing direction
                     Vector2 viewDirectionMinion = other.gameObject.transform.forward * -1;
                     if (!lyrienController.wPressedTwice)

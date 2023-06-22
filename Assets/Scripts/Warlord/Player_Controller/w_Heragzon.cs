@@ -4,15 +4,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IFocusable
 {
     #region General
     //Scriptable Object for all necessary information
     [SerializeField] private WarlordBaseClass heragzonSO;
-    public LayerMask layerAttackable;
+    [SerializeField] private LayerMask layerAttackable;
     private Camera mainCamera;
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
+
+    private bool getTowerFocus;
     #endregion
 
     #region Range Check
@@ -339,6 +341,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
             StartCoroutine(Ability3Duration());
             StartCoroutine(Ability3Cooldown());
+
+            Debug.Log("Ability3");
         }
 
         #region Previous Solution
@@ -394,6 +398,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             Die();
         }
     }
+    public void GetDamagedByTurret(float damage, float speed)
+    {
+
+    }
     public void GetStunned(float duration)
     {
         //Warlord can not do anything
@@ -437,6 +445,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         //move warlord in the given direction
         transform.Translate(direction.x, 0, direction.y);
     }
+    public void GettingFocused()
+    {
+        
+    }
 
     public void Die()
     {
@@ -464,6 +476,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         StartCoroutine(Respawn());
         
     }
+
+
 
 
     #endregion

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IFocusable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -299,6 +299,11 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
             Die();
         }
     }
+
+    public void GetDamagedByTurret(float damage, float speed)
+    {
+
+    }
     public void GetStunned(float duration)
     {
         StartCoroutine(Stunned(duration));
@@ -339,6 +344,10 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         //move warlord in the given direction
         transform.Translate(direction.x, 0, direction.y);
     }
+    public void GettingFocused()
+    {
+       
+    }
     public void Die()
     {
         navMeshAgent.speed = 0;
@@ -357,6 +366,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         ResetStats();
         StartCoroutine(Respawn());
     }
+
 
     #endregion
 
