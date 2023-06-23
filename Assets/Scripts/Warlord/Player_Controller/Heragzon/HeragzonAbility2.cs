@@ -18,15 +18,15 @@ public class HeragzonAbility2 : MonoBehaviour
             {
                 case "Building":
                     d.GetDamaged(heragzonSO.ability2DmgBuilding);
-                    Debug.Log("ability 2 trigger stay");
+                    Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
                 case "Warlord":
                     d.GetDamaged(heragzonSO.ability2DmgWarlord);
-                    Debug.Log("ability 2 trigger stay");
+                    Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
-                case "Minion":
+                case "HostileMinion":
                     d.GetDamaged(heragzonSO.ability2DmgMinion);          
-                    Debug.Log("ability 2 trigger stay");
+                    Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
             }
         }

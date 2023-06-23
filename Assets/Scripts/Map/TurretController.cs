@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TurretController : MonoBehaviour
+public class TurretController : MonoBehaviour, IDamagable
 {
 
     //Turrets können eingenommen werden
@@ -13,70 +13,87 @@ public class TurretController : MonoBehaviour
 
     [SerializeField] private TurretBaseClass turretSO;
     private FocusState focusState;
+    private AffiliateState affiliateState;
 
-    private LayerMask layerAttackable;
+    [SerializeField] private LayerMask layerAttackable;
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     [SerializeField] private List<string> _targetTags = new List<string>();
 
+    [SerializeField] private List<Collider> targetableMinions = new List<Collider>();
 
-    private bool minionInRange;
-    private bool warlordInRange; 
 
     private void Awake()
     {
+        //Turrets start neutral
         focusState = FocusState.neutral;
+        affiliateState = AffiliateState.neutral;
     }
 
     private void Update()
     {
-        //if first object that comes in range is minion: focusState = neutral
-        //if firt object is champion: focusState = alerted
-        //if minions are there and champ attacks champ: trigger event for switching focusState to alerted as long as chsmp is in range
-
         CheckForRange(turretSO.turretAttackRange);
 
     }
 
+
+    #region Range Checks
     private void CheckForRange(float range)
     {
         _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
-      
+
 
         //Check if anything attackable is in range 
         if (_targetsInRange.Count > 0)
         {
-
             Debug.Log("Found something");
-            CheckForTarget(_targetsInRange);
-           
 
-        }
-
-    }
-
-    private void CheckForTarget(List<Collider> targetsInRange)
-    {
-
-        var currentTarget = targetsInRange.First();
-
-        //Check whatever comes first in range
-
-        if (currentTarget.TryGetComponent(out IDamagable d))
-        {
-            switch (currentTarget.tag)
+            //make a list with all the minions entering trigger area
+            foreach (var m in _targetsInRange)
             {
-                case "HostileMinion":
-                    //if minion enters range first, attack it
-                    d.GetDamagedByTurret(turretSO.turretDamage, turretSO.turretSpeed);
-                    break;
-                //case "Warlord":
-                //    d.GetDamagedByTurret(turretSO.turretDamage, turretSO.turretSpeed);
-                //    break;
+                //Add the minions to a list
+                if (m.CompareTag("HostileMinion") && !targetableMinions.Contains(m))
+                {
+                    targetableMinions.Add(m);
+                }
             }
 
+            //attack minion if there are some and tower is in neutral state
+            if (targetableMinions != null && focusState == FocusState.neutral)
+            {
+                FocusMinion();
+            }
+            //attack warlord even if there are minions when tower is alerted
+            else if(targetableMinions != null && focusState == FocusState.alerted)
+            {
+                FocusWarlord();
+            }
+            //if warlord enters and there are no minions, focus warlord
+            else if(targetableMinions == null)
+            {
+                //set tower state to alerted because there are no minions 
+                focusState = FocusState.alerted;
+                FocusWarlord();
+            }
+        }
+        else
+        {
+            targetableMinions.Clear(); 
         }
 
     }
+
+    private void FocusMinion()
+    {
+        Debug.Log("Attacking minion lul");
+    }
+
+    private void FocusWarlord()
+    {
+        Debug.Log("Attacking Warlord lul");
+    }
+
+
+    #endregion
 
     private void OnDrawGizmos()
     {
@@ -86,5 +103,22 @@ public class TurretController : MonoBehaviour
     }
 
 
+    #region Damage & Death
+    public void GetDamaged(float damage)
+    {
+        //if turret has 200 points and is neutral, check how many damage what team did 
+        Debug.Log("Turret is getting damaged");
+    }
 
+    public void GetDamagedByTurret(float damage, float speed)
+    {
+
+    }
+
+    public void Die()
+    {
+        //play destroy animation
+    }
+
+    #endregion
 }

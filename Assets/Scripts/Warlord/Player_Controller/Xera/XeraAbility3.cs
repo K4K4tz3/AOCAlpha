@@ -25,7 +25,7 @@ public class XeraAbility3 : MonoBehaviour
                         d.GetDamaged(xeraSO.ability3DmgWarlord);
                         Debug.Log("ability 3 trigger stay");
                         break;
-                    case "Minion":
+                    case "HostileMinion":
                         d.GetDamaged(xeraSO.ability3DmgMinion);
                         Debug.Log("ability 3 trigger stay");
                         break;

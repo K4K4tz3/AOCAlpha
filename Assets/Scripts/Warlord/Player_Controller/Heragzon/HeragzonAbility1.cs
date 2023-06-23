@@ -17,7 +17,7 @@ public class HeragzonAbility1 : MonoBehaviour
             {
                 case "Building":
                     d.GetDamaged(heragzonSO.ability1DmgBuilding);
-                    Debug.Log("ability 1 trigger stay");
+                    Debug.Log("ability 1 trigger stay HERAGZON");
                     break;
                 case "Warlord":
                     d.GetDamaged(heragzonSO.ability1DmgWarlord);
@@ -25,15 +25,15 @@ public class HeragzonAbility1 : MonoBehaviour
                     {
                         w.GetStunned(heragzonSO.ability1Duration);
                     }
-                    Debug.Log("ability 1 trigger stay");
+                    Debug.Log("ability 1 trigger stay HERAGZON");
                     break;
-                case "Minion":
+                case "HostileMinion":
                     d.GetDamaged(heragzonSO.ability1DmgMinion);
                     if (other.gameObject.TryGetComponent(out IStunnable m))
                     {
                         m.GetStunned(heragzonSO.ability1Duration);
                     }
-                    Debug.Log("ability 1 trigger stay");
+                    Debug.Log("ability 1 trigger stay HERAGZON");
                     break;
             }
         }
