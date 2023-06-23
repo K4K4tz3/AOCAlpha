@@ -14,7 +14,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
 
-    private bool getTowerFocus;
+
     #endregion
 
     #region Range Check

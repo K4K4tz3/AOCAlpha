@@ -12,7 +12,7 @@ public class TurretController : MonoBehaviour, IDamagable
     //Der jenige, der dem Turm von 200 punkten den meisten Schaden macht, nimmt den Turm ein
 
     [SerializeField] private TurretBaseClass turretSO;
-    private FocusState focusState;
+    public FocusState focusState;
     private AffiliateState affiliateState;
 
     [SerializeField] private LayerMask layerAttackable;
