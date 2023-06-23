@@ -17,9 +17,9 @@ GameObject:
   - component: {fileID: 2033273141565352013}
   - component: {fileID: 551254503364228888}
   - component: {fileID: 8746624103097746713}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Lyrien
-  m_TagString: Untagged
+  m_TagString: Warlord
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,6 +296,7 @@ MonoBehaviour:
   lyrienSO: {fileID: 11400000, guid: 02e3f6db2646b5f43900402682a57774, type: 2}
   _targetsInRange: []
   _targetTags: []
+  wPressedTwice: 0
 --- !u!1 &3832393525363329311
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +308,7 @@ GameObject:
   - component: {fileID: 5203074599097455478}
   - component: {fileID: 2260671673867194337}
   - component: {fileID: 7737425640477553417}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 3 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -388,7 +389,7 @@ GameObject:
   - component: {fileID: 7043956329162342020}
   - component: {fileID: 985875339701105613}
   - component: {fileID: 3031103787669912783}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Eyes '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +473,7 @@ GameObject:
   - component: {fileID: 7873964190794952333}
   - component: {fileID: 1570849178221415035}
   - component: {fileID: 7811305507510811791}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 2 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -554,6 +555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e335a89c3256744d83aeb46d53add14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lyrienSO: {fileID: 0}
 --- !u!1 &8614428687817926646
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +567,7 @@ GameObject:
   - component: {fileID: 7424154737508622009}
   - component: {fileID: 3186902003129074770}
   - component: {fileID: 8925138524055378456}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 1 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4098168116378480769}
   - component: {fileID: 1218403932441342760}
   - component: {fileID: 1863843886599265899}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Eyes '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3811745135420102216}
   - component: {fileID: 7577530047417946545}
   - component: {fileID: 5749405691814678319}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 3 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,9 +195,9 @@ GameObject:
   - component: {fileID: 6858661292599772303}
   - component: {fileID: 9148738458552825910}
   - component: {fileID: 1333056488473229597}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heragzon
-  m_TagString: Untagged
+  m_TagString: Warlord
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,7 +219,7 @@ Transform:
   - {fileID: 4686878846590459863}
   - {fileID: 2875240521034793364}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1287450734184687975
 MeshFilter:
@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 8704242762969228505}
   - component: {fileID: 4755342148003019753}
   - component: {fileID: 3492119241986810615}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 1 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -587,7 +587,7 @@ GameObject:
   - component: {fileID: 1810192453071818297}
   - component: {fileID: 7827666391333864962}
   - component: {fileID: 1851091585480586438}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 2 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

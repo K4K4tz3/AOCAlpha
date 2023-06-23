@@ -41,7 +41,6 @@ public class TurretController : MonoBehaviour, IDamagable
     {
         _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
 
-
         //Check if anything attackable is in range 
         if (_targetsInRange.Count > 0)
         {
@@ -57,39 +56,48 @@ public class TurretController : MonoBehaviour, IDamagable
                 }
             }
 
-            //attack minion if there are some and tower is in neutral state
-            if (targetableMinions != null && focusState == FocusState.neutral)
+            //if there are minions
+            if (targetableMinions.Count > 0)
             {
-                FocusMinion();
+                if (focusState == FocusState.neutral)
+                {
+                    //attack minion if tower is in neutral state
+                    FocusMinion();
+                    Debug.Log("Attacking minion lul. i'm neutral");
+                }
+                if (focusState == FocusState.alerted)
+                {
+                    //attack warlord even if there are minions when tower is alerted
+                    FocusWarlord();
+                    Debug.Log("Attacking minion lul, i'm alerted");
+                }
             }
-            //attack warlord even if there are minions when tower is alerted
-            else if(targetableMinions != null && focusState == FocusState.alerted)
+            else
             {
-                FocusWarlord();
-            }
-            //if warlord enters and there are no minions, focus warlord
-            else if(targetableMinions == null)
-            {
+                //if warlord enters and there are no minions, focus warlord
                 //set tower state to alerted because there are no minions 
+                
+                Debug.Log("Attacking warlord lul");
                 focusState = FocusState.alerted;
                 FocusWarlord();
+
             }
         }
         else
         {
-            targetableMinions.Clear(); 
+            targetableMinions.Clear();
         }
 
     }
 
     private void FocusMinion()
     {
-        Debug.Log("Attacking minion lul");
+
     }
 
     private void FocusWarlord()
     {
-        Debug.Log("Attacking Warlord lul");
+       
     }
 
 

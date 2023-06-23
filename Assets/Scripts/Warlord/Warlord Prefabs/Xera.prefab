@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6624763295513700659}
   - component: {fileID: 165584608364672986}
   - component: {fileID: 6662791133892704387}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 1 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a363aa3e247dfe84a8446d86cd03ea20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xeraSO: {fileID: 0}
 --- !u!1 &4475810125392564879
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +107,7 @@ GameObject:
   - component: {fileID: 2090279937880195764}
   - component: {fileID: 5169722387105980937}
   - component: {fileID: 8293292672512569656}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 2 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +200,7 @@ GameObject:
   - component: {fileID: 8121449548363735753}
   - component: {fileID: 6800418388885010129}
   - component: {fileID: 656268727298924265}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Eyes '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,9 +289,9 @@ GameObject:
   - component: {fileID: 2344330017281827205}
   - component: {fileID: 6328896482606747502}
   - component: {fileID: 8023217320558592389}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Xera
-  m_TagString: Untagged
+  m_TagString: Warlord
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -565,6 +566,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xeraSO: {fileID: 11400000, guid: a1603f12c1ef8b7428f9cacb2c9a6dc0, type: 2}
+  _targetsInRange: []
+  _targetTags: []
+  eExplosion: 0
 --- !u!1 &8355111179693694994
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,7 +581,7 @@ GameObject:
   - component: {fileID: 6067675999031066011}
   - component: {fileID: 7387271555766549885}
   - component: {fileID: 7633935687580915803}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ability 3 Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -659,3 +663,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1f76b10245fb74408956dd076ef6b04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xeraSO: {fileID: 0}
