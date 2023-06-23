@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20a1f8e660b24a245930b96638e83a1f, type: 3}
   m_Name: MinionSO
   m_EditorClassIdentifier: 
-  minionHealth: 0
+  minionHealth: 50000
