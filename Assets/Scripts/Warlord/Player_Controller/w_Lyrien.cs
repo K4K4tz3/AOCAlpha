@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
+public class w_Lyrien : MonoBehaviour, IDamagable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -14,6 +14,8 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
     private Renderer warlordRenderer;
     private int layerAttackable;
     private Camera mainCamera;
+
+    private Collider warlordCollider;
     #endregion
 
     #region Range Check
@@ -41,6 +43,8 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
     private bool eAvailable = true;
     #endregion
 
+   
+
 
     private void Awake()
     {
@@ -54,6 +58,8 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
 
         // Area for the Damage
         AreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
+
+        warlordCollider = GetComponent<Collider>();
 
     }
 
@@ -147,7 +153,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
         //Do damage on the klicked object
         if (enemy.gameObject.TryGetComponent(out IDamagable d))
         {
-            d.GetDamaged(lyrienSO.autoAttackDamage);
+            d.GetDamaged(lyrienSO.autoAttackDamage, warlordCollider);
         }
 
         Debug.Log("AutoAttack");
@@ -309,7 +315,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
 
     #region Damage & Death
 
-    public void GetDamaged(float damage)
+    public void GetDamaged(float damage, Collider damageDealer)
     {
         if (lyrienSO.healthAmount > 0.0f)
         {
@@ -319,10 +325,6 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
         {
             Die();
         }
-    }
-    public void GettingFocused()
-    {
-        //If u get tower focus 
     }
 
     //NOT FINISHED
@@ -358,11 +360,6 @@ public class w_Lyrien : MonoBehaviour, IDamagable, IFocusable
         ResetStats();
         StartCoroutine(Respawn());
 
-    }
-
-    public void GetDamagedByTurret(float damage, float speed)
-    {
-        
     }
 
 

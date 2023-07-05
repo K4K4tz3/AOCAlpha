@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IFocusable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -15,6 +15,8 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
 
     private int layerAttackable;
     private Camera mainCamera;
+
+    private Collider warlordCollider;
     #endregion
 
     #region Floats for Respawn
@@ -58,6 +60,8 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         areaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
         areaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
         areaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
+
+        warlordCollider = GetComponent<Collider>();
     }
     private GameObject CheckForValidTarget(float range, Vector3 position)
     {
@@ -116,7 +120,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         //Do damage on the klicked object
         if (enemy.gameObject.TryGetComponent(out IDamagable d))
         {
-            d.GetDamaged(xeraSO.autoAttackDamage);
+            d.GetDamaged(xeraSO.autoAttackDamage, warlordCollider);
         }
 
         Debug.Log("AutoAttack");
@@ -288,7 +292,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
             d.Die();
         }
     }
-    public void GetDamaged(float damage)
+    public void GetDamaged(float damage, Collider damageDealer)
     {
         if (xeraSO.healthAmount > 0.0f)
         {
@@ -300,10 +304,6 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         }
     }
 
-    public void GetDamagedByTurret(float damage, float speed)
-    {
-
-    }
     public void GetStunned(float duration)
     {
         StartCoroutine(Stunned(duration));
@@ -344,10 +344,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         //move warlord in the given direction
         transform.Translate(direction.x, 0, direction.y);
     }
-    public void GettingFocused()
-    {
-       
-    }
+
     public void Die()
     {
         navMeshAgent.speed = 0;

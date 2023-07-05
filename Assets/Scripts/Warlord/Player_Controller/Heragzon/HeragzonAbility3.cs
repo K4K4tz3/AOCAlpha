@@ -5,6 +5,7 @@ using UnityEngine;
 public class HeragzonAbility3 : MonoBehaviour
 {
     [SerializeField] private WarlordBaseClass heragzonSO;
+    [SerializeField] private Collider parentCollider;
 
     private void OnTriggerStay(Collider other)
     {
@@ -16,15 +17,15 @@ public class HeragzonAbility3 : MonoBehaviour
             switch (tag)
             {
                 case "Building":
-                    d.GetDamaged(heragzonSO.ability3DmgBuilding);
+                    d.GetDamaged(heragzonSO.ability3DmgBuilding, parentCollider);
                     Debug.Log("ability 3 trigger stay HERAGZON");
                     break;
                 case "Warlord":
-                    d.GetDamaged(heragzonSO.ability3DmgWarlord);
+                    d.GetDamaged(heragzonSO.ability3DmgWarlord, parentCollider);
                     Debug.Log("ability 3 trigger stay HERAGZON");
                     break;
                 case "HostileMinion":
-                    d.GetDamaged(heragzonSO.ability3DmgMinion);
+                    d.GetDamaged(heragzonSO.ability3DmgMinion, parentCollider);
                     Debug.Log("ability 3 trigger stay HERAGZON");
                     break;
             }

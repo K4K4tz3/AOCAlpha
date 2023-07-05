@@ -1,10 +1,30 @@
 
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class TurretController : MonoBehaviour, IDamagable
 {
+    public enum AffiliateState                                      //turret states represent for which side the turret fights
+    {
+        leftTeam,
+        neutral,
+        rightTeam
+    }
+
+    public enum FocusState                                          //represents if the turrets is attacking only minions or warlords
+    {
+        neutral,
+        alerted,
+        aggro,
+        destroyed
+    }
+
+    public enum EnemyType
+    {
+        minion,
+        warlord
+    }
+
 
     //Turrets können eingenommen werden
     //Sie starten mit 0 Punkten und in einem neutralen Zustand
@@ -12,8 +32,11 @@ public class TurretController : MonoBehaviour, IDamagable
     //Der jenige, der dem Turm von 200 punkten den meisten Schaden macht, nimmt den Turm ein
 
     [SerializeField] private TurretBaseClass turretSO;
-    public FocusState focusState;
-    private AffiliateState affiliateState;
+    [SerializeField] private FocusState currentFocusState;
+    [SerializeField] private AffiliateState currentAffiliateState;
+    [SerializeField] private EnemyType targetEnemyType;
+
+    [SerializeField] private Collider currentTarget;
 
     [SerializeField] private LayerMask layerAttackable;
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
@@ -21,87 +44,176 @@ public class TurretController : MonoBehaviour, IDamagable
 
     [SerializeField] private List<Collider> targetableMinions = new List<Collider>();
 
+    [SerializeField] private GameObject targetGameObject;
+
+
+    private float attackCooldown = 1f;
+    private float currentCooldown = 0f;
 
     private void Awake()
     {
         //Turrets start neutral
-        focusState = FocusState.neutral;
-        affiliateState = AffiliateState.neutral;
+        currentFocusState = FocusState.neutral;
+        currentAffiliateState = AffiliateState.neutral;
+    }
+
+    private void Start()
+    {
+        //InvokeRepeating("DoRangeCheck", 0f, 0.5f);
     }
 
     private void Update()
     {
-        CheckForRange(turretSO.turretAttackRange);
 
-    }
-
-
-    #region Range Checks
-    private void CheckForRange(float range)
-    {
-        _targetsInRange = Physics.OverlapSphere(transform.position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
-
-        //Check if anything attackable is in range 
-        if (_targetsInRange.Count > 0)
+        switch (currentFocusState)
         {
-            Debug.Log("Found something");
-
-            //make a list with all the minions entering trigger area
-            foreach (var m in _targetsInRange)
-            {
-                //Add the minions to a list
-                if (m.CompareTag("HostileMinion") && !targetableMinions.Contains(m))
+            case FocusState.neutral:
+                FindTarget();
+                break;
+            case FocusState.alerted:
+                if (currentTarget != null)
                 {
-                    targetableMinions.Add(m);
+                    if (IsEnemyOfTargetType(currentTarget))
+                    {
+                        AttackTarget(currentTarget);
+                    }
+                    else
+                    {
+                        currentFocusState = FocusState.neutral;
+                    }
                 }
-            }
-
-            //if there are minions
-            if (targetableMinions.Count > 0)
-            {
-                if (focusState == FocusState.neutral)
+                else
                 {
-                    //attack minion if tower is in neutral state
-                    FocusMinion();
-                    Debug.Log("Attacking minion lul. i'm neutral");
+                    currentFocusState = FocusState.neutral;
                 }
-                if (focusState == FocusState.alerted)
+                break;
+            case FocusState.aggro:
+                if (currentTarget != null)
                 {
-                    //attack warlord even if there are minions when tower is alerted
-                    FocusWarlord();
-                    Debug.Log("Attacking minion lul, i'm alerted");
+                    AttackTarget(currentTarget);
+                    break;
                 }
-            }
-            else
-            {
-                //if warlord enters and there are no minions, focus warlord
-                //set tower state to alerted because there are no minions 
-                
-                Debug.Log("Attacking warlord lul");
-                focusState = FocusState.alerted;
-                FocusWarlord();
-
-            }
-        }
-        else
-        {
-            targetableMinions.Clear();
+                currentFocusState = FocusState.neutral;
+                break;
+            case FocusState.destroyed:
+                break;
         }
 
     }
 
-    private void FocusMinion()
+
+    private void FindTarget()
     {
+        Collider[] enemies = Physics.OverlapSphere(transform.position, turretSO.turretAttackRange, layerAttackable);
+
+        Collider targetEnemy = null;
+
+        //Minion Loop
+        foreach (Collider enemy in enemies)
+        {
+            if (IsEnemyOfMinionType(enemy))
+            {
+                if (targetEnemy == null)
+                {
+                    targetEnemy = enemy;
+                    break;
+                }
+            }
+        }
+
+        //Warlord Loop
+        if (targetEnemy == null)
+        {
+            foreach (Collider enemy in enemies)
+            {
+                if (IsEnemyOfWarlordType(enemy))
+                {
+                    targetEnemy = enemy;
+                }
+            }
+        }
+
+
+        if (targetEnemy != null)
+        {
+            currentFocusState = FocusState.alerted;
+            currentTarget = targetEnemy;
+        }
 
     }
-
-    private void FocusWarlord()
+    private bool IsEnemyOfTargetType(Collider enemy)
     {
-       
+        string enemyTag = enemy.tag;
+        if (enemyTag == "HostileMinion")
+        {
+            return true;
+        }
+        else if (enemyTag == "Warlord")
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool IsEnemyOfMinionType(Collider enemy)
+    {
+        string enemyTag = enemy.tag;
+        if (enemyTag == "HostileMinion")
+        {
+            return true;
+        }
+        else if (enemyTag == "Warlord")
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private bool IsEnemyOfWarlordType(Collider enemy)
+    {
+        string enemyTag = enemy.tag;
+        if (enemyTag == "HostileMinion")
+        {
+            return false;
+        }
+        else if (enemyTag == "Warlord")
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void AttackTarget(Collider target)
+    {
+        if (currentCooldown <= 0f)
+        {
+            // Attack the target enemy
+            Debug.Log("Attacking enemy: " + target.name);
+
+            // TODO: Add code to damage the enemy or perform other attack actions
+
+            currentCooldown = attackCooldown;
+        }
+
+        currentCooldown -= Time.deltaTime;
+
+        if (currentCooldown <= 0f)
+        {
+            currentFocusState = FocusState.neutral; // Transition back to idle state
+        }
+
+
+    }
+    public void TriggerAggro(Collider targetWarlord)
+    {
+        currentFocusState = FocusState.aggro;
+        currentTarget = targetWarlord;
     }
 
 
-    #endregion
 
     private void OnDrawGizmos()
     {
@@ -112,7 +224,7 @@ public class TurretController : MonoBehaviour, IDamagable
 
 
     #region Damage & Death
-    public void GetDamaged(float damage)
+    public void GetDamaged(float damage, Collider damageDealer)
     {
         //if turret has 200 points and is neutral, check how many damage what team did 
         Debug.Log("Turret is getting damaged");

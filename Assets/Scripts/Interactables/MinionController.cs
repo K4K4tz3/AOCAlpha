@@ -9,18 +9,14 @@ public class MinionController : MonoBehaviour, IDamagable
 
     public void Die()
     {
-        throw new System.NotImplementedException();
+      
     }
 
-    public void GetDamaged(float damage)
+    public void GetDamaged(float damage, Collider damageDealer)
     {
-        throw new System.NotImplementedException();
+ 
     }
 
-    public void GetDamagedByTurret(float damage, float speed)
-    {
-       minionSO.minionHealth -= damage ;
-    }
 
 
     // Start is called before the first frame update

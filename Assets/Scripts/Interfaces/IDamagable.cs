@@ -4,9 +4,8 @@ using UnityEngine;
 
 public interface IDamagable
 {
-    public void GetDamaged(float damage);
+    public void GetDamaged(float damage, Collider damageDealer);
 
-    public void GetDamagedByTurret(float damage, float speed);
 
     public void Die();
 

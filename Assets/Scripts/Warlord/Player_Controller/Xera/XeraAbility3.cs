@@ -5,6 +5,7 @@ using UnityEngine;
 public class XeraAbility3 : MonoBehaviour
 {
     [SerializeField] private WarlordBaseClass xeraSO;
+    [SerializeField] private Collider parentCollider;
     private w_Xera xeraController;
 
     private void Start()
@@ -22,11 +23,11 @@ public class XeraAbility3 : MonoBehaviour
                 switch (tag)
                 {                    
                     case "Warlord":
-                        d.GetDamaged(xeraSO.ability3DmgWarlord);
+                        d.GetDamaged(xeraSO.ability3DmgWarlord, parentCollider);
                         Debug.Log("ability 3 trigger stay");
                         break;
                     case "HostileMinion":
-                        d.GetDamaged(xeraSO.ability3DmgMinion);
+                        d.GetDamaged(xeraSO.ability3DmgMinion, parentCollider);
                         Debug.Log("ability 3 trigger stay");
                         break;
                 }

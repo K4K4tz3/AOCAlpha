@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IFocusable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -13,6 +13,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private Camera mainCamera;
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
+
+    private Collider warlordCollider;
 
 
     #endregion
@@ -57,6 +59,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         damageAreaAbility1 = this.gameObject.transform.GetChild(1).gameObject;
         damageAreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
         damageAreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
+
+        warlordCollider = GetComponent<Collider>();
 
     }
     private void Update()
@@ -113,7 +117,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         //Do damage on the klicked object
         if (enemy.gameObject.TryGetComponent(out IDamagable d))
         {
-            d.GetDamaged(heragzonSO.autoAttackDamage);
+            d.GetDamaged(heragzonSO.autoAttackDamage, warlordCollider);
         }
 
         Debug.Log("AutoAttack");
@@ -387,8 +391,25 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     #endregion
 
     #region Damage & Death
-    public void GetDamaged(float damage)
+    public void GetDamaged(float damage, Collider damageDealer)
     {
+        
+
+        if (damageDealer.tag == "Warlord")
+        {
+            Collider[] enemies = Physics.OverlapSphere(damageDealer.transform.position, 10 , layerAttackable);               // turret Attack range 
+
+            foreach(Collider t in enemies)
+            {
+                if(t.TryGetComponent(out TurretController controller))
+                {
+                    controller.TriggerAggro(damageDealer);
+                }
+            }
+
+        }
+
+
         if (heragzonSO.healthAmount > 0.0f)
         {
             heragzonSO.healthAmount -= damage;
@@ -398,10 +419,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             Die();
         }
     }
-    public void GetDamagedByTurret(float damage, float speed)
-    {
 
-    }
     public void GetStunned(float duration)
     {
         //Warlord can not do anything
@@ -445,10 +463,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         //move warlord in the given direction
         transform.Translate(direction.x, 0, direction.y);
     }
-    public void GettingFocused()
-    {
-        
-    }
+
 
     public void Die()
     {

@@ -6,7 +6,7 @@ public class HeragzonAbility2 : MonoBehaviour
 {
 
     [SerializeField] private WarlordBaseClass heragzonSO;
-    //könnte auch getcomponentinchildren
+    [SerializeField] private Collider parentCollider;
 
     private void OnTriggerStay(Collider other)
     {
@@ -17,15 +17,15 @@ public class HeragzonAbility2 : MonoBehaviour
             switch (tag)
             {
                 case "Building":
-                    d.GetDamaged(heragzonSO.ability2DmgBuilding);
+                    d.GetDamaged(heragzonSO.ability2DmgBuilding, parentCollider);
                     Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
                 case "Warlord":
-                    d.GetDamaged(heragzonSO.ability2DmgWarlord);
+                    d.GetDamaged(heragzonSO.ability2DmgWarlord, parentCollider);
                     Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
                 case "HostileMinion":
-                    d.GetDamaged(heragzonSO.ability2DmgMinion);          
+                    d.GetDamaged(heragzonSO.ability2DmgMinion, parentCollider);          
                     Debug.Log("ability 2 trigger stay HERAGZON");
                     break;
             }
