@@ -450,14 +450,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turretSO: {fileID: 11400000, guid: 685fa4c4daa826e40b515be6d218d489, type: 2}
+  currentFocusState: 0
+  currentAffiliateState: 0
+  currentTarget: {fileID: 0}
   layerAttackable:
     serializedVersion: 2
     m_Bits: 64
-  _targetsInRange: []
-  _targetTags:
-  - HostileMinion
-  - Warlord
-  targetableMinions: []
+  targetGameObject: {fileID: 0}
 --- !u!1 &592079501
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +585,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &804835829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 804835831}
+  - component: {fileID: 804835830}
+  m_Layer: 0
+  m_Name: TeamManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &804835830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804835829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0691cafa1fff4674883893b3a96d2f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &804835831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804835829}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10.1350155, y: -3.1430244, z: 2.8834705}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,6 +1427,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1333056488473229597, guid: 47c7b7b76daeaf649a06235b2160a7da, type: 3}
+      propertyPath: teamManagerObject
+      value: 
+      objectReference: {fileID: 804835829}
     - target: {fileID: 1333056488473229597, guid: 47c7b7b76daeaf649a06235b2160a7da, type: 3}
       propertyPath: _targetTags.Array.data[2]
       value: HostileMinion
