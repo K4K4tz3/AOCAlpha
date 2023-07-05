@@ -3,6 +3,13 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
+public enum Team
+{
+    LeftTeam,
+    RightTeam,
+    
+}
+
 public class PlayerController : MonoBehaviour
 {
     #region State Machine Fields

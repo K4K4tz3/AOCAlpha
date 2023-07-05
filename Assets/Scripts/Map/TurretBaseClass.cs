@@ -9,7 +9,7 @@ public class TurretBaseClass : ScriptableObject
     public float turretDamage;
 
     [Tooltip("Fire Rate 1/s")] 
-    public float turretSpeed;
+    public float turretCooldown;
 
     [Tooltip("Turret Attack Range is as large as regeneration range")] 
     public float turretAttackRange;

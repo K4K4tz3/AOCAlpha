@@ -13,8 +13,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private Camera mainCamera;
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
-
     private Collider warlordCollider;
+
+    private TeamManager teamManager;
+    [SerializeField] GameObject teamManagerObject;
+    public Team team;
 
 
     #endregion
@@ -62,7 +65,10 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
         warlordCollider = GetComponent<Collider>();
 
+        teamManager = teamManagerObject.GetComponent<TeamManager>();
+        team = teamManager.ChooseRandomTeam();
     }
+   
     private void Update()
     {
 

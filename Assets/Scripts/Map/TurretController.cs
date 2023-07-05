@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,13 +18,6 @@ public class TurretController : MonoBehaviour, IDamagable
         destroyed
     }
 
-    public enum EnemyType
-    {
-        minion,
-        warlord
-    }
-
-
     //Turrets können eingenommen werden
     //Sie starten mit 0 Punkten und in einem neutralen Zustand
     //Der Turm kann eingenommen werden, indem er angegriffen wird 
@@ -34,32 +26,24 @@ public class TurretController : MonoBehaviour, IDamagable
     [SerializeField] private TurretBaseClass turretSO;
     [SerializeField] private FocusState currentFocusState;
     [SerializeField] private AffiliateState currentAffiliateState;
-    [SerializeField] private EnemyType targetEnemyType;
+
 
     [SerializeField] private Collider currentTarget;
-
     [SerializeField] private LayerMask layerAttackable;
-    [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
-    [SerializeField] private List<string> _targetTags = new List<string>();
-
-    [SerializeField] private List<Collider> targetableMinions = new List<Collider>();
-
     [SerializeField] private GameObject targetGameObject;
 
-
-    private float attackCooldown = 1f;
+    private float attackCooldown;
     private float currentCooldown = 0f;
+
+    
 
     private void Awake()
     {
         //Turrets start neutral
         currentFocusState = FocusState.neutral;
         currentAffiliateState = AffiliateState.neutral;
-    }
 
-    private void Start()
-    {
-        //InvokeRepeating("DoRangeCheck", 0f, 0.5f);
+        attackCooldown = turretSO.turretCooldown;
     }
 
     private void Update()
@@ -215,24 +199,17 @@ public class TurretController : MonoBehaviour, IDamagable
 
 
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-
-        Gizmos.DrawWireSphere(transform.position, turretSO.turretAttackRange);
-    }
-
-
     #region Damage & Death
     public void GetDamaged(float damage, Collider damageDealer)
     {
+        //1. When game starts, turret has 200 points
+        //2. If enemy hits turret, credit him points (damage)
+
+        
+        
+
         //if turret has 200 points and is neutral, check how many damage what team did 
         Debug.Log("Turret is getting damaged");
-    }
-
-    public void GetDamagedByTurret(float damage, float speed)
-    {
-
     }
 
     public void Die()

@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class w_Lyrien : MonoBehaviour, IDamagable
 {
     #region General
-    //Scriptable Object for all necessary information
+    
     [SerializeField] private WarlordBaseClass lyrienSO;
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
@@ -16,6 +16,10 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     private Camera mainCamera;
 
     private Collider warlordCollider;
+
+    private TeamManager teamManager;
+    [SerializeField] GameObject teamManagerObject;
+    public Team team;
     #endregion
 
     #region Range Check
@@ -61,7 +65,12 @@ public class w_Lyrien : MonoBehaviour, IDamagable
 
         warlordCollider = GetComponent<Collider>();
 
+        teamManager = teamManagerObject.GetComponent<TeamManager>();
+        team = teamManager.AssignFreeTeam(this.gameObject);
+
     }
+
+   
 
     private void Update()
     {
