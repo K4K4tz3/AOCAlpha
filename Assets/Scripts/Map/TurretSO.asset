@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: TurretSO
   m_EditorClassIdentifier: 
   turretDamage: 20
-  turretSpeed: 0.5
+  turretCooldown: 0
   turretAttackRange: 10
   chardomancerZoneRange: 10
   chardRegenerationRate: 5
   chardStock: 0
   chardomancerSlot: 0
-  allyPoints: 0
-  enemyPoints: 0
-  turretPoints: 200
+  pointsLeftTeam: 200
+  pointsRightTeam: 0
+  totalTurretPoints: 0
+  turretHP: 0

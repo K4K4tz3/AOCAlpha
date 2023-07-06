@@ -28,11 +28,16 @@ public class TurretController : MonoBehaviour, IDamagable
 
 
     private Collider currentTarget;
-    private GameObject targetGameObject;
     [SerializeField] private LayerMask layerAttackable;
 
     private float attackCooldown;
-    private float currentCooldown = 0f;
+    private float currentCooldown = 0f;                     //CD is 0 in the beginning so the turret can shoot right away
+
+    private float defaultTurretPoints = 200;                //Set points in the beginning (awake) to default -> 200 
+    private float defaultPointsLeftTeam = 0;
+    private float defaultPointsRightTeam = 0;
+
+    private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
 
 
 
@@ -42,7 +47,15 @@ public class TurretController : MonoBehaviour, IDamagable
         currentFocusState = FocusState.neutral;
         currentAffiliateState = AffiliateState.neutral;
 
+        //Reset stats 
         attackCooldown = turretSO.turretCooldown;
+
+        turretSO.totalTurretPoints = defaultTurretPoints;
+        turretSO.pointsLeftTeam = defaultPointsLeftTeam;
+        turretSO.pointsRightTeam = defaultPointsRightTeam;
+
+        turretSO.turretHP = defaultTurretHP;
+
     }
 
     private void Update()
@@ -201,24 +214,67 @@ public class TurretController : MonoBehaviour, IDamagable
     #region Damage & Death
     public void GetDamaged(float damage, Collider damageDealer)
     {
-        //1. When game starts, turret has 200 points
-        //2. If enemy hits turret, credit him points (damage)
-        if (damageDealer.gameObject.TryGetComponent(out PlayerController pc))
+        //TODO: 
+        //destroy nicht vergessen 
+
+        //check if damageDealer has a playerController Script to get team membership
+        // && if turret still has more than 0 points
+        if (damageDealer.gameObject.TryGetComponent(out PlayerController pc) && turretSO.totalTurretPoints > 0)
         {
-            if(pc.team == Team.LeftTeam)
+            //Credit the points to the right team
+            //And reduce total turret points
+            if (pc.team == Team.LeftTeam)
             {
                 turretSO.pointsLeftTeam += damage;
+                turretSO.totalTurretPoints -= damage;
+                Debug.Log($"Turret is getting damaged by {pc.team}");
             }
             if (pc.team == Team.RightTeam)
             {
                 turretSO.pointsRightTeam += damage;
+                turretSO.totalTurretPoints -= damage;
+                Debug.Log($"Turret is getting damaged by {pc.team}");
             }
+        }
+
+        //if turret points fall to 0 and the turret doesn't belong to any team
+        if (turretSO.totalTurretPoints <= 0 && currentAffiliateState == AffiliateState.neutral)
+        {
+            //check which team has more points and change affiliate state
+            if (turretSO.pointsLeftTeam > turretSO.pointsRightTeam)
+            {
+                currentAffiliateState = AffiliateState.leftTeam;
+                Debug.Log($"Turret is now captured by {currentAffiliateState}");
+
+            }
+            else
+            {
+                currentAffiliateState = AffiliateState.rightTeam;
+                Debug.Log($"Turret is now captured by {currentAffiliateState}");
+
+            }
+        }
+
+        //Reduce HP if hp > 0 and the turret is assigned to a team
+        if (damageDealer.gameObject.TryGetComponent(out PlayerController p) && turretSO.turretHP > 0 && currentAffiliateState != AffiliateState.neutral)
+        {
+            //first check what team is doing damage
+            //only the team that's not in the same team as the turret can do damage
+           
+            if ((p.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (p.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
+            {
+                turretSO.turretHP -= damage;
+                Debug.Log($"Turret is getting damaged by {p.team}");
+            }          
+            else
+            {
+                Debug.Log($"Turret {currentAffiliateState} and DamageDealer {p.team} are in the same team");
+            }
+          
         }
 
 
 
-        //if turret has 200 points and is neutral, check how many damage what team did 
-        Debug.Log("Turret is getting damaged");
     }
 
     public void Die()
