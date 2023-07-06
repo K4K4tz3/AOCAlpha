@@ -5,94 +5,99 @@ using Random = UnityEngine.Random;
 
 public class TeamManager : MonoBehaviour
 {
+    //Execution Order is important
+    //The list with unassigned Warlords gets initialized first in awake 
+    //Warlords are added in PlayerController script in Start (needs to be in start because the list needs to exist before assigning)
+    //Then, a coroutine waits for the TeamManager to assign teams 
 
-    private Dictionary<GameObject, Team> teamAssignments = new Dictionary<GameObject, Team>();
+    [SerializeField] private List<GameObject> leftTeam;
+    [SerializeField] private List<GameObject> rightTeam;
+    public List<GameObject> unassignedWarlords;
 
-    public void AssignTeam(GameObject warlord, Team team)
+    private void Awake()
     {
-        // Champion already assigned to a team, update the team assignment
-        if (teamAssignments.ContainsKey(warlord))
+        // Populate the list of unassigned warlords
+        //AWAKE IMPORTANT
+        unassignedWarlords = new List<GameObject>();
+    }
+
+    private void Start()
+    {
+        // Assign teams randomly
+        AssignTeamsRandomly();
+    }
+
+    private void AssignTeamsRandomly()
+    {
+        while (unassignedWarlords.Count > 0)
         {
-            teamAssignments[warlord] = team;
-        }
-        else
-        {
-            // Champion is not yet assigned to a team, add a new assignment
-            teamAssignments.Add(warlord, team);
+            int randomIndex = Random.Range(0, unassignedWarlords.Count);
+            GameObject warlord = unassignedWarlords[randomIndex];
+
+            // Assign the champion to a team
+            Team team = GetRandomAvailableTeam();
+            AssignTeamToChampion(warlord, team);
+
+            unassignedWarlords.RemoveAt(randomIndex);
         }
     }
 
-    // Method to get the team of a champion
-    public Team GetTeam(GameObject warlord)
+    private Team GetRandomAvailableTeam()
     {
-        if (teamAssignments.ContainsKey(warlord))
+        // Check if both teams are already full
+        if (leftTeam.Count >= 1 && rightTeam.Count >= 1)
         {
-            return teamAssignments[warlord];
+            Debug.LogWarning("Both teams are already full.");
+            return Team.None;
         }
-        else
+
+        // If Team A is full, assign to Team B
+        if (leftTeam.Count >= 1)
         {
-            // Champion not found in team assignments, return a default team
+            return Team.RightTeam;
+        }
+        // If Team B is full, assign to Team A
+        else if (rightTeam.Count >= 1)
+        {
             return Team.LeftTeam;
         }
-    }
-
-    public Team ChooseRandomTeam()
-    {
-        // Get all the available teams from the Team enum
-        Team[] allTeams = (Team[])Enum.GetValues(typeof(Team));
-
-        // Choose a random team from the available options
-        Team randomTeam = allTeams[Random.Range(0, allTeams.Length)];
-
-        return randomTeam;
-    }
-
-    public Team AssignFreeTeam(GameObject champion)
-    {
-        // Get all the available teams from the Team enum
-        Team[] allTeams = (Team[])Enum.GetValues(typeof(Team));
-
-        // Create a list to store the teams that are already assigned to other champions
-        List<Team> assignedTeams = new List<Team>();
-
-        // Iterate through each champion and collect the assigned teams
-        foreach (var kvp in teamAssignments)
+        // Otherwise, randomly assign to Team A or Team B
+        else
         {
-            if (kvp.Key != champion)
-            {
-                assignedTeams.Add(kvp.Value);
-            }
+            return (Random.Range(0, 2) == 0) ? Team.LeftTeam : Team.RightTeam;
+        }
+    }
+
+    private void AssignTeamToChampion(GameObject warlord, Team team)
+    {
+        if (team == Team.LeftTeam)
+        {
+            leftTeam.Add(warlord);
+            Debug.Log(warlord.name + " has been assigned to LeftTeam.");
+        }
+        else if (team == Team.RightTeam)
+        {
+            rightTeam.Add(warlord);
+            Debug.Log(warlord.name + " has been assigned to RightTeam.");
+        }
+    }
+
+    public Team GetWarlordTeam(GameObject warlord)
+    {
+        if(leftTeam.Contains(warlord))
+        {
+            return Team.LeftTeam;
+        }
+        else if(rightTeam.Contains(warlord))
+        {
+            return Team.RightTeam;
         }
 
-        // Iterate through each team and check if it is already assigned to another champion
-        foreach (Team team in allTeams)
-        {
-            if (!assignedTeams.Contains(team))
-            {
-                // Team is not assigned to any other champion, assign it to the current champion
-                AssignTeam(champion, team);
-                return team;
-            }
-        }
+        return Team.None;
 
-        // If all teams are already assigned to other champions, return a default team (e.g., TeamA)
-        return Team.RightTeam;
+      
     }
-
-    public bool IsTeamAssigned(Team team)
-    {
-        // Iterate through the team assignments dictionary and check if any champion is assigned to the given team
-        foreach (var kvp in teamAssignments)
-        {
-            if (kvp.Value == team)
-            {
-                // Found a champion assigned to the given team
-                return true;
-            }
-        }
-
-        // No champion assigned to the given team
-        return false;
-    }
-
 }
+
+
+

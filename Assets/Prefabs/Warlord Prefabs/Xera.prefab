@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xeraSO: {fileID: 0}
+  parentCollider: {fileID: 0}
 --- !u!1 &4475810125392564879
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,6 +552,8 @@ MonoBehaviour:
   doingAbility2: 0
   doingAbility3: 0
   isDead: 0
+  teamManagerObject: {fileID: 0}
+  team: 0
   anim: {fileID: 0}
   canGetInput: 1
 --- !u!114 &8023217320558592389
@@ -567,7 +570,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xeraSO: {fileID: 11400000, guid: a1603f12c1ef8b7428f9cacb2c9a6dc0, type: 2}
   _targetsInRange: []
-  _targetTags: []
+  _targetTags:
+  - Building
+  - Warlord
+  - HostileMinion
   eExplosion: 0
 --- !u!1 &8355111179693694994
 GameObject:
@@ -664,3 +670,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xeraSO: {fileID: 0}
+  parentCollider: {fileID: 0}

@@ -18,9 +18,6 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
 
     private Collider warlordCollider;
 
-    private TeamManager teamManager;
-    [SerializeField] GameObject teamManagerObject;
-    public Team team;
     #endregion
 
     #region Floats for Respawn
@@ -66,12 +63,12 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
         areaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
 
         warlordCollider = GetComponent<Collider>();
+    
 
-        teamManager = teamManagerObject.GetComponent<TeamManager>();
-        team = teamManager.AssignFreeTeam(this.gameObject);
     }
 
-   
+
+
     private GameObject CheckForValidTarget(float range, Vector3 position)
     {
         //check if something attackable is in range

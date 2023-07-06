@@ -16,10 +16,6 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     private Camera mainCamera;
 
     private Collider warlordCollider;
-
-    private TeamManager teamManager;
-    [SerializeField] GameObject teamManagerObject;
-    public Team team;
     #endregion
 
     #region Range Check
@@ -64,14 +60,10 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         AreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
 
         warlordCollider = GetComponent<Collider>();
-
-        teamManager = teamManagerObject.GetComponent<TeamManager>();
-        team = teamManager.AssignFreeTeam(this.gameObject);
-
+        
     }
 
-   
-
+ 
     private void Update()
     {
         if (CheckForAbilityRange(lyrienSO.ability1Range, transform.position))

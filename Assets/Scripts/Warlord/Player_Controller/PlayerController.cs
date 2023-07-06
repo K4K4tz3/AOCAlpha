@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +7,8 @@ public enum Team
 {
     LeftTeam,
     RightTeam,
-    
+    None
+
 }
 
 public class PlayerController : MonoBehaviour
@@ -42,6 +43,13 @@ public class PlayerController : MonoBehaviour
     private float maxChange = 0.1f;
     #endregion
 
+
+    #region Team Assignment
+    [SerializeField] GameObject teamManagerObject;
+    private TeamManager teamManager;
+    public Team team;
+    #endregion
+
     [HideInInspector] public Animator anim;
 
     [HideInInspector] public bool canGetInput = true;
@@ -55,11 +63,25 @@ public class PlayerController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         lastVelocity = navMeshAgent.velocity;
 
+        teamManager = teamManagerObject.GetComponent<TeamManager>();
+        team = Team.None;
+
         SwitchState(IdleState);
     }
+
     private void OnEnable()
     {
         inputAction.W_Controller.Enable();
+
+    }
+    private void Start()
+    {
+        if (teamManager.unassignedWarlords != null)
+        {
+            teamManager.unassignedWarlords.Add(this.gameObject);
+            StartCoroutine(WaitForTeamAssignment());
+        }
+
     }
     private void OnDisable()
     {
@@ -113,5 +135,12 @@ public class PlayerController : MonoBehaviour
             isMoving = false;
         }
     }
-  
+
+    IEnumerator WaitForTeamAssignment()
+    {
+        //This Coroutine is needed because we have to wait a bit for the TeamManager Script to assign teams to the warlords
+        yield return new WaitForSeconds(1f);
+        team = teamManager.GetWarlordTeam(this.gameObject);
+    }
+
 }

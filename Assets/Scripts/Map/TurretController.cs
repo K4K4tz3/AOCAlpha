@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TurretController : MonoBehaviour, IDamagable
@@ -28,14 +27,14 @@ public class TurretController : MonoBehaviour, IDamagable
     [SerializeField] private AffiliateState currentAffiliateState;
 
 
-    [SerializeField] private Collider currentTarget;
+    private Collider currentTarget;
+    private GameObject targetGameObject;
     [SerializeField] private LayerMask layerAttackable;
-    [SerializeField] private GameObject targetGameObject;
 
     private float attackCooldown;
     private float currentCooldown = 0f;
 
-    
+
 
     private void Awake()
     {
@@ -204,9 +203,19 @@ public class TurretController : MonoBehaviour, IDamagable
     {
         //1. When game starts, turret has 200 points
         //2. If enemy hits turret, credit him points (damage)
+        if (damageDealer.gameObject.TryGetComponent(out PlayerController pc))
+        {
+            if(pc.team == Team.LeftTeam)
+            {
+                turretSO.pointsLeftTeam += damage;
+            }
+            if (pc.team == Team.RightTeam)
+            {
+                turretSO.pointsRightTeam += damage;
+            }
+        }
 
-        
-        
+
 
         //if turret has 200 points and is neutral, check how many damage what team did 
         Debug.Log("Turret is getting damaged");

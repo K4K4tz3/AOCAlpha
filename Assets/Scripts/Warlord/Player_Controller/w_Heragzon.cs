@@ -14,12 +14,6 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
     private Collider warlordCollider;
-
-    private TeamManager teamManager;
-    [SerializeField] GameObject teamManagerObject;
-    public Team team;
-
-
     #endregion
 
     #region Range Check
@@ -54,7 +48,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     {
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        warlordRenderer= GetComponent<Renderer>();
+        warlordRenderer = GetComponent<Renderer>();
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
 
@@ -65,10 +59,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
         warlordCollider = GetComponent<Collider>();
 
-        teamManager = teamManagerObject.GetComponent<TeamManager>();
-        team = teamManager.ChooseRandomTeam();
     }
-   
+
+
     private void Update()
     {
 
@@ -399,15 +392,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     #region Damage & Death
     public void GetDamaged(float damage, Collider damageDealer)
     {
-        
+
 
         if (damageDealer.tag == "Warlord")
         {
-            Collider[] enemies = Physics.OverlapSphere(damageDealer.transform.position, 10 , layerAttackable);               // turret Attack range 
+            Collider[] enemies = Physics.OverlapSphere(damageDealer.transform.position, 10, layerAttackable);               // turret Attack range 
 
-            foreach(Collider t in enemies)
+            foreach (Collider t in enemies)
             {
-                if(t.TryGetComponent(out TurretController controller))
+                if (t.TryGetComponent(out TurretController controller))
                 {
                     controller.TriggerAggro(damageDealer);
                 }
@@ -484,7 +477,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
         RespawnWarlord();
 
-        
+
     }
     private void ResetStats()
     {
@@ -495,7 +488,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     {
         ResetStats();
         StartCoroutine(Respawn());
-        
+
     }
 
 
