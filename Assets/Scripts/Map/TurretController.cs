@@ -29,6 +29,7 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private Collider currentTarget;
     [SerializeField] private LayerMask layerAttackable;
+    private Collider turretCollider;
 
     private float attackCooldown;
     private float currentCooldown = 0f;                     //CD is 0 in the beginning so the turret can shoot right away
@@ -43,6 +44,8 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private void Awake()
     {
+        turretCollider = GetComponent<Collider>();
+
         //Turrets start neutral
         currentFocusState = FocusState.neutral;
         currentAffiliateState = AffiliateState.neutral;
@@ -186,19 +189,56 @@ public class TurretController : MonoBehaviour, IDamagable
     {
         if (currentCooldown <= 0f)
         {
-            // Attack the target enemy
-            Debug.Log("Attacking enemy: " + target.name);
+            //if turret is neutral, attack anything with IDamagable interface implemented
+            if (currentAffiliateState == AffiliateState.neutral)
+            {
+                if (target.TryGetComponent(out IDamagable d))
+                {
+                    //deal damage to anything
+                    d.GetDamaged(turretSO.turretDamage, turretCollider);
+                    Debug.Log("Attacking enemy: " + target.name);
 
-            // TODO: Add code to damage the enemy or perform other attack actions
+                }
+            }
+            else
+            {
+                //Check if target == Warlord && check team
+                //playerController for checking team 
+                if (target.tag == "Warlord" && target.TryGetComponent(out PlayerController pc))
+                {
+                    //if turret and warlord are not in the same team
+                    if ((pc.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (pc.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
+                    {
+                        //deal damage to warlord
+                        if (target.TryGetComponent(out IDamagable d))
+                        {
+                            d.GetDamaged(turretSO.turretDamage, turretCollider);
+                            Debug.Log("Attacking enemy: " + target.name);
+                        }
+
+                    }
+
+                }
+                //TODO: Check what team the minion belongs to 
+                //same as above just with minionController 
+                else if (target.TryGetComponent(out IDamagable d))
+                {
+                    //deal damage to minion
+                    d.GetDamaged(turretSO.turretDamage, turretCollider);
+                    Debug.Log("Attacking enemy: " + target.name);
+
+                }
+            }
 
             currentCooldown = attackCooldown;
+
         }
 
         currentCooldown -= Time.deltaTime;
 
         if (currentCooldown <= 0f)
         {
-            currentFocusState = FocusState.neutral; // Transition back to idle state
+            currentFocusState = FocusState.neutral; // Transition back to neutral state
         }
 
 
@@ -214,8 +254,12 @@ public class TurretController : MonoBehaviour, IDamagable
     #region Damage & Death
     public void GetDamaged(float damage, Collider damageDealer)
     {
-        //TODO: 
-        //destroy nicht vergessen 
+
+        //Check if turret is destroyed
+        //if so, return and don't do anything
+        if (currentFocusState == FocusState.destroyed)
+            return;
+
 
         //check if damageDealer has a playerController Script to get team membership
         // && if turret still has more than 0 points
@@ -260,17 +304,25 @@ public class TurretController : MonoBehaviour, IDamagable
         {
             //first check what team is doing damage
             //only the team that's not in the same team as the turret can do damage
-           
+
             if ((p.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (p.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
             {
                 turretSO.turretHP -= damage;
                 Debug.Log($"Turret is getting damaged by {p.team}");
-            }          
+            }
             else
             {
-                Debug.Log($"Turret {currentAffiliateState} and DamageDealer {p.team} are in the same team");
+                Debug.Log($"Turret {currentAffiliateState} and DamageDealer {p.team} are in the same team. No Damage dealt");
             }
-          
+
+        }
+
+        //destroy turret
+        if (turretSO.turretHP <= 0)
+        {
+            //Set focusState to destroyed
+            currentFocusState = FocusState.destroyed;
+            Die();
         }
 
 
