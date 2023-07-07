@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20a1f8e660b24a245930b96638e83a1f, type: 3}
   m_Name: MinionSO
   m_EditorClassIdentifier: 
+  minionWalkSpeed: 0
+  distanceToOtherMinions: 0
+  minionAttackDamage: 0
+  minionAttackSpeed: 0
   minionHealth: 50000
+  minionCountPerWave: 5
+  firstSpawnTimer: 10
+  spawnTimer: 5
