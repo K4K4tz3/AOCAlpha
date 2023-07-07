@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4327556157396290208}
   - component: {fileID: 5171516247613385428}
   - component: {fileID: 6905177545926660096}
+  - component: {fileID: 6455926907506958447}
   m_Layer: 6
   m_Name: MinionDummy
   m_TagString: HostileMinion
@@ -120,6 +121,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minionSO: {fileID: 11400000, guid: af9b061a3df27ee4f96b16e6ce20e51d, type: 2}
+  targetDestination: {fileID: 3631811388954780489, guid: 0b667671c4d05f74caac38fcb8a7c4bc, type: 3}
+  layerAttackable:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!54 &6905177545926660096
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -147,3 +152,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!195 &6455926907506958447
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5505830534816025560}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

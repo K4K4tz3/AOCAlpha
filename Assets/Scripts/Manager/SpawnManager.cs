@@ -46,6 +46,7 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < minionSO.minionCountPerWave; i++)
         {
             GameObject minion = Instantiate(minionPrefab, spawnPoints[i].position, Quaternion.identity);
+            minion.name = $"Minion number: {i}";
             minion.transform.SetParent(go.transform);
 
         }

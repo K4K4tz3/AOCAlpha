@@ -8,9 +8,10 @@ public class MinionSO : ScriptableObject
     [Header("NavMesh & AI")]
     public float minionWalkSpeed;
     [Tooltip("Distance is needed to avoid minions from stacking and overlapping")] public float distanceToOtherMinions;
-    
+
 
     [Header("Damage & Health")]
+    public float minionAttackRange;
     public float minionAttackDamage;
     public float minionAttackSpeed;
     public float minionHealth;
