@@ -6,8 +6,9 @@ TagManager:
   tags:
   - Turret
   - Building
-  - HostileMinion
   - Warlord
+  - MinionLeftTeam
+  - MinionRightTean
   layers:
   - Default
   - TransparentFX

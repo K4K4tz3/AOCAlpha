@@ -67,6 +67,9 @@ public class SpawnManager : MonoBehaviour
             GameObject minion = Instantiate(minionPrefab, spawnPoints[i].position, Quaternion.identity);
             minion.name = $"Minion number: {i}";
             minion.transform.SetParent(go.transform);
+            minionSO.minionHealth = 20;
+
+            Debug.Log($"Minion number: {i} has {minionSO.minionHealth} left ");
 
             //Check if minion is spawned on left or right side
             AssignMinionToTeam(minion, desiredTeam);

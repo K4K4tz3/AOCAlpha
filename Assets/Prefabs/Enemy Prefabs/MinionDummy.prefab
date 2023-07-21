@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6455926907506958447}
   m_Layer: 6
   m_Name: MinionDummy
-  m_TagString: HostileMinion
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

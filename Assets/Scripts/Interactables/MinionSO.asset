@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minionWalkSpeed: 5
   distanceToOtherMinions: 2
-  minionAttackRange: 2
+  minionAttackRange: 4
   minionAttackDamage: 5
   minionAttackSpeed: 3
-  minionHealth: 49260
+  minionHealth: 0
   minionCountPerWave: 5
   firstSpawnTimer: 2
   spawnTimer: 20

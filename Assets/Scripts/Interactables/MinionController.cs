@@ -6,6 +6,8 @@ public class MinionController : MonoBehaviour, IDamagable
 
     [SerializeField] private MinionSO minionSO;
 
+    private Collider minionCollider;
+
     private NavMeshAgent minionNavAgent;
     [SerializeField] private Transform targetDestinationLeftTeam;
     [SerializeField] private Transform targetDestinationRightTeam;
@@ -15,20 +17,13 @@ public class MinionController : MonoBehaviour, IDamagable
     public Team team;
 
 
-    private void Awake()
-    {
-        //minionNavAgent = GetComponent<NavMeshAgent>();
-        //minionNavAgent.speed = minionSO.minionWalkSpeed;
-        //minionNavAgent.radius = minionSO.distanceToOtherMinions;
-
-
-    }
-
     private void Start()
     {
         minionNavAgent = GetComponent<NavMeshAgent>();
         minionNavAgent.speed = minionSO.minionWalkSpeed;
         minionNavAgent.radius = minionSO.distanceToOtherMinions;
+
+        minionCollider = GetComponent<Collider>();
 
         //update team
         Debug.Log(team);
@@ -37,11 +32,16 @@ public class MinionController : MonoBehaviour, IDamagable
         if (team == Team.LeftTeam)
         {
             currentTargetDestination = targetDestinationLeftTeam;
+            gameObject.tag = "MinionLeftTeam";
             Debug.Log("running to: " + currentTargetDestination.name);
 
         }
         else
+        {
             currentTargetDestination = targetDestinationRightTeam;
+            gameObject.tag = "MinionRightTeam";
+
+        }
     }
 
 
@@ -136,6 +136,11 @@ public class MinionController : MonoBehaviour, IDamagable
                     currentTargetDestination = enemies[0].transform;
 
                     //attack target
+                    //if turret is neutral - add points to team
+                    //if not - deal damage
+                    d.GetDamaged(minionSO.minionAttackDamage, minionCollider);
+
+
                     Debug.Log("wanna attack: " + enemy);
                     //check the team of the target
                     //only attack if it's in the enemys' team
@@ -155,6 +160,7 @@ public class MinionController : MonoBehaviour, IDamagable
         Destroy(gameObject);
     }
 
+    
     public void GetDamaged(float damage, Collider damageDealer)
     {
         if (minionSO.minionHealth > 0)

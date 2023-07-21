@@ -148,10 +148,11 @@ public class TurretController : MonoBehaviour, IDamagable
         }
 
     }
+
     private bool IsEnemyOfTargetType(Collider enemy)
     {
         string enemyTag = enemy.tag;
-        if (enemyTag == "HostileMinion")
+        if (enemyTag == "MinionLeftTeam" || enemyTag == "MinionRightTeam")
         {
             return true;
         }
@@ -166,10 +167,12 @@ public class TurretController : MonoBehaviour, IDamagable
     private bool IsEnemyOfMinionType(Collider enemy)
     {
         string enemyTag = enemy.tag;
-        if (enemyTag == "HostileMinion")
+        if (enemyTag == "MinionLeftTeam" || enemyTag == "MinionRightTeam")
         {
+
             return true;
         }
+
         else if (enemyTag == "Warlord")
         {
             return false;
@@ -193,6 +196,8 @@ public class TurretController : MonoBehaviour, IDamagable
         return false;
     }
 
+
+    //TODO Instantiate laser/bullet/whatever
     private void AttackTarget(Collider target)
     {
         if (currentCooldown <= 0f)
@@ -221,20 +226,19 @@ public class TurretController : MonoBehaviour, IDamagable
                         if (target.TryGetComponent(out IDamagable d))
                         {
                             d.GetDamaged(turretSO.turretDamage, turretCollider);
-                            Debug.Log("Attacking enemy: " + target.name);
+                            Debug.Log("Attacking warlord: " + target.name);
                         }
-
                     }
-
                 }
-                //TODO: Check what team the minion belongs to 
-                //same as above just with minionController 
-                else if (target.TryGetComponent(out IDamagable d))
+                //if target is not a warlord, check for team 
+                else if (target.TryGetComponent(out MinionController mc))
                 {
-                    //deal damage to minion
-                    d.GetDamaged(turretSO.turretDamage, turretCollider);
-                    Debug.Log("Attacking enemy: " + target.name);
-
+                    if ((mc.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (mc.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
+                    {
+                        //deal damage to minion
+                        mc.GetDamaged(turretSO.turretDamage, turretCollider);
+                        Debug.Log("Attacking enemy: " + target.name);
+                    }
                 }
             }
 
@@ -279,13 +283,29 @@ public class TurretController : MonoBehaviour, IDamagable
             {
                 turretSO.pointsLeftTeam += damage;
                 turretSO.totalTurretPoints -= damage;
-                Debug.Log($"Turret is getting damaged by {pc.team}");
+                Debug.Log($"Turret is getting damaged by a warlord from {pc.team}");
             }
             if (pc.team == Team.RightTeam)
             {
                 turretSO.pointsRightTeam += damage;
                 turretSO.totalTurretPoints -= damage;
-                Debug.Log($"Turret is getting damaged by {pc.team}");
+                Debug.Log($"Turret is getting damaged by a warlord from {pc.team}");
+            }
+        }
+        //Minion check:
+        if(damageDealer.gameObject.TryGetComponent(out MinionController mc) && turretSO.totalTurretPoints > 0)
+        {
+            if(mc.team == Team.LeftTeam)
+            {
+                turretSO.pointsLeftTeam += damage;
+                turretSO.totalTurretPoints -= damage;
+                Debug.Log($"Turret is getting damaged by a minion from {mc.team}");
+            }
+            if (mc.team == Team.RightTeam)
+            {
+                turretSO.pointsRightTeam += damage;
+                turretSO.totalTurretPoints -= damage;
+                Debug.Log($"Turret is getting damaged by a minion from {mc.team}");
             }
         }
 
