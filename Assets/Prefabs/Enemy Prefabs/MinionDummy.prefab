@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2600588541171312702}
   - component: {fileID: 4327556157396290208}
   - component: {fileID: 5171516247613385428}
-  - component: {fileID: 6905177545926660096}
   - component: {fileID: 6455926907506958447}
   m_Layer: 6
   m_Name: MinionDummy
@@ -121,38 +120,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minionSO: {fileID: 11400000, guid: af9b061a3df27ee4f96b16e6ce20e51d, type: 2}
-  targetDestination: {fileID: 8819002754335881218, guid: 18e4de6c61b0ac342ad6fb1943a7d1e2, type: 3}
+  targetDestinationLeftTeam: {fileID: 8819002754335881218, guid: 18e4de6c61b0ac342ad6fb1943a7d1e2, type: 3}
+  targetDestinationRightTeam: {fileID: 8819002754335881218, guid: d09298170a8471047a7ac2a11afb1cda, type: 3}
   layerAttackable:
     serializedVersion: 2
     m_Bits: 64
-  team: 0
---- !u!54 &6905177545926660096
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5505830534816025560}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  team: 2
 --- !u!195 &6455926907506958447
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -167,9 +140,9 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0.5

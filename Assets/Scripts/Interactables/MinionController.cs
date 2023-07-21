@@ -7,7 +7,8 @@ public class MinionController : MonoBehaviour, IDamagable
     [SerializeField] private MinionSO minionSO;
 
     private NavMeshAgent minionNavAgent;
-    [SerializeField] private Transform targetDestination;
+    [SerializeField] private Transform targetDestinationLeftTeam;
+    [SerializeField] private Transform targetDestinationRightTeam;
     private Transform currentTargetDestination;
     [SerializeField] private LayerMask layerAttackable;
 
@@ -16,14 +17,32 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void Awake()
     {
+        //minionNavAgent = GetComponent<NavMeshAgent>();
+        //minionNavAgent.speed = minionSO.minionWalkSpeed;
+        //minionNavAgent.radius = minionSO.distanceToOtherMinions;
+
+
+    }
+
+    private void Start()
+    {
         minionNavAgent = GetComponent<NavMeshAgent>();
         minionNavAgent.speed = minionSO.minionWalkSpeed;
         minionNavAgent.radius = minionSO.distanceToOtherMinions;
 
-        currentTargetDestination = targetDestination;
+        //update team
+        Debug.Log(team);
+
+
+        if (team == Team.LeftTeam)
+        {
+            currentTargetDestination = targetDestinationLeftTeam;
+            Debug.Log("running to: " + currentTargetDestination.name);
+
+        }
+        else
+            currentTargetDestination = targetDestinationRightTeam;
     }
-
-
 
 
     private void Update()
@@ -85,9 +104,11 @@ public class MinionController : MonoBehaviour, IDamagable
                 {
                     if (tc.team != team)
                     {
-                        Debug.Log("Enemy: " + eo + " is in team " + mc.team);
+                        Debug.Log("Enemy: " + eo + " is in team " + tc.team);
                         return true;
                     }
+                    else
+                        return false;
                 }
                 else
                     return false;

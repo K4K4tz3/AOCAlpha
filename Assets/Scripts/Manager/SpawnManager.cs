@@ -46,8 +46,8 @@ public class SpawnManager : MonoBehaviour
 
         if (spawnTimer <= 0)
         {
-            SpawnMinions(spawnPointsLeftSide);
-            //SpawnMinions(spawnPointsRightSide);
+            SpawnMinions(spawnPointsLeftSide, Team.LeftTeam);
+            //SpawnMinions(spawnPointsRightSide, Team.RightTeam);
 
             //Reset timer
             spawnTimer = minionSO.spawnTimer;
@@ -55,7 +55,7 @@ public class SpawnManager : MonoBehaviour
 
     }
 
-    private void SpawnMinions(Transform[] spawnPoints)
+    private void SpawnMinions(Transform[] spawnPoints, Team desiredTeam)
     {
         GameObject go = new GameObject("Minion Wave");
 
@@ -69,7 +69,7 @@ public class SpawnManager : MonoBehaviour
             minion.transform.SetParent(go.transform);
 
             //Check if minion is spawned on left or right side
-            AssignMinionToTeam(minion, Team.LeftTeam);
+            AssignMinionToTeam(minion, desiredTeam);
             
             minion.gameObject.GetComponent<MinionController>().team = teamManager.GetObjectsTeam(minion);
 
