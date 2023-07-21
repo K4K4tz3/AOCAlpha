@@ -488,6 +488,7 @@ MonoBehaviour:
   leftTeam: []
   rightTeam: []
   unassignedWarlords: []
+  unassignedMinions: []
 --- !u!4 &804835831
 Transform:
   m_ObjectHideFlags: 0
@@ -842,6 +843,7 @@ MonoBehaviour:
   - {fileID: 5326291659449613242, guid: 5a1791ffcaf668743940b56a1fb92273, type: 3}
   spawnPointsRightSide:
   - {fileID: 9127958244165889615, guid: 6cd3dc452214a694ab6acfab6d65640c, type: 3}
+  teamManagerObject: {fileID: 804835829}
 --- !u!4 &1841292159
 Transform:
   m_ObjectHideFlags: 0
