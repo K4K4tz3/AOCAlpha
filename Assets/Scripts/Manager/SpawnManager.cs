@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -11,13 +12,31 @@ public class SpawnManager : MonoBehaviour
 
     private float spawnTimer;
 
+
+    #region Team Assignment
+    [SerializeField] private GameObject teamManagerObject;
+    private TeamManager teamManager;
+    #endregion
+
+    private void Awake()
+    {
+        teamManager = teamManagerObject.GetComponent<TeamManager>();
+
+    }
+
     private void Start()
     {
         //At Game Start, timer = first Spawn Timer because it's taking a while until minions first spawn in game
         //after that, timer has normal stats
         spawnTimer = minionSO.firstSpawnTimer;
-        
-        
+
+        if (teamManager.unassignedMinions != null)
+        {
+            teamManager.unassignedMinions.Add(this.gameObject);
+            
+        }
+
+
     }
 
     private void Update()
@@ -49,7 +68,21 @@ public class SpawnManager : MonoBehaviour
             minion.name = $"Minion number: {i}";
             minion.transform.SetParent(go.transform);
 
+            //Check if minion is spawned on left or right side
+            AssignMinionToTeam(minion, Team.LeftTeam);
+            
+            minion.gameObject.GetComponent<MinionController>().team = teamManager.GetWarlordTeam(minion);
+
         }
 
     }
+
+
+
+    private void AssignMinionToTeam(GameObject minion, Team desiredTeam)
+    {
+        teamManager.AssignTeamToChampion(minion, desiredTeam);
+     
+    }
+
 }

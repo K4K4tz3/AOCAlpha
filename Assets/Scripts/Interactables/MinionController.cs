@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +12,7 @@ public class MinionController : MonoBehaviour, IDamagable
     private Transform currentTargetDestination;
     [SerializeField] private LayerMask layerAttackable;
 
+    public Team team;
 
 
     private void Awake()
@@ -21,6 +23,8 @@ public class MinionController : MonoBehaviour, IDamagable
 
         currentTargetDestination = targetDestination;
     }
+
+ 
 
 
     private void Update()
@@ -39,19 +43,18 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void MoveInDirection()
     {
-        minionNavAgent.SetDestination(targetDestination.position);
+        minionNavAgent.SetDestination(currentTargetDestination.position);
 
-        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
+        Collider[] targets = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange);
 
-        //Check if the first enemy in the List is damagable 
-        if (enemies != null)
+        //if targets in range, set new target destination
+        
+        if (targets != null && targets[0].TryGetComponent(out IDamagable d))
         {
-            if (enemies[0].TryGetComponent(out IDamagable d))
-            {
-                //if so, set it as target destination 
-                targetDestination = enemies[0].transform;
+            Debug.Log($"enemy 1 = {targets[0]}");
 
-            }
+            currentTargetDestination = targets[0].transform;
+
         }
 
 
@@ -67,7 +70,12 @@ public class MinionController : MonoBehaviour, IDamagable
             //loop through all found enemies and run to the first one in list
             if (enemy.TryGetComponent(out IDamagable d))
             {
+                //run to attackable object
                 currentTargetDestination = enemies[0].transform;
+
+                //attack target
+                //check the team of the target
+                //only attack if it's in the enemys' team
             }
         }
     }

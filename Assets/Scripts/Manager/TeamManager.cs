@@ -13,12 +13,14 @@ public class TeamManager : MonoBehaviour
     [SerializeField] private List<GameObject> leftTeam;
     [SerializeField] private List<GameObject> rightTeam;
     public List<GameObject> unassignedWarlords;
+    public List<GameObject> unassignedMinions;
 
     private void Awake()
     {
         // Populate the list of unassigned warlords
         //AWAKE IMPORTANT
         unassignedWarlords = new List<GameObject>();
+        unassignedMinions = new List<GameObject>();
     }
 
     private void Start()
@@ -68,7 +70,7 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    private void AssignTeamToChampion(GameObject warlord, Team team)
+    public void AssignTeamToChampion(GameObject warlord, Team team)
     {
         if (team == Team.LeftTeam)
         {
