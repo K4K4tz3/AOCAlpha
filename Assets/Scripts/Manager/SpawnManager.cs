@@ -71,7 +71,7 @@ public class SpawnManager : MonoBehaviour
             //Check if minion is spawned on left or right side
             AssignMinionToTeam(minion, Team.LeftTeam);
             
-            minion.gameObject.GetComponent<MinionController>().team = teamManager.GetWarlordTeam(minion);
+            minion.gameObject.GetComponent<MinionController>().team = teamManager.GetObjectsTeam(minion);
 
         }
 
@@ -81,7 +81,7 @@ public class SpawnManager : MonoBehaviour
 
     private void AssignMinionToTeam(GameObject minion, Team desiredTeam)
     {
-        teamManager.AssignTeamToChampion(minion, desiredTeam);
+        teamManager.AssignTeamToObject(minion, desiredTeam);
      
     }
 

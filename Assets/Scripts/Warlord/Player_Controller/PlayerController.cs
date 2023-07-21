@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
     {
         //This Coroutine is needed because we have to wait a bit for the TeamManager Script to assign teams to the warlords
         yield return new WaitForSeconds(1f);
-        team = teamManager.GetWarlordTeam(this.gameObject);
+        team = teamManager.GetObjectsTeam(this.gameObject);
     }
 
 }

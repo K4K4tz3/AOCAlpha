@@ -40,6 +40,11 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
 
+    #region Team Assignment
+    [SerializeField] GameObject teamManagerObject;
+    private TeamManager teamManager;
+    public Team team;
+    #endregion
 
 
     private void Awake()
@@ -58,6 +63,9 @@ public class TurretController : MonoBehaviour, IDamagable
         turretSO.pointsRightTeam = defaultPointsRightTeam;
 
         turretSO.turretHP = defaultTurretHP;
+
+        teamManager = teamManagerObject.GetComponent<TeamManager>();
+        team = Team.None;
 
     }
 
@@ -288,12 +296,16 @@ public class TurretController : MonoBehaviour, IDamagable
             if (turretSO.pointsLeftTeam > turretSO.pointsRightTeam)
             {
                 currentAffiliateState = AffiliateState.leftTeam;
+                teamManager.AssignTeamToObject(this.gameObject, Team.LeftTeam);
+                team = teamManager.GetObjectsTeam(this.gameObject);
                 Debug.Log($"Turret is now captured by {currentAffiliateState}");
 
             }
             else
             {
                 currentAffiliateState = AffiliateState.rightTeam;
+                teamManager.AssignTeamToObject(this.gameObject, Team.RightTeam);
+                team = teamManager.GetObjectsTeam(this.gameObject);
                 Debug.Log($"Turret is now captured by {currentAffiliateState}");
 
             }

@@ -121,10 +121,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minionSO: {fileID: 11400000, guid: af9b061a3df27ee4f96b16e6ce20e51d, type: 2}
-  targetDestination: {fileID: 3631811388954780489, guid: 0b667671c4d05f74caac38fcb8a7c4bc, type: 3}
+  targetDestination: {fileID: 8819002754335881218, guid: 18e4de6c61b0ac342ad6fb1943a7d1e2, type: 3}
   layerAttackable:
     serializedVersion: 2
     m_Bits: 64
+  team: 0
 --- !u!54 &6905177545926660096
 Rigidbody:
   m_ObjectHideFlags: 0

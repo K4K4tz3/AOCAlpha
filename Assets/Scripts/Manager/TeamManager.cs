@@ -12,8 +12,10 @@ public class TeamManager : MonoBehaviour
 
     [SerializeField] private List<GameObject> leftTeam;
     [SerializeField] private List<GameObject> rightTeam;
+
     public List<GameObject> unassignedWarlords;
     public List<GameObject> unassignedMinions;
+    public List<GameObject> unassignedTurrets;
 
     private void Awake()
     {
@@ -26,10 +28,10 @@ public class TeamManager : MonoBehaviour
     private void Start()
     {
         // Assign teams randomly
-        AssignTeamsRandomly();
+        AssignWarlordTeamsRandomly();
     }
 
-    private void AssignTeamsRandomly()
+    private void AssignWarlordTeamsRandomly()
     {
         while (unassignedWarlords.Count > 0)
         {
@@ -38,7 +40,7 @@ public class TeamManager : MonoBehaviour
 
             // Assign the champion to a team
             Team team = GetRandomAvailableTeam();
-            AssignTeamToChampion(warlord, team);
+            AssignTeamToObject(warlord, team);
 
             unassignedWarlords.RemoveAt(randomIndex);
         }
@@ -70,27 +72,27 @@ public class TeamManager : MonoBehaviour
         }
     }
 
-    public void AssignTeamToChampion(GameObject warlord, Team team)
+    public void AssignTeamToObject(GameObject objectToAssign, Team team)
     {
         if (team == Team.LeftTeam)
         {
-            leftTeam.Add(warlord);
-            Debug.Log(warlord.name + " has been assigned to LeftTeam.");
+            leftTeam.Add(objectToAssign);
+            Debug.Log(objectToAssign.name + " has been assigned to LeftTeam.");
         }
         else if (team == Team.RightTeam)
         {
-            rightTeam.Add(warlord);
-            Debug.Log(warlord.name + " has been assigned to RightTeam.");
+            rightTeam.Add(objectToAssign);
+            Debug.Log(objectToAssign.name + " has been assigned to RightTeam.");
         }
     }
 
-    public Team GetWarlordTeam(GameObject warlord)
+    public Team GetObjectsTeam(GameObject assignedObject)
     {
-        if(leftTeam.Contains(warlord))
+        if(leftTeam.Contains(assignedObject))
         {
             return Team.LeftTeam;
         }
-        else if(rightTeam.Contains(warlord))
+        else if(rightTeam.Contains(assignedObject))
         {
             return Team.RightTeam;
         }

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,7 +23,7 @@ public class MinionController : MonoBehaviour, IDamagable
         currentTargetDestination = targetDestination;
     }
 
- 
+
 
 
     private void Update()
@@ -33,30 +32,71 @@ public class MinionController : MonoBehaviour, IDamagable
         //After Spawning, Minions walk directly in a straight line through map
         if (minionNavAgent != null)
         {
-            MoveInDirection();
+
+            MoveMinion();
         }
 
-        //if there are hostile turrets, attack them
-        //if there are hostile warlords or minions, attack them
+        if (IsEnemyInAutoAttackRange())
+        {
+            AttackEnemy();
+        }
+
     }
 
 
-    private void MoveInDirection()
+    private void MoveMinion()
     {
         minionNavAgent.SetDestination(currentTargetDestination.position);
+    }
 
-        Collider[] targets = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange);
+    private bool IsEnemyInAutoAttackRange()
+    {
+        //Checks if there are enemies in auto attack range
+        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
 
-        //if targets in range, set new target destination
-        
-        if (targets != null && targets[0].TryGetComponent(out IDamagable d))
+        if (enemies != null)
         {
-            Debug.Log($"enemy 1 = {targets[0]}");
-
-            currentTargetDestination = targets[0].transform;
-
+            //if there are enemies, check what team the enemies are in
+            //if they are not in the same team, return true
+            foreach (Collider eo in enemies)
+            {
+                if (eo.TryGetComponent(out PlayerController pc))
+                {
+                    if (pc.team != team)
+                    {
+                        Debug.Log("Enemy: " + eo + " is in team " + pc.team);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+                //if a minion is in range, attack it
+                if (eo.TryGetComponent(out MinionController mc))
+                {
+                    if (mc.team != team)
+                    {
+                        Debug.Log("Enemy: " + eo + " is in team " + mc.team);
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+                if (eo.TryGetComponent(out TurretController tc))
+                {
+                    if (tc.team != team)
+                    {
+                        Debug.Log("Enemy: " + eo + " is in team " + mc.team);
+                        return true;
+                    }
+                }
+                else
+                    return false;
+            }
+            return false;
         }
 
+        else
+            return false;
 
     }
 
@@ -64,20 +104,26 @@ public class MinionController : MonoBehaviour, IDamagable
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
 
-
-        foreach (Collider enemy in enemies)
+        if (enemies != null)
         {
-            //loop through all found enemies and run to the first one in list
-            if (enemy.TryGetComponent(out IDamagable d))
+            foreach (Collider enemy in enemies)
             {
-                //run to attackable object
-                currentTargetDestination = enemies[0].transform;
+                //loop through all found enemies and run to the first one in list
+                if (enemy.TryGetComponent(out IDamagable d))
+                {
+                    //run to attackable object
+                    currentTargetDestination = enemies[0].transform;
 
-                //attack target
-                //check the team of the target
-                //only attack if it's in the enemys' team
+                    //attack target
+                    Debug.Log("wanna attack: " + enemy);
+                    //check the team of the target
+                    //only attack if it's in the enemys' team
+                }
             }
+
         }
+        else
+            return;
     }
 
 
