@@ -14,11 +14,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
     private Collider warlordCollider;
+    private PlayerController playerController;
     #endregion
 
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
-    [SerializeField] private List<string> _targetTags = new List<string>();
     #endregion
 
     #region Damage Collider
@@ -58,6 +58,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         damageAreaAbility3 = this.gameObject.transform.GetChild(3).gameObject;
 
         warlordCollider = GetComponent<Collider>();
+        playerController = GetComponent<PlayerController>();
 
     }
 
@@ -78,7 +79,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     {
         //check if something attackable is in range
         //transform.position + this vector so that the sphere not inside and behind the warlord
-        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
+        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => playerController._targetTags.Contains((string)n.tag)).ToList();
 
         if (_targetsInRange.Count > 0)
         {

@@ -16,11 +16,13 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     private Camera mainCamera;
 
     private Collider warlordCollider;
+
+    private PlayerController playerController;
     #endregion
 
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
-    [SerializeField] private List<string> _targetTags = new List<string>();
+   
     #endregion
 
     #region Damage Area
@@ -52,6 +54,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         layerAttackable = LayerMask.NameToLayer("Attackable");
         navMeshAgent = GetComponent<NavMeshAgent>();
         warlordRenderer = GetComponent<Renderer>();
+        playerController = GetComponent<PlayerController>();
 
         standardHealthAmount = lyrienSO.healthAmount;
         standardChardAmount = lyrienSO.chardAmount;
@@ -86,7 +89,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     {
         //check if something attackable is in range
         //transform.position + this vector so that the sphere not inside and behind the warlord
-        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
+        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => playerController._targetTags.Contains((string)n.tag)).ToList();
 
         if (_targetsInRange.Count > 0)
         {
@@ -102,7 +105,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     {
         //check if something attackable is in range
         //transform.position + this vector so that the sphere is not inside or behind the warlord
-        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => _targetTags.Contains((string)n.tag)).ToList();
+        _targetsInRange = Physics.OverlapSphere(transform.position + position, range, layerAttackable).Where((n) => playerController._targetTags.Contains((string)n.tag)).ToList();
 
         if (_targetsInRange.Count > 0)
         {

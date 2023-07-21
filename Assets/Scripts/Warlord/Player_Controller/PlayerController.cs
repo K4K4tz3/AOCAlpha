@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,6 +44,17 @@ public class PlayerController : MonoBehaviour
     private float maxChange = 0.1f;
     #endregion
 
+    #region Target Tags
+
+    public List<string> _targetTags = new List<string>();
+    private string turretNeutralTag = "NeutralTurret";
+    private string turretLeftTeamTag = "LeftTeamTurret";
+    private string turretRightTeamTag = "RightTeamTurret";
+    private string minionLeftTeamTag = "MinionLeftTeam";
+    private string minionRightTeamTag = "MinionRightTeam";
+    private string warlordLeftTeamTag = "WarlordLeftTeam";
+    private string warlordRightTeamTag = "WarlordRightTeam";
+    #endregion
 
     #region Team Assignment
     [SerializeField] GameObject teamManagerObject;
@@ -66,6 +78,8 @@ public class PlayerController : MonoBehaviour
         teamManager = teamManagerObject.GetComponent<TeamManager>();
         team = Team.None;
 
+
+
         SwitchState(IdleState);
     }
 
@@ -81,6 +95,12 @@ public class PlayerController : MonoBehaviour
             teamManager.unassignedWarlords.Add(this.gameObject);
             StartCoroutine(WaitForTeamAssignment());
         }
+
+        //target tags get assigned after some waiting time by script
+        _targetTags.Add(turretNeutralTag);
+
+        StartCoroutine(WaitForTargetAssignment());
+
 
     }
     private void OnDisable()
@@ -141,6 +161,26 @@ public class PlayerController : MonoBehaviour
         //This Coroutine is needed because we have to wait a bit for the TeamManager Script to assign teams to the warlords
         yield return new WaitForSeconds(1f);
         team = teamManager.GetObjectsTeam(this.gameObject);
+    }
+
+    IEnumerator WaitForTargetAssignment()
+    {
+        //This Coroutine is needed because we have to wait a bit for the TeamManager Script to assign teams to the warlords
+        yield return new WaitForSeconds(1f);
+        if (team == Team.LeftTeam)
+        {
+            _targetTags.Add(warlordRightTeamTag);
+            _targetTags.Add(turretRightTeamTag);
+            _targetTags.Add(minionRightTeamTag);
+
+        }
+        else if (team == Team.RightTeam)
+        {
+            _targetTags.Add(warlordLeftTeamTag);
+            _targetTags.Add(minionLeftTeamTag);
+            _targetTags.Add(turretLeftTeamTag);
+        }
+
     }
 
 }

@@ -26,6 +26,10 @@ public class TurretController : MonoBehaviour, IDamagable
     [SerializeField] private FocusState currentFocusState;
     [SerializeField] private AffiliateState currentAffiliateState;
 
+    private string turretNeutralTag = "NeutralTurret";
+    private string turretLeftTeamTag = "LeftTeamTurret";
+    private string turretRightTeamTag = "RightTeamTurret";
+
 
     private Collider currentTarget;
     [SerializeField] private LayerMask layerAttackable;
@@ -54,6 +58,7 @@ public class TurretController : MonoBehaviour, IDamagable
         //Turrets start neutral
         currentFocusState = FocusState.neutral;
         currentAffiliateState = AffiliateState.neutral;
+        gameObject.tag = turretNeutralTag;
 
         //Reset stats 
         attackCooldown = turretSO.turretCooldown;
@@ -318,6 +323,7 @@ public class TurretController : MonoBehaviour, IDamagable
                 currentAffiliateState = AffiliateState.leftTeam;
                 teamManager.AssignTeamToObject(this.gameObject, Team.LeftTeam);
                 team = teamManager.GetObjectsTeam(this.gameObject);
+                gameObject.tag = turretLeftTeamTag;
                 Debug.Log($"Turret is now captured by {currentAffiliateState}");
 
             }
@@ -326,6 +332,7 @@ public class TurretController : MonoBehaviour, IDamagable
                 currentAffiliateState = AffiliateState.rightTeam;
                 teamManager.AssignTeamToObject(this.gameObject, Team.RightTeam);
                 team = teamManager.GetObjectsTeam(this.gameObject);
+                gameObject.tag = turretRightTeamTag;
                 Debug.Log($"Turret is now captured by {currentAffiliateState}");
 
             }

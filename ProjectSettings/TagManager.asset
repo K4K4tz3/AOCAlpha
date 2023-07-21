@@ -9,6 +9,11 @@ TagManager:
   - Warlord
   - MinionLeftTeam
   - MinionRightTean
+  - NeutralTurret
+  - LeftTeamTurret
+  - RightTeamTurret
+  - WarlordLeftTeam
+  - WarlordRightTeam
   layers:
   - Default
   - TransparentFX
