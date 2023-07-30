@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ab74f4b9fd24bd428ec61fc28812aa1, type: 3}
   m_Name: TurretSO
   m_EditorClassIdentifier: 
-  turretDamage: 20
-  turretCooldown: 2
-  turretAttackRange: 10
+  turretDamage: 10
+  turretCooldown: 4
+  turretAttackRange: 15
   chardomancerZoneRange: 10
   chardRegenerationRate: 5
   chardStock: 0

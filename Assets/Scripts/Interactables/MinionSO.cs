@@ -15,6 +15,7 @@ public class MinionSO : ScriptableObject
     public float minionAttackDamage;
     public float minionAttackSpeed;
     public float minionHealth;
+    public float minionSightRange;
 
     [Header("Waves")]
     public float minionCountPerWave;

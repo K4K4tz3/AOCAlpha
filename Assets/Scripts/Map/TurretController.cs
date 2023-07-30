@@ -44,6 +44,9 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
 
+    [SerializeField] private Transform shotSpawnPoint;
+    [SerializeField] private GameObject turretShotPrefab;
+
     #region Team Assignment
     [SerializeField] GameObject teamManagerObject;
     private TeamManager teamManager;
@@ -72,6 +75,8 @@ public class TurretController : MonoBehaviour, IDamagable
         teamManager = teamManagerObject.GetComponent<TeamManager>();
         team = Team.None;
 
+
+
     }
 
     private void Update()
@@ -88,6 +93,7 @@ public class TurretController : MonoBehaviour, IDamagable
                     if (IsEnemyOfTargetType(currentTarget))
                     {
                         AttackTarget(currentTarget);
+                        
                     }
                     else
                     {
@@ -103,6 +109,7 @@ public class TurretController : MonoBehaviour, IDamagable
                 if (currentTarget != null)
                 {
                     AttackTarget(currentTarget);
+                    
                     break;
                 }
                 currentFocusState = FocusState.neutral;
@@ -213,6 +220,7 @@ public class TurretController : MonoBehaviour, IDamagable
                 if (target.TryGetComponent(out IDamagable d))
                 {
                     //deal damage to anything
+                    InstantiateShoot(target, target.transform.position);
                     d.GetDamaged(turretSO.turretDamage, turretCollider);
                     Debug.Log("Attacking enemy: " + target.name);
 
@@ -230,6 +238,7 @@ public class TurretController : MonoBehaviour, IDamagable
                         //deal damage to warlord
                         if (target.TryGetComponent(out IDamagable d))
                         {
+                            InstantiateShoot(target, target.transform.position);
                             d.GetDamaged(turretSO.turretDamage, turretCollider);
                             Debug.Log("Attacking warlord: " + target.name);
                         }
@@ -241,6 +250,7 @@ public class TurretController : MonoBehaviour, IDamagable
                     if ((mc.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (mc.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
                     {
                         //deal damage to minion
+                        InstantiateShoot(target, target.transform.position);
                         mc.GetDamaged(turretSO.turretDamage, turretCollider);
                         Debug.Log("Attacking enemy: " + target.name);
                     }
@@ -264,6 +274,27 @@ public class TurretController : MonoBehaviour, IDamagable
     {
         currentFocusState = FocusState.aggro;
         currentTarget = targetWarlord;
+    }
+
+    private void InstantiateShoot(Collider target, Vector3 directionToTarget)
+    {
+       
+            Debug.Log("instantiating shot");
+
+            //instantiate the bullet at it's spawn point
+            GameObject turretShot = Instantiate(turretShotPrefab, shotSpawnPoint.transform.position, shotSpawnPoint.transform.rotation);
+
+            //Calculate direction to target
+            directionToTarget = (target.transform.position - turretShot.transform.position).normalized;
+
+            //Get ShotMovement script from the shot to move it
+            ShotMovement shotMovement = turretShot.GetComponent<ShotMovement>();
+
+            //pass the direction to the movement Script
+            shotMovement.SetMoveDirection(directionToTarget);
+
+        
+
     }
 
 
@@ -298,9 +329,9 @@ public class TurretController : MonoBehaviour, IDamagable
             }
         }
         //Minion check:
-        if(damageDealer.gameObject.TryGetComponent(out MinionController mc) && turretSO.totalTurretPoints > 0)
+        if (damageDealer.gameObject.TryGetComponent(out MinionController mc) && turretSO.totalTurretPoints > 0)
         {
-            if(mc.team == Team.LeftTeam)
+            if (mc.team == Team.LeftTeam)
             {
                 turretSO.pointsLeftTeam += damage;
                 turretSO.totalTurretPoints -= damage;
@@ -374,4 +405,9 @@ public class TurretController : MonoBehaviour, IDamagable
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, turretSO.turretAttackRange/2);
+    }
 }

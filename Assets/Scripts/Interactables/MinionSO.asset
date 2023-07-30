@@ -18,6 +18,7 @@ MonoBehaviour:
   minionAttackDamage: 5
   minionAttackSpeed: 3
   minionHealth: 0
+  minionSightRange: 8
   minionCountPerWave: 5
   firstSpawnTimer: 2
   spawnTimer: 20
