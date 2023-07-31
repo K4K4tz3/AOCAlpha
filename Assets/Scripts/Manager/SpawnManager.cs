@@ -7,11 +7,12 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private MinionSO minionSO;
 
     public GameObject minionPrefab;
-    public Transform[] spawnPointsLeftSide;
-    public Transform[] spawnPointsRightSide;
+    
 
     private float spawnTimer;
 
+    [SerializeField] private Transform leftSpawnLocation;
+    [SerializeField] private Transform rightSpawnLocation;
 
     #region Team Assignment
     [SerializeField] private GameObject teamManagerObject;
@@ -46,8 +47,8 @@ public class SpawnManager : MonoBehaviour
 
         if (spawnTimer <= 0)
         {
-            SpawnMinions(spawnPointsLeftSide, Team.LeftTeam);
-            //SpawnMinions(spawnPointsRightSide, Team.RightTeam);
+            SpawnMinions(leftSpawnLocation, Team.LeftTeam);
+            //SpawnMinions(rightSpawnLocation, Team.RightTeam);
 
             //Reset timer
             spawnTimer = minionSO.spawnTimer;
@@ -55,7 +56,7 @@ public class SpawnManager : MonoBehaviour
 
     }
 
-    private void SpawnMinions(Transform[] spawnPoints, Team desiredTeam)
+    private void SpawnMinions(Transform spawnPoint, Team desiredTeam)
     {
         GameObject go = new GameObject("Minion Wave");
 
@@ -64,17 +65,22 @@ public class SpawnManager : MonoBehaviour
 
         for (int i = 0; i < minionSO.minionCountPerWave; i++)
         {
-            GameObject minion = Instantiate(minionPrefab, spawnPoints[i].position, Quaternion.identity);
+            GameObject minion = Instantiate(minionPrefab, spawnPoint.position, Quaternion.identity);
             minion.name = $"Minion number: {i}";
             minion.transform.SetParent(go.transform);
-            minionSO.minionHealth = 50000;
-
-            Debug.Log($"Minion number: {i} has {minionSO.minionHealth} left ");
-
-            
+    
             AssignMinionToTeam(minion, desiredTeam);
-            
             minion.gameObject.GetComponent<MinionController>().team = teamManager.GetObjectsTeam(minion);
+
+            //set destination
+            if(teamManager.GetObjectsTeam(minion) == Team.LeftTeam)
+            {
+                minion.gameObject.GetComponent<MinionController>().targetDestinationLeftTeam = rightSpawnLocation;
+            }
+            else if (teamManager.GetObjectsTeam(minion) == Team.RightTeam)
+            {
+                minion.gameObject.GetComponent<MinionController>().targetDestinationLeftTeam = leftSpawnLocation;
+            }
 
         }
 

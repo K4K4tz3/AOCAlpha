@@ -20,8 +20,8 @@ public class ShotMovement : MonoBehaviour
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        DestroyImmediate(gameObject);
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    DestroyImmediate(gameObject);
+    //}
 }

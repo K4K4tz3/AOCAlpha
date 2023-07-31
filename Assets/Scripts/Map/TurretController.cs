@@ -35,9 +35,13 @@ public class TurretController : MonoBehaviour, IDamagable
     [SerializeField] private LayerMask layerAttackable;
     private Collider turretCollider;
 
-    private float attackCooldown;
+
+    //cd here in script bc of reset - not in so 
+    private float attackCooldown = 3.5f;
     private float currentCooldown = 0f;                     //CD is 0 in the beginning so the turret can shoot right away
 
+
+    //points wrsl auch hier besser für die türme einzeln
     private float defaultTurretPoints = 200;                //Set points in the beginning (awake) to default -> 200 
     private float defaultPointsLeftTeam = 0;
     private float defaultPointsRightTeam = 0;
@@ -63,8 +67,6 @@ public class TurretController : MonoBehaviour, IDamagable
         currentAffiliateState = AffiliateState.neutral;
         gameObject.tag = turretNeutralTag;
 
-        //Reset stats 
-        attackCooldown = turretSO.turretCooldown;
 
         turretSO.totalTurretPoints = defaultTurretPoints;
         turretSO.pointsLeftTeam = defaultPointsLeftTeam;
@@ -75,13 +77,12 @@ public class TurretController : MonoBehaviour, IDamagable
         teamManager = teamManagerObject.GetComponent<TeamManager>();
         team = Team.None;
 
-
-
     }
 
     private void Update()
     {
-
+        //Debug.Log("Current Focus State: " + currentFocusState);
+        //Debug.Log("Current Cooldown: " + currentCooldown);
         switch (currentFocusState)
         {
             case FocusState.neutral:
@@ -93,7 +94,6 @@ public class TurretController : MonoBehaviour, IDamagable
                     if (IsEnemyOfTargetType(currentTarget))
                     {
                         AttackTarget(currentTarget);
-                        
                     }
                     else
                     {
@@ -108,8 +108,9 @@ public class TurretController : MonoBehaviour, IDamagable
             case FocusState.aggro:
                 if (currentTarget != null)
                 {
+
                     AttackTarget(currentTarget);
-                    
+
                     break;
                 }
                 currentFocusState = FocusState.neutral;
@@ -117,6 +118,8 @@ public class TurretController : MonoBehaviour, IDamagable
             case FocusState.destroyed:
                 break;
         }
+
+      
 
     }
 
@@ -155,8 +158,8 @@ public class TurretController : MonoBehaviour, IDamagable
 
         if (targetEnemy != null)
         {
-            currentFocusState = FocusState.alerted;
             currentTarget = targetEnemy;
+            currentFocusState = FocusState.alerted;
         }
 
     }
@@ -209,7 +212,6 @@ public class TurretController : MonoBehaviour, IDamagable
     }
 
 
-    //TODO Instantiate laser/bullet/whatever
     private void AttackTarget(Collider target)
     {
         if (currentCooldown <= 0f)
@@ -258,12 +260,15 @@ public class TurretController : MonoBehaviour, IDamagable
             }
 
             currentCooldown = attackCooldown;
+            /*currentFocusState = FocusState.neutral;*/ // Transition back to neutral state
 
         }
-
         currentCooldown -= Time.deltaTime;
+        
+        //currentFocusState = FocusState.neutral;
 
-        if (currentCooldown <= 0f)
+
+        if (currentCooldown > 0f)
         {
             currentFocusState = FocusState.neutral; // Transition back to neutral state
         }
@@ -278,22 +283,22 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private void InstantiateShoot(Collider target, Vector3 directionToTarget)
     {
-       
-            Debug.Log("instantiating shot");
 
-            //instantiate the bullet at it's spawn point
-            GameObject turretShot = Instantiate(turretShotPrefab, shotSpawnPoint.transform.position, shotSpawnPoint.transform.rotation);
+        Debug.Log("instantiating shot");
 
-            //Calculate direction to target
-            directionToTarget = (target.transform.position - turretShot.transform.position).normalized;
+        //instantiate the bullet at it's spawn point
+        GameObject turretShot = Instantiate(turretShotPrefab, shotSpawnPoint.transform.position, shotSpawnPoint.transform.rotation);
 
-            //Get ShotMovement script from the shot to move it
-            ShotMovement shotMovement = turretShot.GetComponent<ShotMovement>();
+        //Calculate direction to target
+        directionToTarget = (target.transform.position - turretShot.transform.position).normalized;
 
-            //pass the direction to the movement Script
-            shotMovement.SetMoveDirection(directionToTarget);
+        //Get ShotMovement script from the shot to move it
+        ShotMovement shotMovement = turretShot.GetComponent<ShotMovement>();
 
-        
+        //pass the direction to the movement Script
+        shotMovement.SetMoveDirection(directionToTarget);
+
+
 
     }
 
@@ -408,6 +413,6 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, turretSO.turretAttackRange/2);
+        Gizmos.DrawWireSphere(transform.position, turretSO.turretAttackRange );
     }
 }

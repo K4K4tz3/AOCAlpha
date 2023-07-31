@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,24 +12,25 @@ public class MinionController : MonoBehaviour, IDamagable
 
     [SerializeField] private MinionSO minionSO;
     [SerializeField] private MinionHealthbar healthbar;
-    private float maxHealth;
+    [SerializeField] private float currentHealth;
+    [SerializeField] private float maxHealth;
     private Color teamColor;
     public Team team;
 
     private Collider minionCollider;
     private NavMeshAgent minionNavAgent;
-    [SerializeField] private Transform targetDestinationLeftTeam;
-    [SerializeField] private Transform targetDestinationRightTeam;
+    public Transform targetDestinationLeftTeam;
+    public Transform targetDestinationRightTeam;
+    private float desiredStoppingDistance = 10;
+
+
     private Transform currentTargetDestination;
     [SerializeField] private LayerMask layerAttackable;
 
-    [SerializeField] private List<Transform> waypointsLeftTeam;
-    [SerializeField] private List<Transform> waypointsRightTeam;
-
-
-
     public MinionState state;
 
+
+    //anstatt overlap sphere -> collider trigger enter als child object
 
     private void Start()
     {
@@ -41,15 +41,15 @@ public class MinionController : MonoBehaviour, IDamagable
         minionCollider = GetComponent<Collider>();
 
         healthbar = GetComponentInChildren<MinionHealthbar>();
-        maxHealth = minionSO.minionHealth;
-        healthbar.UpdateHealthbar(minionSO.minionHealth, maxHealth);
+        maxHealth = 300;
+        currentHealth = maxHealth;
+        healthbar.UpdateHealthbar(currentHealth, maxHealth);
 
         if (team == Team.LeftTeam)
         {
             currentTargetDestination = targetDestinationLeftTeam;
             gameObject.tag = "MinionLeftTeam";
             teamColor = Color.blue;
-            Debug.Log("running to: " + currentTargetDestination.name);
 
         }
         else
@@ -69,10 +69,27 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void Update()
     {
+
         switch (state)
         {
             case MinionState.walking:
-                MoveMinion(currentTargetDestination.position);
+
+                if (IsEnemyInSightRange())
+                {
+                    MoveMinion(currentTargetDestination.position);
+                }
+                if (IsEnemyInAttackRange())
+                {
+                    minionNavAgent.ResetPath();
+                    state = MinionState.attacking;
+
+                }
+                else
+                {
+                    MoveMinion(currentTargetDestination.position);
+
+                }
+
                 break;
             case MinionState.attacking:
                 AttackEnemy();
@@ -84,19 +101,29 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void MoveMinion(Vector3 destination)
     {
-        minionNavAgent.SetDestination(destination);
+        float distanceToDestination = Vector3.Distance(transform.position, destination);
 
-        if (IsEnemyInAutoAttackRange())
+        Debug.Log("Distance to Destination: " + distanceToDestination);
+        Debug.Log("Desired Stopping Distance: " + desiredStoppingDistance);
+        Debug.Log(IsEnemyInAttackRange());
+        Debug.Log(IsEnemyInSightRange());
+
+        if (distanceToDestination > desiredStoppingDistance)
         {
-            state = MinionState.attacking;
+            minionNavAgent.SetDestination(destination);
+        }
+        else if (IsEnemyInAttackRange())
+        {
             minionNavAgent.ResetPath();
+            state = MinionState.attacking;
         }
     }
 
-    private bool IsEnemyInAutoAttackRange()
+
+    private bool IsEnemyInAttackRange()
     {
         //Checks if there are enemies in auto attack range
-        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionSightRange, layerAttackable);
+        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
 
         if (enemies != null)
         {
@@ -108,31 +135,28 @@ public class MinionController : MonoBehaviour, IDamagable
                 {
                     if (pc.team != team)
                     {
-                        minionNavAgent.SetDestination(pc.transform.position);
-                        Debug.Log("Enemy: " + eo + " is in team " + pc.team);
+                        //Debug.Log("Enemy: " + eo + " is in team " + pc.team);
                         return true;
                     }
                     else
                         return false;
                 }
                 //if a minion is in range, attack it
-                if (eo.TryGetComponent(out MinionController mc))
+                else if (eo.TryGetComponent(out MinionController mc))
                 {
                     if (mc.team != team)
                     {
-                        Debug.Log("Enemy: " + eo + " is in team " + mc.team);
-                        minionNavAgent.SetDestination(mc.transform.position);
+                        //Debug.Log("Enemy: " + eo + " is in team " + mc.team);
                         return true;
                     }
                     else
                         return false;
                 }
-                if (eo.TryGetComponent(out TurretController tc))
+                else if (eo.TryGetComponent(out TurretController tc))
                 {
                     if (tc.team != team)
                     {
-                        minionNavAgent.SetDestination(tc.transform.position);
-                        Debug.Log("Enemy: " + eo + " is in team " + tc.team);
+                        //Debug.Log("Enemy: " + eo + " is in team " + tc.team);
                         return true;
                     }
                     else
@@ -141,12 +165,55 @@ public class MinionController : MonoBehaviour, IDamagable
                 else
                     return false;
             }
-            return false;
-        }
 
+            return true;
+        }
         else
             return false;
 
+    }
+
+    private bool IsEnemyInSightRange()
+    {
+        //Checks if there are enemies in range
+        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionSightRange, layerAttackable);
+
+        if (enemies != null)
+        {
+            // If there are enemies, set the destination to the first one found
+            foreach (Collider enemy in enemies)
+            {
+                if (enemy.TryGetComponent(out PlayerController pc))
+                {
+                    if (pc != null && pc.team != team)
+                    {
+                        currentTargetDestination = enemy.transform;
+                        Debug.Log("new destination player = " + currentTargetDestination);
+                        return true;
+                    }
+                }
+                else if (enemy.TryGetComponent(out MinionController mc))
+                {
+                    if (mc != null && mc.team != team)
+                    {
+                        currentTargetDestination = enemy.transform;
+                        Debug.Log("new destination minion = " + currentTargetDestination);
+                        return true;
+                    }
+                }
+                else if (enemy.TryGetComponent(out TurretController tc))
+                {
+                    if (tc != null && tc.team != team)
+                    {
+                        currentTargetDestination = enemy.transform;
+                        Debug.Log("new destination turret = " + currentTargetDestination);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private void AttackEnemy()
@@ -160,29 +227,34 @@ public class MinionController : MonoBehaviour, IDamagable
                 //loop through all found enemies and run to the first one in list
                 if (enemy.TryGetComponent(out IDamagable d))
                 {
-
-                    //check team, otherwise it will attack minions from the same team
-
-                    //run to attackable object
-                    currentTargetDestination = enemies[0].transform;
-                    minionNavAgent.SetDestination(currentTargetDestination.position);
-
-
-
-                    //
-                    Debug.Log(minionNavAgent.destination);
-
-
-                    d.GetDamaged(minionSO.minionAttackDamage, minionCollider);
-
-
-
+                    //check tag, otherwise it will attack minions from the same team
+                    if (enemy.gameObject.tag != gameObject.tag)
+                    {
+                        minionNavAgent.ResetPath();
+                        d.GetDamaged(minionSO.minionAttackDamage, minionCollider);
+                        Debug.Log("Minion attacking " + enemy);
+                    }
                 }
-            }
 
+            }
         }
         else
+        {
+            //default destination
+            if (team == Team.LeftTeam)
+            {
+                currentTargetDestination = targetDestinationLeftTeam;
+                minionNavAgent.SetDestination(currentTargetDestination.position);
+            }
+            else
+            {
+                currentTargetDestination = targetDestinationRightTeam;
+                minionNavAgent.SetDestination(currentTargetDestination.position);
+            }
+
+            state = MinionState.walking;
             return;
+        }
     }
 
 
@@ -192,14 +264,12 @@ public class MinionController : MonoBehaviour, IDamagable
         //Die animation
         Destroy(gameObject);
     }
-
-
     public void GetDamaged(float damage, Collider damageDealer)
     {
-        if (minionSO.minionHealth > 0)
+        if (currentHealth > 0)
         {
-            minionSO.minionHealth -= damage;
-            healthbar.UpdateHealthbar(minionSO.minionHealth, maxHealth);
+            currentHealth -= damage;
+            healthbar.UpdateHealthbar(currentHealth, maxHealth);
         }
         else
         {
@@ -209,6 +279,10 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void OnDrawGizmos()
     {
+        Gizmos.DrawWireSphere(transform.position, minionSO.minionSightRange);
+
+        Gizmos.color = Color.blue;
+
         Gizmos.DrawWireSphere(transform.position, minionSO.minionAttackRange);
     }
 
