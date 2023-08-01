@@ -15,8 +15,10 @@ MonoBehaviour:
   healthAmount: 200
   chardAmount: 100
   movementSpeed: 10
+  spawnPosition: {x: 0, y: 0}
+  respawnTimer: 0
   autoAttackRange: 4
-  autoAttackDamage: 10
+  autoAttackDamage: 9
   ability1Cooldown: 7
   ability1DmgWarlord: 0
   ability1DmgMinion: 0
@@ -38,5 +40,9 @@ MonoBehaviour:
   ability3ChardCost: 20
   ability3Range: 4
   ability3Duration: 1
-  windUp: 0
-  windDown: 0
+  ability1DelayBefore: 0
+  ability2DelayBefore: 0
+  ability3DelayBefore: 0
+  ability1DelayAfter: 0
+  ability2DelayAfter: 0
+  ability3DelayAfter: 0

@@ -73,6 +73,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         warlordCollider = GetComponent<Collider>();
         playerController = GetComponent<PlayerController>();
 
+        healthbar = GetComponentInChildren<w_HeragzonHealthbar>();
+        chardbar = GetComponentInChildren<w_HeragzonChardbar>();
   
         healthbar.UpdateHealthbar(heragzonSO.healthAmount, standardHealthAmount);
         
