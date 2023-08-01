@@ -13,12 +13,8 @@ MonoBehaviour:
   m_Name: MinionSO
   m_EditorClassIdentifier: 
   minionWalkSpeed: 5
-  distanceToOtherMinions: 0.1
-  minionAttackRange: 10
+  distanceToOtherMinions: 1.75
   minionAttackDamage: 5
   minionAttackSpeed: 3
-  minionHealth: 50000
-  minionSightRange: 11
-  minionCountPerWave: 1
-  firstSpawnTimer: 2
-  spawnTimer: 20
+  minionCountPerWave: 5
+  spawnTimer: 35

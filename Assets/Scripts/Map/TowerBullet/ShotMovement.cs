@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShotMovement : MonoBehaviour
 {
 
-    private float moveSpeed = 20f;
+    private float moveSpeed = 30f;
     private Vector3 moveDirection;
 
 

@@ -46,7 +46,11 @@ public class TurretController : MonoBehaviour, IDamagable
     private float defaultPointsLeftTeam = 0;
     private float defaultPointsRightTeam = 0;
 
+    private float currentPointsLeftTeam;
+    private float currentPointsRightTeam;
+
     private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
+    private float currentTurretHP;
 
     [SerializeField] private Transform shotSpawnPoint;
     [SerializeField] private GameObject turretShotPrefab;
@@ -67,11 +71,11 @@ public class TurretController : MonoBehaviour, IDamagable
         currentAffiliateState = AffiliateState.neutral;
         gameObject.tag = turretNeutralTag;
 
+        currentTurretHP = defaultTurretHP;
 
         turretSO.totalTurretPoints = defaultTurretPoints;
         turretSO.pointsLeftTeam = defaultPointsLeftTeam;
         turretSO.pointsRightTeam = defaultPointsRightTeam;
-
         turretSO.turretHP = defaultTurretHP;
 
         teamManager = teamManagerObject.GetComponent<TeamManager>();
@@ -316,45 +320,45 @@ public class TurretController : MonoBehaviour, IDamagable
 
         //check if damageDealer has a playerController Script to get team membership
         // && if turret still has more than 0 points
-        if (damageDealer.gameObject.TryGetComponent(out PlayerController pc) && turretSO.totalTurretPoints > 0)
+        if (damageDealer.gameObject.TryGetComponent(out PlayerController pc) && defaultTurretPoints > 0)
         {
             //Credit the points to the right team
             //And reduce total turret points
             if (pc.team == Team.LeftTeam)
             {
-                turretSO.pointsLeftTeam += damage;
-                turretSO.totalTurretPoints -= damage;
+                currentPointsLeftTeam += damage;
+                defaultTurretPoints -= damage;
                 Debug.Log($"Turret is getting damaged by a warlord from {pc.team}");
             }
             if (pc.team == Team.RightTeam)
             {
-                turretSO.pointsRightTeam += damage;
-                turretSO.totalTurretPoints -= damage;
+                currentPointsRightTeam += damage;
+                defaultTurretPoints -= damage;
                 Debug.Log($"Turret is getting damaged by a warlord from {pc.team}");
             }
         }
         //Minion check:
-        if (damageDealer.gameObject.TryGetComponent(out MinionController mc) && turretSO.totalTurretPoints > 0)
+        if (damageDealer.gameObject.TryGetComponent(out MinionController mc) && defaultTurretPoints > 0)
         {
             if (mc.team == Team.LeftTeam)
             {
-                turretSO.pointsLeftTeam += damage;
-                turretSO.totalTurretPoints -= damage;
+                currentPointsLeftTeam += damage;
+                defaultTurretPoints -= damage;
                 Debug.Log($"Turret is getting damaged by a minion from {mc.team}");
             }
             if (mc.team == Team.RightTeam)
             {
-                turretSO.pointsRightTeam += damage;
-                turretSO.totalTurretPoints -= damage;
+                currentPointsRightTeam += damage;
+                defaultTurretPoints -= damage;
                 Debug.Log($"Turret is getting damaged by a minion from {mc.team}");
             }
         }
 
         //if turret points fall to 0 and the turret doesn't belong to any team
-        if (turretSO.totalTurretPoints <= 0 && currentAffiliateState == AffiliateState.neutral)
+        if (defaultTurretPoints <= 0 && currentAffiliateState == AffiliateState.neutral)
         {
             //check which team has more points and change affiliate state
-            if (turretSO.pointsLeftTeam > turretSO.pointsRightTeam)
+            if (currentPointsLeftTeam > currentPointsRightTeam)
             {
                 currentAffiliateState = AffiliateState.leftTeam;
                 teamManager.AssignTeamToObject(this.gameObject, Team.LeftTeam);
@@ -375,14 +379,14 @@ public class TurretController : MonoBehaviour, IDamagable
         }
 
         //Reduce HP if hp > 0 and the turret is assigned to a team
-        if (damageDealer.gameObject.TryGetComponent(out PlayerController p) && turretSO.turretHP > 0 && currentAffiliateState != AffiliateState.neutral)
+        if (damageDealer.gameObject.TryGetComponent(out PlayerController p) && currentTurretHP > 0 && currentAffiliateState != AffiliateState.neutral)
         {
             //first check what team is doing damage
             //only the team that's not in the same team as the turret can do damage
 
             if ((p.team == Team.LeftTeam && currentAffiliateState == AffiliateState.rightTeam) || (p.team == Team.RightTeam && currentAffiliateState == AffiliateState.leftTeam))
             {
-                turretSO.turretHP -= damage;
+                currentTurretHP -= damage;
                 Debug.Log($"Turret is getting damaged by {p.team}");
             }
             else
@@ -393,7 +397,7 @@ public class TurretController : MonoBehaviour, IDamagable
         }
 
         //destroy turret
-        if (turretSO.turretHP <= 0)
+        if (currentTurretHP <= 0)
         {
             //Set focusState to destroyed
             currentFocusState = FocusState.destroyed;
@@ -411,8 +415,4 @@ public class TurretController : MonoBehaviour, IDamagable
 
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, turretSO.turretAttackRange );
-    }
 }

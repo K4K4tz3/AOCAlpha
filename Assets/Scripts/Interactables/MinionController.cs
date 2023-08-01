@@ -12,25 +12,33 @@ public class MinionController : MonoBehaviour, IDamagable
 
     [SerializeField] private MinionSO minionSO;
     [SerializeField] private MinionHealthbar healthbar;
+    [SerializeField] private LayerMask layerAttackable;
+
     [SerializeField] private float currentHealth;
     [SerializeField] private float maxHealth;
     private Color teamColor;
-    public Team team;
-
     private Collider minionCollider;
     private NavMeshAgent minionNavAgent;
-    public Transform targetDestinationLeftTeam;
-    public Transform targetDestinationRightTeam;
-    private float desiredStoppingDistance = 10;
 
+    // public transforms for SpawnManager, private transforms for start method
+    private Transform targetDestinationLeftTeam;
+    private Transform targetDestinationRightTeam;
+    public Transform TargetDestinationLeftTeam { set { targetDestinationLeftTeam = value; } }
+    public Transform TargetDestinationRightTeam { set { targetDestinationRightTeam = value; } }
 
+    // current target destination gets updated whenever a valid enemy enters the sight trigger (child)
+    public Transform CurrentTargetDestination { get { return currentTargetDestination; } set { currentTargetDestination = value; } }
     private Transform currentTargetDestination;
-    [SerializeField] private LayerMask layerAttackable;
+    public bool IsEnemyInSight;
+    public bool IsEnemyInAARange;
 
+    public Team team;
     public MinionState state;
 
+    private float attackCooldown = 2f;
+    private float currentCooldown;
 
-    //anstatt overlap sphere -> collider trigger enter als child object
+
 
     private void Start()
     {
@@ -69,26 +77,17 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void Update()
     {
-
         switch (state)
         {
             case MinionState.walking:
-
-                if (IsEnemyInSightRange())
-                {
+                if (IsEnemyInSight)               
                     MoveMinion(currentTargetDestination.position);
-                }
-                if (IsEnemyInAttackRange())
-                {
-                    minionNavAgent.ResetPath();
+                
+                if (IsEnemyInAARange)               
                     state = MinionState.attacking;
-
-                }
+                
                 else
-                {
                     MoveMinion(currentTargetDestination.position);
-
-                }
 
                 break;
             case MinionState.attacking:
@@ -101,163 +100,73 @@ public class MinionController : MonoBehaviour, IDamagable
 
     private void MoveMinion(Vector3 destination)
     {
-        float distanceToDestination = Vector3.Distance(transform.position, destination);
+        //float distanceToDestination = Vector3.Distance(transform.position, destination);
+        //Debug.Log("Distance to Destination: " + distanceToDestination);
+        //Debug.Log("Desired Stopping Distance: " + desiredStoppingDistance);
+        //Debug.Log(IsEnemyInAttackRange());
+        //Debug.Log(IsEnemyInSightRange());
+        //Debug.Log(minionNavAgent.pathStatus);
+        //minionNavAgent.SetDestination(destination);
 
-        Debug.Log("Distance to Destination: " + distanceToDestination);
-        Debug.Log("Desired Stopping Distance: " + desiredStoppingDistance);
-        Debug.Log(IsEnemyInAttackRange());
-        Debug.Log(IsEnemyInSightRange());
+        minionNavAgent.destination = destination;
 
-        if (distanceToDestination > desiredStoppingDistance)
-        {
-            minionNavAgent.SetDestination(destination);
-        }
-        else if (IsEnemyInAttackRange())
+        if (IsEnemyInAARange)
         {
             minionNavAgent.ResetPath();
             state = MinionState.attacking;
         }
     }
-
-
-    private bool IsEnemyInAttackRange()
-    {
-        //Checks if there are enemies in auto attack range
-        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
-
-        if (enemies != null)
-        {
-            //if there are enemies, check what team the enemies are in
-            //if they are not in the same team, return true
-            foreach (Collider eo in enemies)
-            {
-                if (eo.TryGetComponent(out PlayerController pc))
-                {
-                    if (pc.team != team)
-                    {
-                        //Debug.Log("Enemy: " + eo + " is in team " + pc.team);
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-                //if a minion is in range, attack it
-                else if (eo.TryGetComponent(out MinionController mc))
-                {
-                    if (mc.team != team)
-                    {
-                        //Debug.Log("Enemy: " + eo + " is in team " + mc.team);
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-                else if (eo.TryGetComponent(out TurretController tc))
-                {
-                    if (tc.team != team)
-                    {
-                        //Debug.Log("Enemy: " + eo + " is in team " + tc.team);
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-                else
-                    return false;
-            }
-
-            return true;
-        }
-        else
-            return false;
-
-    }
-
-    private bool IsEnemyInSightRange()
-    {
-        //Checks if there are enemies in range
-        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionSightRange, layerAttackable);
-
-        if (enemies != null)
-        {
-            // If there are enemies, set the destination to the first one found
-            foreach (Collider enemy in enemies)
-            {
-                if (enemy.TryGetComponent(out PlayerController pc))
-                {
-                    if (pc != null && pc.team != team)
-                    {
-                        currentTargetDestination = enemy.transform;
-                        Debug.Log("new destination player = " + currentTargetDestination);
-                        return true;
-                    }
-                }
-                else if (enemy.TryGetComponent(out MinionController mc))
-                {
-                    if (mc != null && mc.team != team)
-                    {
-                        currentTargetDestination = enemy.transform;
-                        Debug.Log("new destination minion = " + currentTargetDestination);
-                        return true;
-                    }
-                }
-                else if (enemy.TryGetComponent(out TurretController tc))
-                {
-                    if (tc != null && tc.team != team)
-                    {
-                        currentTargetDestination = enemy.transform;
-                        Debug.Log("new destination turret = " + currentTargetDestination);
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private void AttackEnemy()
     {
-        Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
-
-        if (enemies != null)
+        if (currentCooldown <= 0f)
         {
-            foreach (Collider enemy in enemies)
+            Collider[] enemies = Physics.OverlapSphere(transform.position, 5, layerAttackable);
+
+            if (enemies != null)
             {
-                //loop through all found enemies and run to the first one in list
-                if (enemy.TryGetComponent(out IDamagable d))
+                foreach (Collider enemy in enemies)
                 {
-                    //check tag, otherwise it will attack minions from the same team
-                    if (enemy.gameObject.tag != gameObject.tag)
+                    //loop through all found enemies and run to the first one in list
+                    if (enemy.TryGetComponent(out IDamagable d))
                     {
-                        minionNavAgent.ResetPath();
-                        d.GetDamaged(minionSO.minionAttackDamage, minionCollider);
-                        Debug.Log("Minion attacking " + enemy);
-                    }
-                }
+                        //check tag, otherwise it will attack minions from the same team
+                        if (enemy.gameObject.tag != gameObject.tag)
+                        {
+                            //look at target
+                            transform.LookAt(enemy.transform.position);
 
-            }
-        }
-        else
-        {
-            //default destination
-            if (team == Team.LeftTeam)
-            {
-                currentTargetDestination = targetDestinationLeftTeam;
-                minionNavAgent.SetDestination(currentTargetDestination.position);
+                            d.GetDamaged(minionSO.minionAttackDamage, minionCollider);
+                            Debug.Log("Minion attacking " + enemy);
+                        }
+                    }
+
+                }
             }
             else
             {
-                currentTargetDestination = targetDestinationRightTeam;
-                minionNavAgent.SetDestination(currentTargetDestination.position);
+                //default destination
+                if (team == Team.LeftTeam)
+                {
+                    currentTargetDestination = targetDestinationLeftTeam;
+                    minionNavAgent.SetDestination(currentTargetDestination.position);
+                }
+                else
+                {
+                    currentTargetDestination = targetDestinationRightTeam;
+                    minionNavAgent.SetDestination(currentTargetDestination.position);
+                }
+
+                state = MinionState.walking;
+                return;
             }
 
-            state = MinionState.walking;
-            return;
+            currentCooldown = attackCooldown;
+
         }
+
+        currentCooldown -= Time.deltaTime;
+
     }
-
-
 
     public void Die()
     {
@@ -277,13 +186,100 @@ public class MinionController : MonoBehaviour, IDamagable
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, minionSO.minionSightRange);
+    //private bool IsEnemyInAttackRange()
+    //{
+    //    //Checks if there are enemies in auto attack range
+    //    Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionAttackRange, layerAttackable);
 
-        Gizmos.color = Color.blue;
+    //    if (enemies != null)
+    //    {
+    //        //if there are enemies, check what team the enemies are in
+    //        //if they are not in the same team, return true
+    //        foreach (Collider eo in enemies)
+    //        {
+    //            if (eo.TryGetComponent(out PlayerController pc))
+    //            {
+    //                if (pc.team != team)
+    //                {
+    //                    //Debug.Log("Enemy: " + eo + " is in team " + pc.team);
+    //                    return true;
+    //                }
+    //                else
+    //                    return false;
+    //            }
+    //            //if a minion is in range, attack it
+    //            else if (eo.TryGetComponent(out MinionController mc))
+    //            {
+    //                if (mc.team != team)
+    //                {
+    //                    //Debug.Log("Enemy: " + eo + " is in team " + mc.team);
+    //                    return true;
+    //                }
+    //                else
+    //                    return false;
+    //            }
+    //            else if (eo.TryGetComponent(out TurretController tc))
+    //            {
+    //                if (tc.team != team)
+    //                {
+    //                    //Debug.Log("Enemy: " + eo + " is in team " + tc.team);
+    //                    return true;
+    //                }
+    //                else
+    //                    return false;
+    //            }
+    //            else
+    //                return false;
+    //        }
 
-        Gizmos.DrawWireSphere(transform.position, minionSO.minionAttackRange);
-    }
+    //        return true;
+    //    }
+    //    else
+    //        return false;
+
+    //}
+
+    //private bool IsEnemyInSightRange()
+    //{
+    //    //Checks if there are enemies in range
+    //    Collider[] enemies = Physics.OverlapSphere(transform.position, minionSO.minionSightRange, layerAttackable);
+
+    //    if (enemies != null)
+    //    {
+    //        // If there are enemies, set the destination to the first one found
+    //        foreach (Collider enemy in enemies)
+    //        {
+    //            if (enemy.TryGetComponent(out PlayerController pc))
+    //            {
+    //                if (pc != null && pc.team != team)
+    //                {
+    //                    currentTargetDestination = enemy.transform;
+    //                    Debug.Log("new destination player = " + currentTargetDestination);
+    //                    return true;
+    //                }
+    //            }
+    //            else if (enemy.TryGetComponent(out MinionController mc))
+    //            {
+    //                if (mc != null && mc.team != team)
+    //                {
+    //                    currentTargetDestination = enemy.transform;
+    //                    Debug.Log("new destination minion = " + currentTargetDestination);
+    //                    return true;
+    //                }
+    //            }
+    //            else if (enemy.TryGetComponent(out TurretController tc))
+    //            {
+    //                if (tc != null && tc.team != team)
+    //                {
+    //                    currentTargetDestination = enemy.transform;
+    //                    Debug.Log("new destination turret = " + currentTargetDestination);
+    //                    return true;
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    return false;
+    //}
 
 }

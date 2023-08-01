@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d4cdc5f680bfd04a8f8f413245c26b1, type: 3}
   m_Name: w_Heragzon
   m_EditorClassIdentifier: 
-  healthAmount: 210
-  chardAmount: 100
+  healthAmount: 200
+  chardAmount: 200
   movementSpeed: 10
-  autoAttackRange: 2.5
+  spawnPosition: {x: 0, y: 0}
+  respawnTimer: 0
+  autoAttackRange: 4
   autoAttackDamage: 10
   ability1Cooldown: 5
   ability1DmgWarlord: 75

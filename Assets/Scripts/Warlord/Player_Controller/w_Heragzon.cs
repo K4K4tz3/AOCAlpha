@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+
 
 public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
 {
@@ -15,6 +17,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private Renderer warlordRenderer;
     private Collider warlordCollider;
     private PlayerController playerController;
+
+
+    [SerializeField] private w_HeragzonHealthbar healthbar;
+    [SerializeField] private w_HeragzonChardbar chardbar;
+    #endregion
+
+    #region UI 
+    [SerializeField] private Image qPanelUI;
+    private w_HeragzonQPanel qPanelScript;
     #endregion
 
     #region Range Check
@@ -49,6 +60,8 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         mainCamera = Camera.main;
         navMeshAgent = GetComponent<NavMeshAgent>();
         warlordRenderer = GetComponent<Renderer>();
+
+
         standardHealthAmount = heragzonSO.healthAmount;
         standardChardAmount = heragzonSO.chardAmount;
 
@@ -59,6 +72,15 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
         warlordCollider = GetComponent<Collider>();
         playerController = GetComponent<PlayerController>();
+
+  
+        healthbar.UpdateHealthbar(heragzonSO.healthAmount, standardHealthAmount);
+        
+        chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
+
+        qPanelScript = qPanelUI.GetComponent<w_HeragzonQPanel>();
+
+
 
     }
 
@@ -128,6 +150,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     IEnumerator Ability1Duration()
     {
         damageAreaAbility1.SetActive(true);
+
         yield return new WaitForSeconds(heragzonSO.ability1Duration);
         damageAreaAbility1.SetActive(false);
 
@@ -224,6 +247,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
+            chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
 
             Debug.Log("Q triggered");
 
@@ -290,6 +314,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         {
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability2ChardCost;
+            chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
 
             StartCoroutine(Ability2Duration());
             StartCoroutine(Ability2Cooldown());
@@ -342,6 +367,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         {
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability3ChardCost;
+            chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
 
             StartCoroutine(Ability3Duration());
             StartCoroutine(Ability3Cooldown());
@@ -394,7 +420,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     public void GetDamaged(float damage, Collider damageDealer)
     {
 
-
+        //trigger tower aggro
         if (damageDealer.tag == "Warlord")
         {
             Collider[] enemies = Physics.OverlapSphere(damageDealer.transform.position, 10, layerAttackable);               // turret Attack range 
@@ -413,6 +439,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         if (heragzonSO.healthAmount > 0.0f)
         {
             heragzonSO.healthAmount -= damage;
+            healthbar.UpdateHealthbar(heragzonSO.healthAmount, standardHealthAmount);
         }
         else
         {
@@ -483,7 +510,9 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private void ResetStats()
     {
         heragzonSO.healthAmount = standardHealthAmount;
+        healthbar.UpdateHealthbar(heragzonSO.healthAmount, standardHealthAmount);
         heragzonSO.chardAmount = standardChardAmount;
+        chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
     }
     public void RespawnWarlord()
     {

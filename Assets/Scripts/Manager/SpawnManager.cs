@@ -5,15 +5,14 @@ public class SpawnManager : MonoBehaviour
 {
 
     [SerializeField] private MinionSO minionSO;
-
-    public GameObject minionPrefab;
-    
-
-    private float spawnTimer;
-
     [SerializeField] private Transform leftSpawnLocation;
     [SerializeField] private Transform rightSpawnLocation;
 
+    [SerializeField] private GameObject minionPrefab;
+
+    private float spawnCooldown = 1f;
+    private float spawnTimer;
+  
     #region Team Assignment
     [SerializeField] private GameObject teamManagerObject;
     private TeamManager teamManager;
@@ -27,71 +26,70 @@ public class SpawnManager : MonoBehaviour
 
     private void Start()
     {
-        //At Game Start, timer = first Spawn Timer because it's taking a while until minions first spawn in game
-        //after that, timer has normal stats
-        spawnTimer = minionSO.firstSpawnTimer;
-
         if (teamManager.unassignedMinions != null)
         {
             teamManager.unassignedMinions.Add(this.gameObject);
-            
         }
 
-
+        spawnTimer = minionSO.spawnTimer;
     }
 
     private void Update()
     {
-        spawnTimer -= Time.deltaTime;
-
-
         if (spawnTimer <= 0)
         {
             SpawnMinions(leftSpawnLocation, Team.LeftTeam);
             //SpawnMinions(rightSpawnLocation, Team.RightTeam);
 
+            StopCoroutine(SpawnMinionInDelay(leftSpawnLocation, Team.LeftTeam));
+
             //Reset timer
             spawnTimer = minionSO.spawnTimer;
         }
 
+        spawnTimer -= Time.deltaTime;
     }
 
     private void SpawnMinions(Transform spawnPoint, Team desiredTeam)
     {
-        GameObject go = new GameObject("Minion Wave");
 
-        //Minions get instantiated on their spawn points
-        //They all have the same parent object
+        StartCoroutine(SpawnMinionInDelay(spawnPoint, desiredTeam)) ;
+
+    }
+
+    private IEnumerator SpawnMinionInDelay(Transform spawnPoint, Team desiredTeam)
+    {
+        GameObject go = new GameObject("Minion Wave");
 
         for (int i = 0; i < minionSO.minionCountPerWave; i++)
         {
+
             GameObject minion = Instantiate(minionPrefab, spawnPoint.position, Quaternion.identity);
             minion.name = $"Minion number: {i}";
             minion.transform.SetParent(go.transform);
-    
+
             AssignMinionToTeam(minion, desiredTeam);
             minion.gameObject.GetComponent<MinionController>().team = teamManager.GetObjectsTeam(minion);
 
             //set destination
-            if(teamManager.GetObjectsTeam(minion) == Team.LeftTeam)
+            if (teamManager.GetObjectsTeam(minion) == Team.LeftTeam)
             {
-                minion.gameObject.GetComponent<MinionController>().targetDestinationLeftTeam = rightSpawnLocation;
+                minion.gameObject.GetComponent<MinionController>().TargetDestinationLeftTeam = rightSpawnLocation;
             }
             else if (teamManager.GetObjectsTeam(minion) == Team.RightTeam)
             {
-                minion.gameObject.GetComponent<MinionController>().targetDestinationLeftTeam = leftSpawnLocation;
+                minion.gameObject.GetComponent<MinionController>().TargetDestinationLeftTeam = leftSpawnLocation;
             }
 
+            yield return new WaitForSeconds(spawnCooldown);
+
         }
-
     }
-
-
 
     private void AssignMinionToTeam(GameObject minion, Team desiredTeam)
     {
         teamManager.AssignTeamToObject(minion, desiredTeam);
-     
+
     }
 
 }

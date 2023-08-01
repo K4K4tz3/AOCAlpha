@@ -11,15 +11,12 @@ public class MinionSO : ScriptableObject
 
 
     [Header("Damage & Health")]
-    public float minionAttackRange;
     public float minionAttackDamage;
     public float minionAttackSpeed;
-    public float minionHealth;
-    public float minionSightRange;
+
 
     [Header("Waves")]
     public float minionCountPerWave;
-    [Tooltip("When game starts, wait this amount of time before spawning the first minions")] public float firstSpawnTimer;
     [Tooltip("This is the time that goes by to spawn a new minion wave")] public float spawnTimer;
    
 }
