@@ -5,10 +5,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Lyrien : MonoBehaviour, IDamagable
+public class w_Lyrien : MonoBehaviour, IDamagable, IRegeneratable
 {
     #region General
-    
+
     [SerializeField] private WarlordBaseClass lyrienSO;
     private NavMeshAgent navMeshAgent;
     private Renderer warlordRenderer;
@@ -22,7 +22,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable
 
     #region Range Check
     [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
-   
+
     #endregion
 
     #region Damage Area
@@ -45,7 +45,12 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     private bool eAvailable = true;
     #endregion
 
-   
+    #region UI 
+    [SerializeField] private Canvas UICanvas;
+    private PanelUIUpdater panelUpdaterScript;
+    #endregion
+
+
 
 
     private void Awake()
@@ -63,10 +68,11 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         AreaAbility2 = this.gameObject.transform.GetChild(2).gameObject;
 
         warlordCollider = GetComponent<Collider>();
-        
+        panelUpdaterScript = UICanvas.GetComponent<PanelUIUpdater>();
+
     }
 
- 
+
     private void Update()
     {
         if (CheckForAbilityRange(lyrienSO.ability1Range, transform.position))
@@ -168,9 +174,19 @@ public class w_Lyrien : MonoBehaviour, IDamagable
     #region Coroutines
     IEnumerator Ability1Cooldown()
     {
-        qAvailable = false;
-        yield return new WaitForSeconds(lyrienSO.ability1Cooldown);
-        qAvailable = true;
+        var start = Time.time;
+        var endTime = start + lyrienSO.ability1Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            qAvailable = false;
+            panelUpdaterScript.UpdateQImgFill(currentTime, lyrienSO.ability1Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(lyrienSO.ability1Cooldown);
+            qAvailable = true;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator StopMovementAbility1()
@@ -189,10 +205,20 @@ public class w_Lyrien : MonoBehaviour, IDamagable
 
     IEnumerator Ability2Cooldown()
     {
-        wAvailable = false;
-        yield return new WaitForSeconds(lyrienSO.ability2Cooldown);
-        wAvailable = true;
-        wPressedOnce = false;
+        var start = Time.time;
+        var endTime = start + lyrienSO.ability2Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            wAvailable = false;
+            panelUpdaterScript.UpdateWImgFill(currentTime, lyrienSO.ability2Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(lyrienSO.ability2Cooldown);
+            wAvailable = true;
+            wPressedOnce = false;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator Ability2Duration()
@@ -206,9 +232,19 @@ public class w_Lyrien : MonoBehaviour, IDamagable
 
     IEnumerator Ability3Cooldown()
     {
-        eAvailable = false;
-        yield return new WaitForSeconds(lyrienSO.ability3Cooldown);
-        eAvailable = true;
+        var start = Time.time;
+        var endTime = start + lyrienSO.ability3Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            eAvailable = false;
+            panelUpdaterScript.UpdateEImgFill(currentTime, lyrienSO.ability3Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(lyrienSO.ability3Cooldown);
+            eAvailable = true;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator Respawn()
@@ -339,7 +375,7 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         //do not get damaged 
         // ??????????? macht das sinn???
         float currentHealthAmount = lyrienSO.healthAmount;
-        if( lyrienSO.healthAmount < currentHealthAmount)
+        if (lyrienSO.healthAmount < currentHealthAmount)
         {
             lyrienSO.healthAmount = currentHealthAmount;
         }
@@ -364,6 +400,11 @@ public class w_Lyrien : MonoBehaviour, IDamagable
         ResetStats();
         StartCoroutine(Respawn());
 
+    }
+
+    public void RegenerateChards(float regenerationAmount)
+    {
+        lyrienSO.chardAmount += regenerationAmount;
     }
 
 

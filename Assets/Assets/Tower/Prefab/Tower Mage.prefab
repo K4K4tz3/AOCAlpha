@@ -532,6 +532,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5325482690120031988}
+  - {fileID: 4577716429562002105}
   - {fileID: 409546}
   - {fileID: 458352}
   - {fileID: 440698}
@@ -583,9 +584,9 @@ MonoBehaviour:
     m_Bits: 64
   shotSpawnPoint: {fileID: 5325482690120031988}
   turretShotPrefab: {fileID: 5166279968026674188, guid: 40f6a4e2bd05d634a8a771768f2a2a0c, type: 3}
-  healthbarObj: {fileID: 4651446425366715961}
   leftTeamBarObj: {fileID: 1189377217374836706}
   rightTeamBarObj: {fileID: 5019733380970227774}
+  healthbarObj: {fileID: 4651446425366715961}
   teamManagerObject: {fileID: 0}
   team: 2
 --- !u!65 &704057981448263551
@@ -608,7 +609,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.33639044, y: 1.01045, z: 0.25422454}
-  m_Center: {x: -0.014041774, y: 0.46234313, z: -0.0065193973}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!208 &2323806591168647716
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -1409,6 +1410,101 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5441914580118896377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4577716429562002105}
+  - component: {fileID: 1047710654131520603}
+  - component: {fileID: 5719123048672324421}
+  - component: {fileID: 7701323548118774922}
+  m_Layer: 0
+  m_Name: ChardomancerZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4577716429562002105
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5441914580118896377}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 411524}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1047710654131520603
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5441914580118896377}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5719123048672324421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5441914580118896377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cae6ddd7abfd76148aca4231db0ab766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretSO: {fileID: 11400000, guid: 685fa4c4daa826e40b515be6d218d489, type: 2}
+--- !u!54 &7701323548118774922
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5441914580118896377}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &5606373306654108596
 GameObject:
   m_ObjectHideFlags: 0

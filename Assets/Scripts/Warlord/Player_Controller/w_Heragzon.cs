@@ -6,7 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 
-public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
+public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IRegeneratable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -19,13 +19,14 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
     private PlayerController playerController;
 
 
+
     [SerializeField] private w_HeragzonHealthbar healthbar;
     [SerializeField] private w_HeragzonChardbar chardbar;
     #endregion
 
     #region UI 
-    [SerializeField] private Image qPanelUI;
-    private w_HeragzonQPanel qPanelScript;
+    [SerializeField] private Canvas UICanvas;
+    private PanelUIUpdater panelUpdaterScript;
     #endregion
 
     #region Range Check
@@ -75,14 +76,12 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
         healthbar = GetComponentInChildren<w_HeragzonHealthbar>();
         chardbar = GetComponentInChildren<w_HeragzonChardbar>();
-  
+
         healthbar.UpdateHealthbar(heragzonSO.healthAmount, standardHealthAmount);
-        
+
         chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
 
-        qPanelScript = qPanelUI.GetComponent<w_HeragzonQPanel>();
-
-
+        panelUpdaterScript = UICanvas.GetComponent<PanelUIUpdater>();
 
     }
 
@@ -161,9 +160,20 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
     IEnumerator Ability1Cooldown()
     {
-        qAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability1Cooldown);
-        qAvailable = true;
+        var start = Time.time;
+        var endTime = start + heragzonSO.ability1Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            qAvailable = false;
+            //yield return new WaitForSeconds(heragzonSO.ability1Cooldown);
+            panelUpdaterScript.UpdateQImgFill(currentTime, heragzonSO.ability1Cooldown);
+            yield return new WaitForEndOfFrame();
+            qAvailable = true;
+
+        } while (Time.time < endTime);
+
     }
 
     IEnumerator Ability2Duration()
@@ -176,9 +186,19 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
     IEnumerator Ability2Cooldown()
     {
-        wAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability2Cooldown);
-        wAvailable = true;
+        var start = Time.time;
+        var endTime = start + heragzonSO.ability2Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            wAvailable = false;
+            panelUpdaterScript.UpdateWImgFill(currentTime, heragzonSO.ability2Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(heragzonSO.ability2Cooldown);
+            wAvailable = true;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator Ability3Duration()
@@ -191,9 +211,19 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
 
     IEnumerator Ability3Cooldown()
     {
-        eAvailable = false;
-        yield return new WaitForSeconds(heragzonSO.ability3Cooldown);
-        eAvailable = true;
+        var start = Time.time;
+        var endTime = start + heragzonSO.ability3Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            eAvailable = false;
+            panelUpdaterScript.UpdateEImgFill(currentTime, heragzonSO.ability3Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(heragzonSO.ability3Cooldown);
+            eAvailable = true;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator Stunned(float duration)
@@ -250,6 +280,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability1ChardCost;
             chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
+
 
             Debug.Log("Q triggered");
 
@@ -318,6 +349,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             heragzonSO.chardAmount -= heragzonSO.ability2ChardCost;
             chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
 
+
             StartCoroutine(Ability2Duration());
             StartCoroutine(Ability2Cooldown());
 
@@ -370,6 +402,7 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
             //reduce Chards
             heragzonSO.chardAmount -= heragzonSO.ability3ChardCost;
             chardbar.UpdateChardbar(heragzonSO.chardAmount, standardChardAmount);
+
 
             StartCoroutine(Ability3Duration());
             StartCoroutine(Ability3Cooldown());
@@ -521,6 +554,11 @@ public class w_Heragzon : MonoBehaviour, IDamagable, IStunnable, IControllable, 
         ResetStats();
         StartCoroutine(Respawn());
 
+    }
+
+    public void RegenerateChards(float regenerationAmount)
+    {
+        heragzonSO.chardAmount += regenerationAmount;
     }
 
 

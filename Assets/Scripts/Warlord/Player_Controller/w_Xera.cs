@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable
+public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPushable, IRegeneratable
 {
     #region General
     //Scriptable Object for all necessary information
@@ -28,7 +28,7 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
     #endregion
 
     #region Range Check
-    [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();   
+    [SerializeField] private List<Collider> _targetsInRange = new List<Collider>();
     #endregion
 
     #region Bools for Abilities
@@ -45,6 +45,11 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
     private GameObject areaAbility1;
     private GameObject areaAbility2;
     private GameObject areaAbility3;
+    #endregion
+
+    #region UI 
+    [SerializeField] private Canvas UICanvas;
+    private PanelUIUpdater panelUpdaterScript;
     #endregion
 
     private void Awake()
@@ -64,8 +69,8 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
 
         warlordCollider = GetComponent<Collider>();
         playerController = GetComponent<PlayerController>();
-    
 
+        panelUpdaterScript = UICanvas.GetComponent<PanelUIUpdater>();
     }
 
 
@@ -137,9 +142,20 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
     #region Coroutines
     IEnumerator Ability1Cooldown()
     {
-        qAvailable = false;
-        yield return new WaitForSeconds(xeraSO.ability1Cooldown);
-        qAvailable = true;
+        var start = Time.time;
+        var endTime = start + xeraSO.ability1Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            qAvailable = false;
+            panelUpdaterScript.UpdateQImgFill(currentTime, xeraSO.ability1Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(xeraSO.ability1Cooldown);
+            qAvailable = true;
+
+        } while (Time.time < endTime);
+
     }
 
     IEnumerator Ability1Duration()
@@ -153,9 +169,19 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
 
     IEnumerator Ability2Cooldown()
     {
-        wAvailable = false;
-        yield return new WaitForSeconds(xeraSO.ability2Cooldown);
-        wAvailable = true;
+        var start = Time.time;
+        var endTime = start + xeraSO.ability2Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            wAvailable = false;
+            panelUpdaterScript.UpdateWImgFill(currentTime, xeraSO.ability2Cooldown);
+            yield return new WaitForEndOfFrame();
+            //yield return new WaitForSeconds(xeraSO.ability2Cooldown);
+            wAvailable = true;
+
+        } while (Time.time < endTime);
 
     }
 
@@ -168,9 +194,19 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
 
     IEnumerator Ability3Cooldown()
     {
-        eAvailable = false;
-        yield return new WaitForSeconds(xeraSO.ability3Cooldown);
-        eAvailable = true;
+        var start = Time.time;
+        var endTime = start + xeraSO.ability3Cooldown;
+
+        do
+        {
+            var currentTime = Time.time - start;
+            eAvailable = false;
+            panelUpdaterScript.UpdateEImgFill(currentTime, xeraSO.ability3Cooldown);
+            //yield return new WaitForSeconds(xeraSO.ability3Cooldown);
+            yield return new WaitForEndOfFrame();
+            eAvailable = true;
+
+        } while (Time.time < endTime);
     }
 
     IEnumerator Ability3Duration()
@@ -369,6 +405,11 @@ public class w_Xera : MonoBehaviour, IDamagable, IStunnable, IControllable, IPus
     {
         ResetStats();
         StartCoroutine(Respawn());
+    }
+
+    public void RegenerateChards(float regenerationAmount)
+    {
+        xeraSO.chardAmount += regenerationAmount;
     }
 
 

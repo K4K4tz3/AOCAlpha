@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class TurretController : MonoBehaviour, IDamagable
 {
@@ -22,6 +24,7 @@ public class TurretController : MonoBehaviour, IDamagable
     //Der Turm kann eingenommen werden, indem er angegriffen wird 
     //Der jenige, der dem Turm von 200 punkten den meisten Schaden macht, nimmt den Turm ein
 
+    #region General
     [SerializeField] private TurretBaseClass turretSO;
     [SerializeField] private FocusState currentFocusState;
     [SerializeField] private AffiliateState currentAffiliateState;
@@ -34,14 +37,17 @@ public class TurretController : MonoBehaviour, IDamagable
     private Collider currentTarget;
     [SerializeField] private LayerMask layerAttackable;
     private Collider turretCollider;
+    #endregion
 
-
+    #region Shots & CD
+    [SerializeField] private Transform shotSpawnPoint;
+    [SerializeField] private GameObject turretShotPrefab;
     //cd here in script bc of reset - not in so 
     private float attackCooldown = 3.5f;
     private float currentCooldown = 0f;                     //CD is 0 in the beginning so the turret can shoot right away
+    #endregion
 
-
-    //points wrsl auch hier besser für die türme einzeln
+    #region Turret Points
     private float maxTurretPoints = 200;
     private float currentTurretPoints;                //Set points in the beginning (awake) to default -> 200 
     private float defaultPointsLeftTeam = 0;
@@ -49,25 +55,31 @@ public class TurretController : MonoBehaviour, IDamagable
 
     private float currentPointsLeftTeam = 0;
     private float currentPointsRightTeam = 0;
-
-    private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
-    private float currentTurretHP;
-
-    [SerializeField] private Transform shotSpawnPoint;
-    [SerializeField] private GameObject turretShotPrefab;
-
-    private TurretHealthbar healthbar;
     private TurretLTPointsBar leftTeamPointsBar;
     private TurretRTPointsBar rightTeamPointsBar;
-
-    [SerializeField] private GameObject healthbarObj;
     [SerializeField] private GameObject leftTeamBarObj;
     [SerializeField] private GameObject rightTeamBarObj;
+    #endregion
+
+    #region Health
+    private TurretHealthbar healthbar;
+
+    [SerializeField] private GameObject healthbarObj;
+    private float defaultTurretHP = 500;                    //HP are "activated" when the tower is assigned to a team
+    private float currentTurretHP;
+    #endregion
 
     #region Team Assignment
     [SerializeField] GameObject teamManagerObject;
     private TeamManager teamManager;
     public Team team;
+    #endregion
+
+
+    #region Chard Stock
+    //tower regenerieren 1 chard pro sekunde -> max 400 chards pro turm
+    private float chardStock = 400;
+    private float currentChardStockAmount;
     #endregion
 
 
@@ -88,6 +100,7 @@ public class TurretController : MonoBehaviour, IDamagable
         leftTeamPointsBar.UpdateLTPointsBar(currentPointsLeftTeam, currentTurretPoints);
         rightTeamPointsBar.UpdateRTPointsBar(currentPointsRightTeam, currentTurretPoints);
 
+  
         //healthbar.gameObject.SetActive(false);
 
         //Turrets start neutral
@@ -105,6 +118,8 @@ public class TurretController : MonoBehaviour, IDamagable
 
         teamManager = teamManagerObject.GetComponent<TeamManager>();
         team = Team.None;
+
+        currentChardStockAmount = chardStock;
 
     }
 
@@ -148,7 +163,13 @@ public class TurretController : MonoBehaviour, IDamagable
                 break;
         }
 
-
+        //if turret is captured by a team, regenerate chards 
+        if (currentChardStockAmount < chardStock)
+        {
+            StartCoroutine(RegenerateChardStock());
+        }
+        else
+            StopCoroutine(RegenerateChardStock());
 
     }
 
@@ -329,6 +350,12 @@ public class TurretController : MonoBehaviour, IDamagable
 
 
 
+    }
+
+    private IEnumerator RegenerateChardStock()
+    {
+        currentChardStockAmount += 1;
+        yield return new WaitForSeconds(1f);
     }
 
 

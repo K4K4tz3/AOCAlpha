@@ -15,11 +15,10 @@ public class TeamManager : MonoBehaviour
 
     public List<GameObject> unassignedWarlords;
     public List<GameObject> unassignedMinions;
-    public List<GameObject> unassignedTurrets;
 
     private void Awake()
     {
-        // Populate the list of unassigned warlords
+        // Populate the list of unassigned things
         //AWAKE IMPORTANT
         unassignedWarlords = new List<GameObject>();
         unassignedMinions = new List<GameObject>();
